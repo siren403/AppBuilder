@@ -1,13 +1,23 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using Unity.CompilationPipeline.Common.ILPostProcessing;
-using UnityEngine;
 
 namespace AppBuilder.Builds
 {
     public class AppBuilderBuildsILPostProcessor : ILPostProcessor
     {
+        private const string LOGFile = "D:/workspace/unity/AppBuilder/Assets/il.log";
+
+        private static StreamWriter Writer()
+        {
+            return new StreamWriter(LOGFile);
+        }
+
+        private static void Log(StreamWriter writer, string message)
+        {
+            writer.WriteLine(message);
+        }
+
         public override ILPostProcessor GetInstance() => this;
 
         public override bool WillProcess(ICompiledAssembly compiledAssembly)
@@ -23,8 +33,11 @@ namespace AppBuilder.Builds
         {
             if (!WillProcess(compiledAssembly))
                 return null;
-            
-            Console.Write(compiledAssembly.Name);
+
+            using var writer = Writer();
+            Log(writer, compiledAssembly.Name);
+            Log(writer, compiledAssembly.Name + 1);
+
             return null;
         }
     }

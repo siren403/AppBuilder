@@ -22,7 +22,6 @@ app.AddRootCommand(async (IOptions<Config> config) =>
         .NoGraphics()
         .Quit()
         .ExecuteMethod(config.Value.Method)
-        // .BuildTarget(UnityCommandBuilder.Platform.Android)
         .BuildTarget(config.Value.BuildTarget)
         .AddArgument("host", "127.0.0.1");
     var hasLogFile = !string.IsNullOrEmpty(config.Value.LogFile);
