@@ -24,6 +24,7 @@ namespace Builds
 
     public static partial class Android
     {
+        [Build]
         public static void GooglePlay()
         {
             BuildPlayer.Build(builder =>
@@ -36,11 +37,9 @@ namespace Builds
                 if (config.scenes != null)
                 {
                     builder.Scenes = config.scenes;
-                    Debug.Log($"[AppBuilder] CustomScene {JsonConvert.SerializeObject(config.scenes)}");
                 }
                 else
                 {
-                    Debug.Log("[AppBuilder] UsingEnableEditorScenes");
                     builder.UsingEnableEditorScenes();
                 }
 

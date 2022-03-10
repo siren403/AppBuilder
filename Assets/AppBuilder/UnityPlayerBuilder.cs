@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
-using UnityEngine;
 
 namespace AppBuilder
 {
@@ -11,23 +11,8 @@ namespace AppBuilder
     {
         private BuildPlayerOptions _buildOptions;
 
-        public BuildPlayerOptions BuildOptions
-        {
-            get
-            {
-                _buildOptions.locationPathName = Path.Combine(OutPutDirectory, PlayerSettings.productName);
-                switch (_buildOptions.target)
-                {
-                    case BuildTarget.Android:
-                        _buildOptions.locationPathName = Path.ChangeExtension(_buildOptions.locationPathName, "apk");
-                        break;
-                }
-
-                return _buildOptions;
-            }
-        }
-
         private readonly Dictionary<string, string> _commandArgs;
+        public BuildConfigureRecorder Recorder { get; } = new();
 
         public UnityPlayerBuilder(Dictionary<string, string> commandArgs)
         {
@@ -36,7 +21,17 @@ namespace AppBuilder
 
         public string[] Scenes
         {
-            set => _buildOptions.scenes = value;
+            set
+            {
+                _buildOptions.scenes = value;
+                if (value.Length == 0) return;
+
+                Recorder.Write("Scenes", value[0]);
+                for (int i = 1; i < value.Length; i++)
+                {
+                    Recorder.Write(string.Empty, value[i]);
+                }
+            }
         }
 
         public string OutPutDirectory { get; set; }
@@ -82,26 +77,44 @@ namespace AppBuilder
                 return new EmptyProvider<TConfig>();
             }
         }
+
+        public override string ToString()
+        {
+            return Recorder.ToString();
+        }
+
+        public BuildPlayerOptions Build()
+        {
+            _buildOptions.locationPathName = Path.Combine(
+                OutPutDirectory,
+                _buildOptions.target.ToString(),
+                $"{PlayerSettings.productName}_{DateTime.Now.Ticks}");
+
+            //add extension
+            switch (_buildOptions.target)
+            {
+                case BuildTarget.Android:
+                    _buildOptions.locationPathName =
+                        Path.ChangeExtension(_buildOptions.locationPathName, "apk");
+                    break;
+            }
+
+            Recorder.Write("Output", _buildOptions.locationPathName);
+            return _buildOptions;
+        }
     }
 
     public partial class UnityPlayerBuilder
     {
         public void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration)
         {
-            if (!Application.isBatchMode)
-            {
-                var isSuccess =
-                    EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android, BuildTarget.Android);
-                if (!isSuccess)
-                {
-                    throw new Exception("[AppBuilder] SwitchPlatform Failed!");
-                }
-            }
-
             _buildOptions.target = BuildTarget.Android;
             _buildOptions.targetGroup = BuildTargetGroup.Android;
-            var builder = new AndroidSettingsBuilder();
+            var builder = new AndroidSettingsBuilder(Recorder);
             configuration(builder);
+
+            Recorder.Write("BuildTarget", _buildOptions.target.ToString());
+            Recorder.Write("BuildTargetGroup", _buildOptions.targetGroup.ToString());
         }
     }
 }
