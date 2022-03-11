@@ -14,6 +14,17 @@ namespace AppBuilder
     public class BuildAttribute : Attribute
     {
     }
+    
+    [AttributeUsage(AttributeTargets.Method)]
+    public class ArgumentAttribute : Attribute
+    {
+        public string Name { get; }
+
+        public ArgumentAttribute(string name)
+        {
+            Name = name;
+        }
+    }
 
     public static partial class BuildPlayer
     {

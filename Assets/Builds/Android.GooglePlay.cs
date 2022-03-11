@@ -11,13 +11,13 @@ namespace Builds
     [Serializable]
     public class AppSettings
     {
-        public string host;
-        public string[] scenes;
+        public string Host { get; set; }
+        public string[] Scenes { get; set; }
 
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"host: {host}");
+            builder.AppendLine($"host: {Host}");
             return builder.ToString();
         }
     }
@@ -25,18 +25,19 @@ namespace Builds
     public static partial class Android
     {
         [Build]
+        [Argument("customBuildPath")]
         public static void GooglePlay()
         {
             BuildPlayer.Build(builder =>
             {
-                builder.OutPutDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Build");
+                // builder.OutPutDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Build");
 
                 var settingsDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Builds");
                 var config = builder.Configure<AppSettings>(settingsDirectory).Value;
 
-                if (config.scenes != null)
+                if (config.Scenes != null)
                 {
-                    builder.Scenes = config.scenes;
+                    builder.Scenes = config.Scenes;
                 }
                 else
                 {

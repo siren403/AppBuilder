@@ -34,7 +34,35 @@ namespace AppBuilder
             }
         }
 
-        public string OutPutDirectory { get; set; }
+        private string _outputDirectory;
+
+        public string OutPutDirectory
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_outputDirectory))
+                {
+                    if (_commandArgs.TryGetValue("customBuildPath", out var path))
+                    {
+                        return path;
+                    }
+
+                    if (EditorPrefs.HasKey("customBuildPath"))
+                    {
+                        path = EditorPrefs.GetString("customBuildPath");
+                        if (!string.IsNullOrEmpty(path))
+                        {
+                            return path;
+                        }
+                    }
+
+                    return ".";
+                }
+
+                return _outputDirectory;
+            }
+            set => _outputDirectory = value;
+        }
 
         public IOptions<TConfig> Configure<TConfig>(string settingsDirectory)
             where TConfig : class
@@ -87,8 +115,7 @@ namespace AppBuilder
         {
             _buildOptions.locationPathName = Path.Combine(
                 OutPutDirectory,
-                _buildOptions.target.ToString(),
-                $"{PlayerSettings.productName}_{DateTime.Now.Ticks}");
+                _buildOptions.target.ToString());
 
             //add extension
             switch (_buildOptions.target)
