@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
 
 namespace AppBuilder
 {
@@ -9,8 +11,20 @@ namespace AppBuilder
             var args = new Dictionary<string, string>();
 
             var original = System.Environment.GetCommandLineArgs();
+            var commandArgs = new StringBuilder();
+            foreach (var s in original)
+            {
+                commandArgs.AppendLine(s);
+            }
+
+            Debug.Log(commandArgs);
             for (int i = 0; i < original.Length; i++)
             {
+                if (string.IsNullOrEmpty(original[i]))
+                {
+                    continue;
+                }
+
                 if (original[i][0].Equals('-'))
                 {
                     var key = original[i].Substring(1);
@@ -23,7 +37,7 @@ namespace AppBuilder
                             continue;
                         }
                     }
-                    
+
                     args.Add(key, string.Empty);
                 }
             }
