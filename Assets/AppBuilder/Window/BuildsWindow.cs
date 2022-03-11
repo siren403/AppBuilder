@@ -81,6 +81,7 @@ namespace AppBuilder.Window
                         item.Add(new Label(attr.Name));
                         var field = new TextField()
                         {
+                            value = EditorPrefs.GetString(attr.Name, ""),
                             style =
                             {
                                 minWidth = 300
@@ -88,8 +89,11 @@ namespace AppBuilder.Window
                         };
                         field.RegisterCallback<ChangeEvent<string>>((e) =>
                         {
+                            Debug.Log(e.newValue);
                             EditorPrefs.SetString(item.name, e.newValue);
+                            PreviewBuild(method.Key);
                         });
+                        field.isDelayed = true;
                         item.Add(field);
 
                         args.Add(item);

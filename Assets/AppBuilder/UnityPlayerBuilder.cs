@@ -113,18 +113,20 @@ namespace AppBuilder
 
         public BuildPlayerOptions Build()
         {
-            _buildOptions.locationPathName = Path.Combine(
-                OutPutDirectory,
-                _buildOptions.target.ToString());
+            // _buildOptions.locationPathName = Path.Combine(
+            //     OutPutDirectory,
+            //     _buildOptions.target.ToString());
+            //
+            // //add extension
+            // switch (_buildOptions.target)
+            // {
+            //     case BuildTarget.Android:
+            //         _buildOptions.locationPathName =
+            //             Path.ChangeExtension(_buildOptions.locationPathName, "apk");
+            //         break;
+            // }
 
-            //add extension
-            switch (_buildOptions.target)
-            {
-                case BuildTarget.Android:
-                    _buildOptions.locationPathName =
-                        Path.ChangeExtension(_buildOptions.locationPathName, "apk");
-                    break;
-            }
+            _buildOptions.locationPathName = OutPutDirectory;
 
             Recorder.Write("Output", _buildOptions.locationPathName);
             return _buildOptions;
