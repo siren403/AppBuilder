@@ -34,8 +34,13 @@ jobs:
         targetPlatform: Android
         buildMethod: Builds.Android.GooglePlay
         customParameters: -host 127.0.0.1
-    - uses: actions/upload-artifact@v2
+        buildsPath: build/android
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.0.0
       with:
+        # Artifact name
         name: Build-Android
-        path: /github/workspace/build/Android/Android.apk
+        # A file, directory or wildcard pattern that describes what to upload
+        path: build/android
+        # The desired behavior if no files are found using the provided path.
 
