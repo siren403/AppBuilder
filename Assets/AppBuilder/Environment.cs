@@ -13,15 +13,18 @@ namespace AppBuilder
             {
                 if (original[i][0].Equals('-'))
                 {
-                    if (i + 1 < original.Length && !original[i + 1][0].Equals('-'))
+                    var key = original[i].Substring(1);
+                    if (i + 1 < original.Length && !string.IsNullOrEmpty(original[i + 1]))
                     {
-                        args.Add(original[i].Substring(1), original[i + 1]);
-                        i++;
+                        if (!original[i + 1][0].Equals('-'))
+                        {
+                            args.Add(key, original[i + 1]);
+                            i++;
+                            continue;
+                        }
                     }
-                    else
-                    {
-                        args.Add(original[i], string.Empty);
-                    }
+                    
+                    args.Add(key, string.Empty);
                 }
             }
 

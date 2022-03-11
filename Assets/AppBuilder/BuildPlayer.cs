@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -50,10 +51,26 @@ namespace AppBuilder
         public static void Build(Action<IUnityPlayerBuilder> configuration)
         {
             var args = Environment.GetCommandLineArgs();
+            var commandArgs = new StringBuilder();
+            commandArgs.AppendLine("[CommandArgs]");
+            foreach (var arg in args)
+            {
+                if (string.IsNullOrEmpty(arg.Value))
+                {
+                    commandArgs.AppendLine($"-{arg.Key}");
+                }
+                else
+                {
+                    commandArgs.AppendLine($"-{arg.Key} {arg.Value}");
+                }
+            }
+
+            Debug.Log(commandArgs.ToString());
+
             var builder = new UnityPlayerBuilder(args);
             configuration(builder);
             var options = builder.Build();
-            
+
             //todo: isPreview or Execute(Editor, Batch)
             if (IsPreview)
             {
