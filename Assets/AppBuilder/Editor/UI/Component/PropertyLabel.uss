@@ -1,0 +1,11 @@
+VisualElement > Label {
+    font-size: 14px;
+} 
+
+#key {
+    color: aqua;
+}
+
+#value {
+    color: slateblue;
+}

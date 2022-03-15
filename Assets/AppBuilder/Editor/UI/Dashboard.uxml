@@ -3,14 +3,23 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:engine="UnityEngine.UIElements"
         xmlns:editor="UnityEditor.UIElements"
+        xmlns:app="AppBuilder.UI"
         xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
 >
+    <engine:Template name="PropertyLabel" src="./Component/PropertyLabel.uxml"/>
+    
     <engine:VisualElement name="builds">
         <engine:DropdownField label="Builds" name="build-field"/>
         <engine:VisualElement name="toolbar">
-            <engine:Button name="btn-refresh"/>
-            <engine:Button name="btn-apply"/>
-            <engine:Button name="btn-build"/>
+            <engine:Button name="btn-refresh">
+                <engine:Image/>
+            </engine:Button>
+            <engine:Button name="btn-apply">
+                <engine:Image/>
+            </engine:Button>
+            <engine:Button name="btn-build">
+                <engine:Image/>
+            </engine:Button>
         </engine:VisualElement>
     </engine:VisualElement>
     <engine:VisualElement name="preview">
@@ -20,11 +29,17 @@
     <engine:VisualElement name="reserved-args"/>
 
     <engine:VisualElement name="icons">
+        <engine:Image/>
         <engine:Button name="1"/>
         <engine:Button name="2"/>
         <engine:Button name="3"/>
         <engine:Button name="4"/>
         <engine:Button name="5"/>
         <engine:Button name="6"/>
+        <engine:Instance template="PropertyLabel">
+            <engine:AttributeOverrides element-name="key" text="new key"/>
+            <engine:AttributeOverrides element-name="value" text="new value"/>
+        </engine:Instance>
     </engine:VisualElement>
+    <app:StatusBar status="new status"/>
 </engine:UXML>

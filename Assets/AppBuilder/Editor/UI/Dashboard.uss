@@ -16,28 +16,48 @@
 
 #toolbar {
     flex-direction: row;
+    margin-right: 4px;
+}
+#toolbar > Button {
+    margin: 1px;
 }
 
 #toolbar > Button {
     width: 20px;
 }
-
 #btn-refresh {
-    background-image: resource("d_Refresh");
+    padding: 0;
+    justify-content: center;
+}
+#btn-refresh > Image{
+    /*background-image: resource("d_Refresh");*/
+    --unity-image: resource("d_Refresh");
 }
 
 #btn-apply {
-    background-image: resource("P4_CheckOutRemote@2x");
-}
+    padding: 0;
 
+}
+#btn-apply > Image{
+    --unity-image: resource("P4_CheckOutRemote@2x");
+    height: 20px;
+}
 #btn-build {
-    background-image: resource("Collab.Build");
+    padding: 0;
+}
+#btn-build > Image{
+    /*background-image: resource("d_Refresh");*/
+    --unity-image: resource("Collab.Build");
+    height: 20px;
 }
 
 
 
 #icons {
-    display: none;
+    /*display: none;*/
+}
+#icons > Image {
+    --unity-image: resource("Collab.Build")
 }
 #icons > Button {
     width: 20px;
