@@ -6,7 +6,8 @@
     "description": "build profile",
     "documentationUrl": "",
     "dependencies": {
-        "com.unity.nuget.newtonsoft-json": "2.0.2"
+        "com.unity.nuget.newtonsoft-json": "2.0.2",
+        "com.unity.localization": "1.0.5"
     },
     "author": {
         "name": "qkrsogusl3",

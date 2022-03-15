@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
@@ -13,10 +12,9 @@ namespace AppBuilder.Window
     {
         private Dictionary<string, MethodInfo> _buildMethods;
         private int _selectedBuildIndex = 0;
-        private string _buildPreview;
-        private (string item, string message)[] _buildMessages;
+        private PreviewContext _context;
 
-        [MenuItem("Builds/Dashboard")]
+        [MenuItem("AppBuilder/Builds")]
         private static void ShowWindow()
         {
             var window = GetWindow<BuildsWindow>();
@@ -43,14 +41,24 @@ namespace AppBuilder.Window
                     marginTop = 20
                 }
             });
-            var info = new VisualElement();
-            info.Add(new Button(() => { Debug.Log(Directory.GetCurrentDirectory()); })
-            {
-                text = "Current Directory"
-            });
-            rootVisualElement.Add(info);
+            // rootVisualElement.Add(new VisualElement()
+            // {
+            //     name = "reserved",
+            //     style =
+            //     {
+            //         marginTop = 10
+            //     }
+            // });
+            // var info = new VisualElement();
+            // info.Add(new Button(() => { Debug.Log(Directory.GetCurrentDirectory()); })
+            // {
+            //     text = "Current Directory"
+            // });
+            // rootVisualElement.Add(info);
             //update
             CollectMethods();
+
+            #region Builds
 
             var builds = rootVisualElement.Q("builds");
             foreach (var method in _buildMethods)
@@ -62,44 +70,46 @@ namespace AppBuilder.Window
                 };
                 builds.Add(btn);
 
-                var argAttrs = method.Value.GetCustomAttributes<ArgumentAttribute>().ToArray();
-                if (argAttrs.Any())
-                {
-                    var args = rootVisualElement.Q("args");
-                    args.RemoveChildren();
-                    foreach (var attr in argAttrs)
-                    {
-                        var item = new VisualElement()
-                        {
-                            name = attr.Name,
-                            style =
-                            {
-                                flexDirection = FlexDirection.Row,
-                                justifyContent = Justify.SpaceBetween
-                            }
-                        };
-                        item.Add(new Label(attr.Name));
-                        var field = new TextField()
-                        {
-                            value = EditorPrefs.GetString(attr.Name, ""),
-                            style =
-                            {
-                                minWidth = 300
-                            }
-                        };
-                        field.RegisterCallback<ChangeEvent<string>>((e) =>
-                        {
-                            Debug.Log(e.newValue);
-                            EditorPrefs.SetString(item.name, e.newValue);
-                            PreviewBuild(method.Key);
-                        });
-                        field.isDelayed = true;
-                        item.Add(field);
-
-                        args.Add(item);
-                    }
-                }
+                // var argAttrs = method.Value.GetCustomAttributes<ArgumentAttribute>().ToArray();
+                // if (argAttrs.Any())
+                // {
+                //     var args = rootVisualElement.Q("args");
+                //     args.RemoveChildren();
+                //     foreach (var attr in argAttrs)
+                //     {
+                //         var item = new VisualElement()
+                //         {
+                //             name = attr.Name,
+                //             style =
+                //             {
+                //                 flexDirection = FlexDirection.Row,
+                //                 justifyContent = Justify.SpaceBetween
+                //             }
+                //         };
+                //         item.Add(new Label(attr.Name));
+                //         var field = new TextField()
+                //         {
+                //             value = PlayerPrefs.GetString(attr.Name, ""),
+                //             style =
+                //             {
+                //                 minWidth = 300
+                //             }
+                //         };
+                //         field.RegisterCallback<ChangeEvent<string>>((e) =>
+                //         {
+                //             Debug.Log(e.newValue);
+                //             PlayerPrefs.SetString(item.name, e.newValue);
+                //             PreviewBuild(method.Key);
+                //         });
+                //         field.isDelayed = true;
+                //         item.Add(field);
+                //
+                //         args.Add(item);
+                //     }
+                // }
             }
+
+            #endregion
 
 
             if (_buildMethods.Any())
@@ -110,6 +120,15 @@ namespace AppBuilder.Window
 
         private void CollectMethods()
         {
+            _buildMethods = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(_ => _.GetReferencedAssemblies().Any(_ => _.Name == "AppBuilder.Editor"))
+                .SelectMany(_ =>
+                {
+                    return _.GetTypes()
+                        .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public))
+                        .Where(m => m.GetCustomAttribute<BuildAttribute>() != null);
+                }).ToDictionary(info => info.Name);
+
             // var executingAssembly = Assembly.GetExecutingAssembly();
             // foreach (var type in executingAssembly.GetTypes())
             // {
@@ -129,15 +148,6 @@ namespace AppBuilder.Window
             //         Debug.Log($"ref: {assembly.name}");
             //     }
             // }
-
-            _buildMethods = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(_ => _.GetReferencedAssemblies().Any(_ => _.Name == "AppBuilder"))
-                .SelectMany(_ =>
-                {
-                    return _.GetTypes()
-                        .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public))
-                        .Where(m => m.GetCustomAttribute<BuildAttribute>() != null);
-                }).ToDictionary(info => info.Name);
         }
 
         private void PreviewBuild(string buildName)
@@ -145,16 +155,12 @@ namespace AppBuilder.Window
             if (!_buildMethods.TryGetValue(buildName, out var method)) return;
             var container = rootVisualElement.Q("preview");
             container.RemoveChildren();
-            Debug.Log("remove");
 
-            if (!BuildPlayer.Preview(method, out var preview, out var messages))
-            {
-                return;
-            }
+            var context = BuildPlayer.Preview(method);
 
-            foreach (var (item, msg) in messages)
+            foreach (var property in context.Properties)
             {
-                container.Add(CreateItem(item, msg));
+                container.Add(CreateItem(property.Name, property.Value));
             }
 
             VisualElement CreateItem(string label, string text)
@@ -172,7 +178,6 @@ namespace AppBuilder.Window
                 return itemContainer;
             }
 
-
             container.Add(new Button(() =>
             {
                 method.Invoke(null, null);
@@ -180,23 +185,33 @@ namespace AppBuilder.Window
             {
                 text = "Build"
             });
-        }
-    }
 
-    public static class BuildPlayer
-    {
-        public static bool Preview(MethodInfo method, out string preview, out (string, string)[] messages)
-        {
-            using (AppBuilder.BuildPlayer.Preview())
+            #region Args
+
+            var args = rootVisualElement.Q("args");
+            args.RemoveChildren();
+
+            foreach (var arg in context.Args.WhereReserve())
             {
-                method.Invoke(null, null);
-                preview = AppBuilder.BuildPlayer.BuildPreview;
-                messages = AppBuilder.BuildPlayer.BuildMessages;
+                args.Add(CreateItem(arg.Key, arg.Value.Replace("\\","\\\\")));
             }
 
-            return !string.IsNullOrEmpty(preview) && messages != null;
+            #endregion
         }
     }
+
+    // public static class BuildPlayer
+    // {
+    //     public static bool Preview(MethodInfo method, out BuildProperty[] properties)
+    //     {
+    //         using (AppBuilder.BuildPlayer.Preview(method, out var context))
+    //         {
+    //             properties = context.Properties;
+    //         }
+    //
+    //         return properties != null;
+    //     }
+    // }
 
     public static class VisualElementExtensions
     {

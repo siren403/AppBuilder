@@ -1,3 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <ui:Label text="Args" display-tooltip-when-elided="true" style="color: rgb(255, 255, 255); -unity-text-outline-color: rgba(255, 255, 255, 255); -unity-text-outline-width: 0;" />
+    <Style src="project://database/Assets/UI%20Toolkit/uss/ArgsView.uss?fileID=7433441132597879392&amp;guid=14086d0e2e1349b48b07f60a3202baaf&amp;type=3#ArgsView" />
+    <ui:VisualElement name="container" />
 </ui:UXML>

@@ -2,11 +2,10 @@ using Newtonsoft.Json.Linq;
 
 namespace AppBuilder
 {
-    public interface IOptions<out TOptions> where TOptions : class
+    public class EmptyProvider<TOptions> : IOptions<TOptions> where TOptions : class
     {
-        TOptions Value { get; }
+        public TOptions Value { get; } = null;
     }
-
     public class JObjectProvider<TOptions> : IOptions<TOptions> where TOptions : class
     {
         public TOptions Value { get; }
@@ -16,9 +15,5 @@ namespace AppBuilder
             Value = source.ToObject<TOptions>();
         }
     }
-
-    public class EmptyProvider<TOptions> : IOptions<TOptions> where TOptions : class
-    {
-        public TOptions Value { get; } = null;
-    }
+    
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:engine="UnityEngine.UIElements"
+        xmlns:editor="UnityEditor.UIElements"
+        xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    <engine:VisualElement name="builds">
+        <engine:DropdownField label="Builds" name="build-field"/>
+        <engine:VisualElement name="toolbar">
+            <engine:Button name="btn-refresh"/>
+            <engine:Button name="btn-apply"/>
+            <engine:Button name="btn-build"/>
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="preview">
+        <engine:Label name="label-preview" text="preview"/>
+    </engine:VisualElement>
+    <engine:VisualElement name="args"/>
+    <engine:VisualElement name="reserved-args"/>
+
+    <engine:VisualElement name="icons">
+        <engine:Button name="1"/>
+        <engine:Button name="2"/>
+        <engine:Button name="3"/>
+        <engine:Button name="4"/>
+        <engine:Button name="5"/>
+        <engine:Button name="6"/>
+    </engine:VisualElement>
+</engine:UXML>

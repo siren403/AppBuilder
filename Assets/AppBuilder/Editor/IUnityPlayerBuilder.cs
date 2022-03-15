@@ -7,13 +7,11 @@ namespace AppBuilder
     public interface IUnityPlayerBuilder
     {
         string[] Scenes { set; }
-        string OutPutDirectory { set; }
-        IOptions<TConfig> Configure<TConfig>(string settingsDirectory) where TConfig : class;
-
+        string OutputPath { set; }
         void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration);
     }
 
-    public static class UnityPlayerBuilderExtensions
+    public static  class UnityPlayerBuilderExtensions
     {
         public static void UsingEnableEditorScenes(this IUnityPlayerBuilder builder)
         {
@@ -22,6 +20,5 @@ namespace AppBuilder
                 .Select(scene => scene.path)
                 .ToArray();
         }
-
     }
 }

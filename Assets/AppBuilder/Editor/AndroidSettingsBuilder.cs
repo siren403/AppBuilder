@@ -34,14 +34,22 @@ namespace AppBuilder
         {
             _recorder.Enqueue(
                 () => { PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP); },
-                "PlayerSettings:SetScriptingBackend", "(Android, IL2CPP)");
+                new BuildProperty(
+                    "PlayerSettings:SetScriptingBackend",
+                    "(Android, IL2CPP)"
+                )
+            );
         }
 
         public void Mono()
         {
             _recorder.Enqueue(
                 () => { PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.Mono2x); },
-                "PlayerSettings:SetScriptingBackend", "(Android, Mono)");
+                new BuildProperty(
+                    "PlayerSettings:SetScriptingBackend",
+                    "(Android, Mono)"
+                )
+            );
         }
 
         /// <summary>
@@ -52,7 +60,10 @@ namespace AppBuilder
         {
             _recorder.Enqueue(
                 () => { PlayerSettings.Android.targetArchitectures = architecture; },
-                "PlayerSettings:Android:targetArchitectures", architecture.ToString());
+                new BuildProperty(
+                    "PlayerSettings:Android:targetArchitectures", architecture.ToString()
+                )
+            );
         }
 
         // ditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle; //저는 그래들로 합니다. 인터널로 하실 수도 있어요 
@@ -61,15 +72,24 @@ namespace AppBuilder
         public void PackageName(string package)
         {
             _recorder.Enqueue(
-                () => { PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, package); },
-                "Android:PackageName", package);
+                () =>
+                {
+                    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, package);
+                },
+                new BuildProperty(
+                    "Android:PackageName", package
+                )
+            );
         }
 
         public void SupportEmulator()
         {
             _recorder.Enqueue(
                 () => { PlayerSettings.Android.optimizedFramePacing = false; },
-                "PlayerSettings:Android:optimizedFramePacing", "false");
+                new BuildProperty(
+                    "PlayerSettings:Android:optimizedFramePacing", "false"
+                )
+            );
         }
     }
 }

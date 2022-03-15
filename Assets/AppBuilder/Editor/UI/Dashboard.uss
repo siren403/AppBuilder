@@ -1,0 +1,70 @@
+#args {
+    margin-top: 20px;
+}
+
+#builds {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#build-field > VisualElement {
+    width: 200px;
+}
+#build-field > Label {
+    display: none;
+}
+
+#toolbar {
+    flex-direction: row;
+}
+
+#toolbar > Button {
+    width: 20px;
+}
+
+#btn-refresh {
+    background-image: resource("d_Refresh");
+}
+
+#btn-apply {
+    background-image: resource("P4_CheckOutRemote@2x");
+}
+
+#btn-build {
+    background-image: resource("Collab.Build");
+}
+
+
+
+#icons {
+    display: none;
+}
+#icons > Button {
+    width: 20px;
+}
+
+#icons > #1 {
+    background-image: var(--unity-icons-pane_options);
+}
+
+#icons > #2 {
+    background-image: var(--unity-icons-dropdown_toggle);
+}
+
+#icons > #3 {
+    background-image: var(--unity-icons-plus);
+}
+
+#icons > #4 {
+    background-image: var(--unity-icons-search);
+}
+
+#icons > #5 {
+    background-image: resource("d_UndoHistory");
+}
+
+#icons > #6 {
+    background-image: var(--unity-icons-scroll_up);
+}
+ 
+

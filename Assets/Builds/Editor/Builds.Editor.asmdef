@@ -1,8 +1,10 @@
 {
-    "name": "Builds",
+    "name": "Builds.Editor",
     "rootNamespace": "",
     "references": [
         "GUID:ddc2cbf5ad234594595c84926c23760f",
+        "GUID:99b49f9fbb20ef84d9edcb0f2f445bf6",
+        "GUID:ad9814eabfb91c14d95a4d122fded1e0",
         "GUID:43beb9ba29612444680a5c4cd658b80b"
     ],
     "includePlatforms": [
