@@ -4,7 +4,6 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-[assembly: UxmlNamespacePrefix("AppBuilder.UI", "StatusBar")]
 
 namespace AppBuilder.UI
 {

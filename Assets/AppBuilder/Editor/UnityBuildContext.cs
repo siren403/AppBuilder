@@ -92,7 +92,7 @@ namespace AppBuilder
                 return arg;
             }
 
-            return defaultValue;
+            return defaultValue ?? string.Empty;
         }
     }
 }

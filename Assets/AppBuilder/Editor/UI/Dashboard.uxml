@@ -7,7 +7,7 @@
         xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
 >
     <engine:Template name="PropertyLabel" src="./Component/PropertyLabel.uxml"/>
-    
+
     <engine:VisualElement name="builds">
         <engine:DropdownField label="Builds" name="build-field"/>
         <engine:VisualElement name="toolbar">
@@ -42,4 +42,5 @@
         </engine:Instance>
     </engine:VisualElement>
     <app:StatusBar status="new status"/>
+    <app:ColorAndText initial-color="green"/>
 </engine:UXML>
