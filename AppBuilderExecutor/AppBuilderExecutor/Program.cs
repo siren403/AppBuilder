@@ -7,18 +7,6 @@ using Microsoft.Extensions.Options;
 using Zx;
 using static Zx.Env;
 
-var path = new string[]
-{
-    // "test/test",
-    // ".",
-    // ".a"
-    "root/test/a.apk"
-};
-foreach (var s in path)
-{
-    // var has = Path.HasExtension(s);
-    var p = Path.GetDirectoryName(s);
-}
 
 var builder = ConsoleApp.CreateBuilder(args);
 builder.ConfigureServices((ctx, services) =>
@@ -45,7 +33,7 @@ app.AddRootCommand(async (IOptions<Config> config) =>
     {
         builder.LogFile(config.Value.LogFile);
     }
-    // .AddArgument("mode", "Development")
+    // .AddArgument("variant", "Development")
     // .Build();
     
     Console.WriteLine(builder.ToString());

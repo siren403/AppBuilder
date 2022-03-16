@@ -13,11 +13,11 @@ namespace AppBuilder
         public UnityBuildContext(Dictionary<string, string> args)
         {
             Args = args;
-            var mode = args.ContainsKey("mode") ? args["mode"] : string.Empty;
-            _appSettings = LoadAppSettings(AppSettingsDirectory, mode);
+            var variant = args.ContainsKey("variant") ? args["variant"] : string.Empty;
+            _appSettings = LoadAppSettings(AppSettingsDirectory, variant);
         }
 
-        private JObject LoadAppSettings(string directory, string mode = null)
+        private JObject LoadAppSettings(string directory, string variant = null)
         {
             var baseSettingsPath = Path.Combine(directory, "appsettings.json");
 
@@ -29,9 +29,9 @@ namespace AppBuilder
                 settings = JObject.Parse(baseSettingReader.ReadToEnd());
             }
 
-            if (!string.IsNullOrEmpty(mode))
+            if (!string.IsNullOrEmpty(variant))
             {
-                var overwriteSettingsPath = Path.Combine(directory, $"appsettings.{mode}.json");
+                var overwriteSettingsPath = Path.Combine(directory, $"appsettings.{variant}.json");
                 if (File.Exists(overwriteSettingsPath))
                 {
                     using var overwriteSettingsReader = new StreamReader(overwriteSettingsPath);

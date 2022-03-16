@@ -11,7 +11,7 @@ namespace AppBuilder
         void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration);
     }
 
-    public static  class UnityPlayerBuilderExtensions
+    public static class UnityPlayerBuilderExtensions
     {
         public static void UsingEnableEditorScenes(this IUnityPlayerBuilder builder)
         {

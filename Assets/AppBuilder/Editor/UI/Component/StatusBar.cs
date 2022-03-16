@@ -39,7 +39,6 @@ namespace AppBuilder.UI
             {
                 base.Init(ve, bag, cc);
                 ((StatusBar) ve).Status = _status.GetValueFromBag(bag, cc);
-                Debug.Log(((StatusBar) ve).Status);
             }
         }
     }

@@ -8,9 +8,9 @@ namespace Builds
 {
     public static partial class Android
     {
+        [Variants("Development")]
         [Build]
-        [Argument("outputPath", ArgumentOptions.Directory | ArgumentOptions.Smart)]
-        [Variant("Development")]
+        [Input("outputPath", ArgumentOptions.Directory | ArgumentOptions.Smart)]
         public static void GooglePlay()
         {
             BuildPlayer.Build((ctx, builder) =>
@@ -18,12 +18,7 @@ namespace Builds
                 ctx.GetConfiguration<AppSettings>()
                     .WriteScriptable("AppSettings");
 
-                builder.OutputPath = ctx.GetArgument("outputPath",
-                    Path.Combine(
-                        Directory.GetCurrentDirectory(),
-                        BuildTarget.Android.ToString(),
-                        Application.productName)
-                );
+                builder.OutputPath = ctx.GetArgument("outputPath");
 
                 var host = ctx.GetSection<string>("Host");
                 var scenes = ctx.GetSections<string>("Scenes").ToArray();

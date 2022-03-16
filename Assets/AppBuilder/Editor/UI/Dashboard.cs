@@ -1,23 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web.UI;
-using AppBuilder;
 using AppBuilder.Window;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using UnityEngine.Localization.SmartFormat;
-using Object = UnityEngine.Object;
+using UnityEngine.Localization.SmartFormat.Core.Formatting;
 
 namespace AppBuilder.UI
 {
     public class Dashboard : EditorWindow
     {
-        private static readonly List<string> NothingBuilds = new List<string>()
+        private static readonly List<string> NothingBuilds = new()
         {
             "Nothing"
         };
@@ -33,35 +29,29 @@ namespace AppBuilder.UI
         private string _selectedBuild;
         private PreviewContext _context;
 
+        private static void Load(VisualElement visualElement)
+        {
+            // Import UXML
+            var visualTree =
+                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/AppBuilder/Editor/UI/Dashboard.uxml");
+            VisualElement uxml = visualTree.Instantiate();
+            visualElement.Add(uxml);
+
+            // A stylesheet can be added to a VisualElement.
+            // The style will be applied to the VisualElement and all of its children.
+            var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/AppBuilder/Editor/UI/Dashboard.uss");
+            // VisualElement labelWithStyle = new Label("Hello World! With Style");
+            // labelWithStyle.styleSheets.Add(styleSheet);
+            // visualElement.Add(labelWithStyle);
+            visualElement.styleSheets.Add(styleSheet);
+        }
+
         public void CreateGUI()
         {
-            void Load(VisualElement visualElement)
-            {
-                // Import UXML
-                var visualTree =
-                    AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/AppBuilder/Editor/UI/Dashboard.uxml");
-                VisualElement uxml = visualTree.Instantiate();
-                visualElement.Add(uxml);
-
-                // A stylesheet can be added to a VisualElement.
-                // The style will be applied to the VisualElement and all of its children.
-                var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/AppBuilder/Editor/UI/Dashboard.uss");
-                // VisualElement labelWithStyle = new Label("Hello World! With Style");
-                // labelWithStyle.styleSheets.Add(styleSheet);
-                // visualElement.Add(labelWithStyle);
-                visualElement.styleSheets.Add(styleSheet);
-            }
-
-            // Each editor window contains a root VisualElement object
             VisualElement root = rootVisualElement;
-
-            // VisualElements objects can contain other VisualElement following a tree hierarchy.
-            // VisualElement label = new Label("Hello World! From C#");
-            // root.Add(label);
-
             Load(root);
 
-            _buildMethods = CollectMethods();
+            _buildMethods = BuildPlayer.CollectMethods();
 
             var builds = root.Q<DropdownField>("build-field");
             var buildNames = _buildMethods.Keys.ToList();
@@ -78,7 +68,6 @@ namespace AppBuilder.UI
 
             builds.RegisterCallback<ChangeEvent<string>>(e => { SelectBuild(e.newValue); });
 
-
             var btnRefresh = root.Q<Button>("btn-refresh");
             btnRefresh.clicked += () => { RefreshPreview(); };
             var btnApply = root.Q<Button>("btn-apply");
@@ -86,8 +75,9 @@ namespace AppBuilder.UI
             {
                 if (_buildMethods.TryGetValue(_selectedBuild, out var method) && _context != null)
                 {
-                    _context.Args["CONFIGURE_ONLY"] = string.Empty;
+                    _context.Args.EnableArg("CONFIGURE_ONLY", true);
                     BuildPlayer.BuildPreview(method, _context.Args);
+                    _context.Args.EnableArg("CONFIGURE_ONLY", false);
                 }
             };
             var btnBuild = root.Q<Button>("btn-build");
@@ -95,12 +85,13 @@ namespace AppBuilder.UI
             {
                 if (_buildMethods.TryGetValue(_selectedBuild, out var method) && _context != null)
                 {
+                    //todo: validate
+                    //ex) output empty -> open folder panel
                     BuildPlayer.BuildPreview(method, _context.Args);
                 }
             };
 
             SelectBuild(builds.choices.First());
-
         }
 
         private void RefreshPreview(MethodInfo method = null, PreviewContext context = null)
@@ -129,84 +120,7 @@ namespace AppBuilder.UI
 
             #region Args
 
-            var args = rootVisualElement.Q("args");
-            args.RemoveChildren();
-
-            var requireArgs = method.GetCustomAttributes<ArgumentAttribute>();
-            foreach (var arg in requireArgs)
-            {
-                var prefsKey = $"{method.Name}_{arg.Name}";
-
-                var item = new VisualElement()
-                {
-                    style =
-                    {
-                        flexDirection = FlexDirection.Row
-                    }
-                };
-
-                var isSmart = arg.Options.HasFlag(ArgumentOptions.Smart);
-                var field = new TextField(arg.Name)
-                {
-                    style =
-                    {
-                        flexGrow = 1,
-                        marginRight = 0,
-                        maxWidth = new StyleLength(new Length(85, LengthUnit.Percent))
-                    },
-                    isDelayed = true
-                };
-                field.Q<Label>().style.minWidth = new StyleLength(new Length(100, LengthUnit.Pixel));
-                field.RegisterCallback<ChangeEvent<string>>(e =>
-                {
-                    var value = isSmart ? Smart.Format(e.newValue, context.Args) : e.newValue;
-                    context.Args[arg.Name] = value;
-                    PlayerPrefs.SetString(prefsKey, e.newValue);
-                    PlayerPrefs.SetString($"SAVED_{prefsKey}", value);
-                    RefreshPreview(method, context);
-                });
-                field.value = PlayerPrefs.GetString(prefsKey, string.Empty);
-                item.Add(field);
-
-                if (arg.Options.HasFlag(ArgumentOptions.Directory))
-                {
-                    var btn = new Button(() =>
-                    {
-                        field.value = EditorUtility.OpenFolderPanel(arg.Name, Directory.GetCurrentDirectory(),
-                            string.Empty);
-                        RefreshPreview(method, context);
-                    })
-                    {
-                        style =
-                        {
-                            backgroundImage = new StyleBackground(
-                                Background.FromTexture2D(
-                                    EditorGUIUtility.IconContent("d_Folder Icon").image as Texture2D)),
-                            width = 20
-                        }
-                    };
-                    item.Add(btn);
-                }
-
-                if (isSmart)
-                {
-                    item.Add(new Label("Smart"));
-                }
-
-                args.Add(item);
-            }
-
-            #endregion
-
-            #region Reserved Args
-
-            var reservedArgs = rootVisualElement.Q("reserved-args");
-            reservedArgs.RemoveChildren();
-
-            foreach (var arg in context.Args.WhereReserve())
-            {
-                reservedArgs.Add(CreateItem(arg.Key, arg.Value));
-            }
+            RenderArgs(method, context);
 
             #endregion
 
@@ -226,14 +140,79 @@ namespace AppBuilder.UI
             }
         }
 
+        private void RenderArgs(MethodInfo method, PreviewContext context)
+        {
+            var inputs = method.GetCustomAttributes<InputAttribute>()
+                .Select(attr => attr.Name)
+                .ToDictionary(key => key, key => string.Empty);
+
+            var args = rootVisualElement.Q("args");
+            args.RemoveChildren();
+
+            foreach (var arg in context.Args.IgnoreUnityArgs())
+            {
+                if (inputs.ContainsKey(arg.Key))
+                {
+                    var prefsKey = $"{method.Name}_{arg.Key}";
+
+                    var savedInput = PlayerPrefs.GetString(prefsKey, string.Empty);
+
+                    string GetInputToArg(string input)
+                    {
+                        string str = string.Empty;
+                        try
+                        {
+                            str = Smart.Format(input, context.Args);
+                        }
+                        catch (FormattingException e)
+                        {
+                            str = "formatting error! check error log";
+                            Debug.LogError(e);
+                        }
+
+                        return str;
+                    }
+
+                    var value = GetInputToArg(savedInput);
+                    var argComponent = new Argument(arg.Key)
+                    {
+                        IsInput = true,
+                        IsFolder = true,
+                        Input = savedInput,
+                        Value = value
+                    };
+                    argComponent.RegisterValueChangedCallback(e =>
+                    {
+                        PlayerPrefs.SetString(prefsKey, e.newValue);
+                        context.Args[arg.Key] = GetInputToArg(e.newValue);
+                        RefreshPreview(method, context);
+                    });
+                    args.Add(argComponent);
+                    inputs[arg.Key] = value;
+                }
+                else
+                {
+                    args.Add(new Argument(arg.Key)
+                    {
+                        Value = arg.Value
+                    });
+                }
+            }
+
+            foreach (var input in inputs)
+            {
+                context.Args[input.Key] = input.Value;
+            }
+        }
+
         private void SelectBuild(string buildName)
         {
             if (!_buildMethods.TryGetValue(buildName, out var buildMethod)) return;
             _selectedBuild = buildName;
 
-            var buildArgs = buildMethod.GetCustomAttributes<ArgumentAttribute>();
+            var buildArgs = buildMethod.GetCustomAttributes<InputAttribute>();
 
-            string GetPrefsKey(MethodInfo method, ArgumentAttribute arg)
+            string GetPrefsKey(MethodInfo method, InputAttribute arg)
             {
                 return $"SAVED_{method.Name}_{arg.Name}";
             }
@@ -245,23 +224,34 @@ namespace AppBuilder.UI
                 .Where(arg => !string.IsNullOrEmpty(arg.value))
                 .ToDictionary(arg => arg.key, arg => arg.value);
 
-            ApplyPreview(buildMethod, BuildPlayer.Preview(buildMethod, savedArgs));
-        }
+            var buildVariants = buildMethod.GetCustomAttribute<VariantsAttribute>();
 
-        private Dictionary<string, MethodInfo> CollectMethods()
-        {
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .Where(_ => _.GetReferencedAssemblies().Any(_ => _.Name == "AppBuilder.Editor"))
-                .SelectMany(_ =>
+            var field = rootVisualElement.Q<DropdownField>("variant-field");
+            if (buildVariants == null || !buildVariants.Keys.Any())
+            {
+                field.visible = false;
+            }
+            else
+            {
+                field.visible = true;
+                var choices = new List<string>() {"Main"};
+                choices.AddRange(buildVariants.Keys);
+                field.choices = choices;
+                field.value = field.choices.First();
+                field.RegisterValueChangedCallback(e =>
                 {
-                    return _.GetTypes()
-                        .SelectMany(t => t.GetMethods(BindingFlags.Static | BindingFlags.Public))
-                        .Where(m => m.GetCustomAttribute<BuildAttribute>() != null);
-                }).ToDictionary(info => info.Name);
-        }
+                    if (_context != null)
+                    {
+                        _context.Args["variant"] = e.newValue;
+                        _context.Args["outputPath"] =
+                            Smart.Format(PlayerPrefs.GetString($"{buildMethod.Name}_outputPath"), _context.Args);
+                        RefreshPreview();
+                    }
+                });
+                savedArgs["variant"] = field.value;
+            }
 
-        private void Build()
-        {
+            ApplyPreview(buildMethod, BuildPlayer.Preview(buildMethod, savedArgs));
         }
     }
 }

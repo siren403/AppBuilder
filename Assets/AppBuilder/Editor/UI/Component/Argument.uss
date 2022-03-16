@@ -1,0 +1,53 @@
+#root {
+}
+#data {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+#key {
+    flex-shrink: 1;
+}
+
+#value {
+    flex-shrink: 6;
+}
+
+
+#input {
+    margin-top: 2px;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.input #input {
+    display: none;
+}
+
+#input > TextField {
+    margin: 0;
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+
+
+#input > Button {
+    padding: 0;
+    width: 20px;
+    justify-content: center;
+}
+
+#btn-folder {
+    margin: 0;
+    display: none;
+}
+#btn-folder > Image{
+    --unity-image: resource("d_Folder Icon");
+    height: 15px;
+}
+
+.folder #btn-folder {
+    display: flex;
+}
+
+

@@ -1,23 +1,40 @@
-#args {
-    margin-top: 20px;
+.section {
+    margin-bottom: 15px;
 }
+.section .section-head {
+    font-size: 15px;
+    -unity-font-style: bold;
+    margin-bottom: 3px;
+}
+.section .section-content {
+}
+
+
+
 
 #builds {
     flex-direction: row;
     justify-content: space-between;
 }
 
+#builds > #fields {
+    flex-direction: row;
+}
+
 #build-field > VisualElement {
     width: 200px;
 }
-#build-field > Label {
-    display: none;
+
+#variant-field {
+    width: 150px;
 }
+
 
 #toolbar {
     flex-direction: row;
     margin-right: 4px;
 }
+
 #toolbar > Button {
     margin: 1px;
 }
@@ -25,11 +42,13 @@
 #toolbar > Button {
     width: 20px;
 }
+
 #btn-refresh {
     padding: 0;
     justify-content: center;
 }
-#btn-refresh > Image{
+
+#btn-refresh > Image {
     /*background-image: resource("d_Refresh");*/
     --unity-image: resource("d_Refresh");
 }
@@ -38,30 +57,37 @@
     padding: 0;
 
 }
-#btn-apply > Image{
+
+#btn-apply > Image {
     --unity-image: resource("P4_CheckOutRemote@2x");
     height: 20px;
 }
+
 #btn-build {
     padding: 0;
 }
-#btn-build > Image{
+
+#btn-build > Image {
     /*background-image: resource("d_Refresh");*/
     --unity-image: resource("Collab.Build");
     height: 20px;
 }
 
 
+.sample {
+    display: none;
+}
 
 #icons {
-    /*display: none;*/
     flex-direction: row;
     margin-top: 10px;
     width: 100%;
 }
+
 #icons > Image {
     --unity-image: resource("Collab.Build")
 }
+
 #icons > Button {
     width: 20px;
 }
@@ -89,5 +115,4 @@
 #icons > #6 {
     background-image: var(--unity-icons-scroll_up);
 }
- 
 

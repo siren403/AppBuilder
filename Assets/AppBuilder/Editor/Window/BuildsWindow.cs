@@ -14,7 +14,7 @@ namespace AppBuilder.Window
         private int _selectedBuildIndex = 0;
         private PreviewContext _context;
 
-        [MenuItem("AppBuilder/Builds")]
+        // [MenuItem("AppBuilder/Builds")]
         private static void ShowWindow()
         {
             var window = GetWindow<BuildsWindow>();
@@ -191,7 +191,7 @@ namespace AppBuilder.Window
             var args = rootVisualElement.Q("args");
             args.RemoveChildren();
 
-            foreach (var arg in context.Args.WhereReserve())
+            foreach (var arg in context.Args.IgnoreUnityArgs())
             {
                 args.Add(CreateItem(arg.Key, arg.Value.Replace("\\","\\\\")));
             }

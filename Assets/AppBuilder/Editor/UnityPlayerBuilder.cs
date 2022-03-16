@@ -19,35 +19,6 @@ namespace AppBuilder
             set => _buildOptions.scenes = value;
         }
 
-        //
-        // public string OutPutDirectory
-        // {
-        //     get
-        //     {
-        //         if (string.IsNullOrEmpty(_outputDirectory))
-        //         {
-        //             if (_commandArgs.TryGetValue("customBuildPath", out var path))
-        //             {
-        //                 return path;
-        //             }
-        //
-        //             if (PlayerPrefs.HasKey("customBuildPath"))
-        //             {
-        //                 path = PlayerPrefs.GetString("customBuildPath");
-        //                 if (!string.IsNullOrEmpty(path))
-        //                 {
-        //                     return path;
-        //                 }
-        //             }
-        //
-        //             return ".";
-        //         }
-        //
-        //         return _outputDirectory;
-        //     }
-        //     set => _outputDirectory = value;
-        // }
-
         private string _outputDirectory;
 
         public string OutputPath

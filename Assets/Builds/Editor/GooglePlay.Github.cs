@@ -6,7 +6,7 @@ namespace Builds
     public static class GooglePlay
     {
         [Build]
-        [Argument("customBuildPath", ArgumentOptions.Directory)]
+        [Input("customBuildPath", ArgumentOptions.Directory)]
         public static void Github()
         {
             BuildPlayer.Build((ctx, builder) =>

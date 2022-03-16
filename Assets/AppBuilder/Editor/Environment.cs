@@ -17,7 +17,6 @@ namespace AppBuilder
                 commandArgs.AppendLine(s);
             }
 
-            Debug.Log(commandArgs);
             for (int i = 0; i < original.Length; i++)
             {
                 if (string.IsNullOrEmpty(original[i]))
