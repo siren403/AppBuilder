@@ -32,7 +32,7 @@ jobs:
         UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
       with:
         targetPlatform: Android
-        buildMethod: Builds.Android.GooglePlay
+        buildMethod: Builds.GooglePlay.Github
         customParameters: -host 127.0.0.1
         buildsPath: build/android
     - name: Upload a Build Artifact
