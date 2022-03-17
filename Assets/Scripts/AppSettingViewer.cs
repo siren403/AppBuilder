@@ -12,6 +12,8 @@ public class AppSettingViewer : MonoBehaviour
 
     [SerializeField] private float speed = 1;
     [SerializeField] private float distance = 2;
+
+    [field: SerializeField] public int A;
     private void Awake()
     {
         var appSettings = Resources.Load<AppSettingsScriptableObject>(path);

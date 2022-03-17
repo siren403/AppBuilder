@@ -1,13 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace AppBuilder.UI
 {
+    public static class BuildCache
+    {
+        public static string GetKey(this BuildInfo build, string key) => $"{build.FullName}_{key}";
+
+        public static void SetString(BuildInfo build, string key, string value)
+        {
+            PlayerPrefs.SetString(build.GetKey(key), value);
+        }
+
+        public static string GetString(BuildInfo build, string key, string defaultValue = null)
+        {
+            return PlayerPrefs.GetString(build.GetKey(key), defaultValue);
+        }
+    }
+
     public class Dashboard : EditorWindow
     {
         private static readonly List<string> NothingBuilds = new()
@@ -20,9 +35,10 @@ namespace AppBuilder.UI
         {
             Dashboard wnd = GetWindow<Dashboard>();
             wnd.titleContent = new GUIContent("Dashboard");
+            wnd.minSize = new Vector2(450, 600);
         }
 
-        private Dictionary<string, MethodInfo> _buildMethods;
+        private Dictionary<string, BuildInfo> _builds;
         private string _selectedBuild;
         private PreviewContext _context;
 
@@ -33,6 +49,7 @@ namespace AppBuilder.UI
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/AppBuilder/Editor/UI/Dashboard.uxml");
             VisualElement uxml = visualTree.Instantiate();
             visualElement.Add(uxml);
+            // visualTree.CloneTree(visualElement);
 
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
@@ -48,11 +65,42 @@ namespace AppBuilder.UI
             VisualElement root = rootVisualElement;
             Load(root);
 
-            _buildMethods = BuildPlayer.CollectMethods();
+            _builds = BuildPlayer.GetBuilds().ToDictionary(build => build.Name, build => build);
 
             var builds = root.Q<DropdownField>("build-field");
-            builds.viewDataKey = "selected-build";
-            var buildNames = _buildMethods.Keys.ToList();
+            builds.RegisterCallback<ChangeEvent<string>>(e =>
+            {
+                Debug.Log($"Build: {e.newValue}");
+                if (!_builds.TryGetValue(e.newValue, out var build)) return;
+
+                var args = BuildPlayer.GetReservedArguments();
+                var cachedVariant = BuildCache.GetString(build, "variant");
+                if (!string.IsNullOrEmpty(cachedVariant))
+                {
+                    args["variant"] = cachedVariant;
+                }
+
+                var inputs = build.Inputs;
+                var inputArgs = new Dictionary<string, string>();
+                foreach (var input in inputs)
+                {
+                    var cachedValue = BuildCache.GetString(build, input.Name);
+                    if (string.IsNullOrEmpty(cachedValue))
+                    {
+                        inputArgs[input.Name] = string.Empty;
+                    }
+                    else
+                    {
+                        inputArgs[input.Name] = Smart.Format(cachedValue, args);
+                    }
+                }
+
+                inputArgs["mode"] = "preview";
+
+                var report = BuildPlayer.Execute(build, inputArgs);
+                RenderReport(build, report);
+            });
+            var buildNames = _builds.Keys.ToList();
             if (buildNames.Any())
             {
                 builds.choices = buildNames;
@@ -64,8 +112,6 @@ namespace AppBuilder.UI
                 builds.value = NothingBuilds.First();
             }
 
-            builds.RegisterCallback<ChangeEvent<string>>(e => { SelectBuild(e.newValue); });
-
             root.Q<Button>("btn-cache-clear").clicked += PlayerPrefs.DeleteAll;
             root.Q<Button>("btn-refresh").clicked += () => { RefreshPreview(); };
             root.Q<Button>("btn-run").clicked += () =>
@@ -75,7 +121,7 @@ namespace AppBuilder.UI
             };
             root.Q<Button>("btn-apply").clicked += () =>
             {
-                if (_buildMethods.TryGetValue(_selectedBuild, out var method) && _context != null)
+                if (_builds.TryGetValue(_selectedBuild, out var method) && _context != null)
                 {
                     _context.Args.EnableArg("CONFIGURE_ONLY", true);
                     BuildPlayer.BuildPreview(method, _context.Args);
@@ -84,79 +130,30 @@ namespace AppBuilder.UI
             };
             root.Q<Button>("btn-build").clicked += () =>
             {
-                if (_buildMethods.TryGetValue(_selectedBuild, out var method) && _context != null)
+                if (_builds.TryGetValue(_selectedBuild, out var method) && _context != null)
                 {
                     //todo: validate
                     //ex) output empty -> open folder panel
                     BuildPlayer.BuildPreview(method, _context.Args);
                 }
             };
-
-            SelectBuild(builds.value);
-
-            root.Add(new Button(() =>
-            {
-                var path = PlayerPrefs.GetString("GooglePlay_outputPath", "not");
-                Debug.Log(path);
-                var source = new
-                {
-                    productName = "in"
-                };
-                var pattern = new Regex(@"\{(.*?)\}", RegexOptions.Multiline);
-                // var pattern = new Regex(@"(?<=\{).*?(?=\})", RegexOptions.Multiline);
-                var result = pattern.Matches(path);
-                foreach (Match match in result)
-                {
-                    Debug.Log(match);
-                }
-
-                foreach (var fieldInfo in source.GetType().GetProperties())
-                {
-                    Debug.Log(fieldInfo.Name);
-                }
-
-                var properties = source.GetType().GetProperties()
-                    .ToDictionary(p => { return p.Name; }, p => { return p.GetValue(source); });
-
-                var replaced = pattern.Replace(path, match =>
-                {
-                    var key = match.Value.Substring(1, match.Value.Length - 2);
-                    return properties.TryGetValue(key, out var value) ? value.ToString() : match.Value;
-                });
-                Debug.Log(replaced);
-            })
-            {
-                text = "format"
-            });
+            root.Bind(new SerializedObject(this));
         }
 
-        private void RefreshPreview(MethodInfo method = null, PreviewContext context = null)
+
+        private void RenderReport(BuildInfo build, BuildPlayer.Report report)
         {
-            if (method == null && !_buildMethods.TryGetValue(_selectedBuild, out method)) return;
-            context ??= _context;
-            if (context == null) return;
-
-            using (BuildPlayer.Preview(method, context.Args, out var newContext))
-            {
-                ApplyPreview(method, newContext);
-            }
-        }
-
-        private void ApplyPreview(MethodInfo method, PreviewContext context)
-        {
-            _context = context;
-
             var preview = rootVisualElement.Q("preview");
             preview.RemoveChildren();
 
-            foreach (var property in context.Properties)
+            foreach (var property in report.Properties)
             {
                 preview.Add(CreateItem(property.Name, property.Value));
             }
 
             #region Args
 
-            RenderArgs(method, context);
+            RenderArgs(build, report);
 
             #endregion
 
@@ -176,9 +173,161 @@ namespace AppBuilder.UI
             }
         }
 
-        private void RenderArgs(MethodInfo method, PreviewContext context)
+        private void RenderArgs(BuildInfo build, BuildPlayer.Report report)
         {
-            var inputs = method.GetCustomAttributes<InputAttribute>()
+            var inputs = build.Inputs
+                .Select(attr => attr.Name)
+                .ToDictionary(key => key, key => string.Empty);
+
+            var argsContainer = rootVisualElement.Q("args");
+            argsContainer.RemoveChildren();
+
+            report.Args.RemoveUnityArgs();
+            // report.Args.Merge(inputs);
+
+            foreach (var arg in report.Args)
+            {
+                if (inputs.ContainsKey(arg.Key))
+                {
+                    var argComponent = new Argument(arg.Key)
+                    {
+                        IsInput = true,
+                        IsFolder = true,
+                        Input = BuildCache.GetString(build, arg.Key),
+                        Value = arg.Value
+                    };
+                    argComponent.RegisterValueChangedCallback(e => { });
+                    argsContainer.Add(argComponent);
+                }
+                else
+                {
+                    argsContainer.Add(new Argument(arg.Key)
+                    {
+                        Value = arg.Value
+                    });
+                }
+            }
+        }
+
+
+        private void SelectBuild(string buildName)
+        {
+            if (!_builds.TryGetValue(buildName, out var build)) return;
+            _selectedBuild = buildName;
+
+            var inputs = build.Inputs;
+
+            string GetPrefsKey(MethodInfo method, InputAttribute arg)
+            {
+                return $"SAVED_{method.Name}_{arg.Name}";
+            }
+
+            var savedArgs = inputs.Select(arg =>
+                {
+                    return (key: arg.Name, value: PlayerPrefs.GetString(GetPrefsKey(build.Method, arg)));
+                })
+                .Where(arg => !string.IsNullOrEmpty(arg.value))
+                .ToDictionary(arg => arg.key, arg => arg.value);
+
+            var variants = build.Variants;
+
+            var variantField = rootVisualElement.Q<DropdownField>("variant-field");
+            if (!variants.Any())
+            {
+                variantField.visible = false;
+            }
+            else
+            {
+                variantField.visible = true;
+                var choices = new List<string>() {"Auto"};
+                choices.AddRange(variants);
+                variantField.choices = choices;
+                // variantField.value = variantField.choices.First(); //todo: or default or saved
+
+                variantField.RegisterValueChangedCallback(e =>
+                {
+                    if (_context != null)
+                    {
+                        var variant = e.newValue;
+                        if (string.IsNullOrEmpty(e.newValue))
+                        {
+                            variant = variantField.choices.First();
+                            variantField.SetValueWithoutNotify(variant);
+                        }
+
+                        if (variant.Equals("Auto"))
+                        {
+                            variant = build.Name;
+                        }
+
+                        _context.Args["variant"] = variant;
+                        _context.Args["outputPath"] =
+                            Smart.Format(PlayerPrefs.GetString($"{build.Name}_outputPath"), _context.Args);
+                        RefreshPreview();
+                    }
+                });
+                // if (variantField.value.Equals("Auto"))
+                // {
+                //     savedArgs["variant"] = build.Name;
+                // }
+                // else
+                // {
+                //     savedArgs["variant"] = variantField.value;
+                // }
+            }
+
+            // ApplyPreview(build, BuildPlayer.Preview(build, savedArgs));
+        }
+
+        private void RefreshPreview(BuildInfo build = null, PreviewContext context = null)
+        {
+            if (build == null && !_builds.TryGetValue(_selectedBuild, out build)) return;
+            context ??= _context;
+            if (context == null) return;
+
+            using (BuildPlayer.Preview(build, context.Args, out var newContext))
+            {
+                ApplyPreview(build, newContext);
+            }
+        }
+
+        private void ApplyPreview(BuildInfo build, PreviewContext context)
+        {
+            _context = context;
+
+            var preview = rootVisualElement.Q("preview");
+            preview.RemoveChildren();
+
+            foreach (var property in context.Properties)
+            {
+                preview.Add(CreateItem(property.Name, property.Value));
+            }
+
+            #region Args
+
+            RenderArgs(build, context);
+
+            #endregion
+
+            VisualElement CreateItem(string label, string text)
+            {
+                var itemContainer = new VisualElement()
+                {
+                    style =
+                    {
+                        flexDirection = FlexDirection.Row,
+                        justifyContent = Justify.SpaceBetween
+                    }
+                };
+                itemContainer.Add(new Label(label));
+                itemContainer.Add(new Label(text.Replace("\\", "/")));
+                return itemContainer;
+            }
+        }
+
+        private void RenderArgs(BuildInfo build, PreviewContext context)
+        {
+            var inputs = build.Inputs
                 .Select(attr => attr.Name)
                 .ToDictionary(key => key, key => string.Empty);
 
@@ -193,7 +342,7 @@ namespace AppBuilder.UI
             {
                 if (inputs.ContainsKey(arg.Key))
                 {
-                    var prefsKey = $"{method.Name}_{arg.Key}";
+                    var prefsKey = $"{build.Name}_{arg.Key}";
 
                     var savedInput = PlayerPrefs.GetString(prefsKey, string.Empty);
 
@@ -225,7 +374,7 @@ namespace AppBuilder.UI
                     {
                         PlayerPrefs.SetString(prefsKey, e.newValue);
                         context.Args[arg.Key] = GetInputToArg(e.newValue);
-                        RefreshPreview(method, context);
+                        RefreshPreview(build, context);
                     });
                     argsContainer.Add(argComponent);
                     inputs[arg.Key] = value;
@@ -243,69 +392,6 @@ namespace AppBuilder.UI
             {
                 context.Args[input.Key] = input.Value;
             }
-        }
-
-        private void SelectBuild(string buildName)
-        {
-            if (!_buildMethods.TryGetValue(buildName, out var buildMethod)) return;
-            _selectedBuild = buildName;
-
-            var inputs = buildMethod.GetCustomAttributes<InputAttribute>();
-
-            string GetPrefsKey(MethodInfo method, InputAttribute arg)
-            {
-                return $"SAVED_{method.Name}_{arg.Name}";
-            }
-
-            var savedArgs = inputs.Select(arg =>
-                {
-                    return (key: arg.Name, value: PlayerPrefs.GetString(GetPrefsKey(buildMethod, arg)));
-                })
-                .Where(arg => !string.IsNullOrEmpty(arg.value))
-                .ToDictionary(arg => arg.key, arg => arg.value);
-
-            var buildVariants = buildMethod.GetCustomAttribute<VariantsAttribute>();
-
-            var field = rootVisualElement.Q<DropdownField>("variant-field");
-            if (buildVariants == null || !buildVariants.Keys.Any())
-            {
-                field.visible = false;
-            }
-            else
-            {
-                field.visible = true;
-                var choices = new List<string>() {"Auto"};
-                choices.AddRange(buildVariants.Keys);
-                field.choices = choices;
-                field.value = field.choices.First(); //todo: or default or saved
-
-                field.RegisterValueChangedCallback(e =>
-                {
-                    if (_context != null)
-                    {
-                        var variant = e.newValue;
-                        if (e.newValue.Equals("Auto"))
-                        {
-                            variant = buildMethod.Name;
-                        }
-
-                        _context.Args["variant"] = variant;
-                        _context.Args["outputPath"] =
-                            Smart.Format(PlayerPrefs.GetString($"{buildMethod.Name}_outputPath"), _context.Args);
-                        RefreshPreview();
-                    }
-                });
-                if (field.value.Equals("Auto"))
-                {
-                    savedArgs["variant"] = buildMethod.Name;
-                }
-                else
-                {
-                    savedArgs["variant"] = field.value;
-                }
-            }
-
-            ApplyPreview(buildMethod, BuildPlayer.Preview(buildMethod, savedArgs));
         }
     }
 }

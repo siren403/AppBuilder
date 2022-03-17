@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,40 +10,60 @@ namespace AppBuilder
     {
         private static InputScope _inputScope;
 
-        public static void Build(Action<IBuildContext, IUnityPlayerBuilder> configuration, bool isTest = false)
+        public static Dictionary<string, string> GetReservedArguments()
+        {
+            return Environment.GetCommandLineArgs()
+                .AddReserveArguments();
+        }
+
+        private static BuildScope _buildScope;
+
+        public static Report Build(Action<IBuildContext, IUnityPlayerBuilder> configuration, bool isTest = false)
         {
             var args = new Dictionary<string, string>();
-            if (_inputScope != null)//from editor
+            args.Merge(GetReservedArguments());
+            if (_buildScope != null) //from editor
             {
-                args.Merge(_inputScope.Args);
+                args.Merge(_buildScope.InputArgs);
             }
-
-            args.Merge(Environment
-                .GetCommandLineArgs()
-                .AddReserveArguments());
 
             Debug.Log(args.ToArgsString());
             var context = new UnityBuildContext(args);
-
             var builder = new UnityPlayerBuilder();
             configuration(context, builder);
 
             var executor = builder.Build();
 
-            //todo: isPreview or Execute(Editor, Batch)
-            if (_previewScope != null)
+            if (!args.TryGetValue("mode", out var mode))
             {
-                _previewScope.Context.Recorder = builder.Recorder;
-                _previewScope.Context.Args = context.Args;
-                return;
+                mode = string.Empty;
             }
 
-            if (args.ContainsKey("CONFIGURE_ONLY"))
+            if (mode == "preview")
+            {
+                return Complete(new Report(context, builder));
+            }
+
+            if (mode == "configure")
             {
                 executor.Configure();
-                Debug.Log("Configure Completed");
-                return;
+                return Complete(new Report(context, builder));
             }
+
+            //todo: isPreview or Execute(Editor, Batch)
+            // if (_previewScope != null)
+            // {
+            //     _previewScope.Context.Recorder = builder.Recorder;
+            //     _previewScope.Context.Args = context.Args;
+            //     return;
+            // }
+
+            // if (args.ContainsKey("CONFIGURE_ONLY"))
+            // {
+            //     executor.Configure();
+            //     Debug.Log("Configure Completed");
+            //     return;
+            // }
 
             try
             {
@@ -61,10 +78,21 @@ namespace AppBuilder
                 }
             }
 
-            var report = executor.Execute();
+            var unityReport = executor.Execute();
             //todo: BatchMode -> Revert? builder.Revert()
-            EditorUtility.RevealInFinder(Path.GetDirectoryName(report.summary.outputPath));
+            EditorUtility.RevealInFinder(Path.GetDirectoryName(unityReport.summary.outputPath));
+
+            return Complete(new Report(context, builder, unityReport));
+
+            Report Complete(Report report)
+            {
+                if (_buildScope != null)
+                {
+                    _buildScope.Report = report;
+                }
+
+                return report;
+            }
         }
     }
-
 }
