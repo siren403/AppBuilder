@@ -186,6 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path: AppSettings
   document: {fileID: 384925017}
+  cube: {fileID: 1353567671}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

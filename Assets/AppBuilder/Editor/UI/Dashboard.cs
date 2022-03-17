@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.Localization.SmartFormat;
-using UnityEngine.Localization.SmartFormat.Core.Formatting;
 
 namespace AppBuilder.UI
 {
@@ -94,6 +93,41 @@ namespace AppBuilder.UI
             };
 
             SelectBuild(builds.value);
+
+            root.Add(new Button(() =>
+            {
+                var path = PlayerPrefs.GetString("GooglePlay_outputPath", "not");
+                Debug.Log(path);
+                var source = new
+                {
+                    productName = "in"
+                };
+                var pattern = new Regex(@"\{(.*?)\}", RegexOptions.Multiline);
+                // var pattern = new Regex(@"(?<=\{).*?(?=\})", RegexOptions.Multiline);
+                var result = pattern.Matches(path);
+                foreach (Match match in result)
+                {
+                    Debug.Log(match);
+                }
+
+                foreach (var fieldInfo in source.GetType().GetProperties())
+                {
+                    Debug.Log(fieldInfo.Name);
+                }
+
+                var properties = source.GetType().GetProperties()
+                    .ToDictionary(p => { return p.Name; }, p => { return p.GetValue(source); });
+
+                var replaced = pattern.Replace(path, match =>
+                {
+                    var key = match.Value.Substring(1, match.Value.Length - 2);
+                    return properties.TryGetValue(key, out var value) ? value.ToString() : match.Value;
+                });
+                Debug.Log(replaced);
+            })
+            {
+                text = "format"
+            });
         }
 
         private void RefreshPreview(MethodInfo method = null, PreviewContext context = null)

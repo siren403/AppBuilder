@@ -16,4 +16,5 @@ MonoBehaviour:
     Host: 127.0.0.1
     Package: com.siren.appbuilder
     Platform: 0
+    Speed: 1
   json: 

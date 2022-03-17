@@ -17,7 +17,7 @@ namespace Builds
         public string Host;
         public string Package;
         public Platform Platform;
-
+        public float Speed;
         public override string ToString()
         {
             var builder = new StringBuilder();
