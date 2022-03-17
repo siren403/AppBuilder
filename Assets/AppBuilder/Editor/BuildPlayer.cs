@@ -10,7 +10,7 @@ namespace AppBuilder
     {
         private static InputScope _inputScope;
 
-        public static Dictionary<string, string> GetReservedArguments()
+        public static Arguments GetReservedArguments()
         {
             return Environment.GetCommandLineArgs()
                 .AddReserveArguments();
@@ -20,50 +20,32 @@ namespace AppBuilder
 
         public static Report Build(Action<IBuildContext, IUnityPlayerBuilder> configuration, bool isTest = false)
         {
-            var args = new Dictionary<string, string>();
+            var args = new Arguments();
             args.Merge(GetReservedArguments());
             if (_buildScope != null) //from editor
             {
                 args.Merge(_buildScope.InputArgs);
             }
 
-            Debug.Log(args.ToArgsString());
+            Debug.Log(args);
             var context = new UnityBuildContext(args);
             var builder = new UnityPlayerBuilder();
             configuration(context, builder);
 
             var executor = builder.Build();
 
-            if (!args.TryGetValue("mode", out var mode))
+            if (args.TryGetValue("mode", out var mode))
             {
-                mode = string.Empty;
+                if (mode == "preview")
+                {
+                    return Complete(new Report(context, builder));
+                }
+                if (mode == "configure")
+                {
+                    executor.Configure();
+                    return Complete(new Report(context, builder));
+                }
             }
-
-            if (mode == "preview")
-            {
-                return Complete(new Report(context, builder));
-            }
-
-            if (mode == "configure")
-            {
-                executor.Configure();
-                return Complete(new Report(context, builder));
-            }
-
-            //todo: isPreview or Execute(Editor, Batch)
-            // if (_previewScope != null)
-            // {
-            //     _previewScope.Context.Recorder = builder.Recorder;
-            //     _previewScope.Context.Args = context.Args;
-            //     return;
-            // }
-
-            // if (args.ContainsKey("CONFIGURE_ONLY"))
-            // {
-            //     executor.Configure();
-            //     Debug.Log("Configure Completed");
-            //     return;
-            // }
 
             try
             {

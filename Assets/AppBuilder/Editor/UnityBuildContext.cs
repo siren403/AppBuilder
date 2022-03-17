@@ -7,10 +7,10 @@ namespace AppBuilder
 {
     public class UnityBuildContext : IBuildContext
     {
-        public readonly Dictionary<string, string> Args;
+        public readonly Arguments Args;
         private readonly JObject _appSettings;
 
-        public UnityBuildContext(Dictionary<string, string> args)
+        public UnityBuildContext(Arguments args)
         {
             Args = args;
             var variant = args.ContainsKey("variant") ? args["variant"] : string.Empty;

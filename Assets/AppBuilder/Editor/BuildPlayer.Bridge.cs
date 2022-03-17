@@ -80,10 +80,7 @@ namespace AppBuilder
             private readonly BuildProperty[] _properties;
             private readonly string _recorderLog;
             public BuildProperty[] Properties => _properties ?? Array.Empty<BuildProperty>();
-
-            private Dictionary<string, string> _args;
-
-            public Dictionary<string, string> Args { get; }
+            public Arguments Args { get; }
 
             public Report(UnityBuildContext context, UnityPlayerBuilder builder)
             {
@@ -106,7 +103,7 @@ namespace AppBuilder
             }
         }
 
-        public static Report Execute(BuildInfo build, Dictionary<string, string> inputArgs)
+        public static Report Execute(BuildInfo build, Arguments inputArgs)
         {
             using var scope = new BuildScope(build, inputArgs);
             return scope.Report;
@@ -114,10 +111,10 @@ namespace AppBuilder
 
         public class BuildScope : IDisposable
         {
-            public Dictionary<string, string> InputArgs { get; }
+            public Arguments InputArgs { get; }
             public Report Report;
 
-            public BuildScope(BuildInfo build, Dictionary<string, string> inputArgs)
+            public BuildScope(BuildInfo build, Arguments inputArgs)
             {
                 InputArgs = inputArgs;
 

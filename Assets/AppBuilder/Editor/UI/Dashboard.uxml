@@ -41,8 +41,12 @@
         <engine:VisualElement name="args" class="section-content"/>
     </engine:VisualElement>
     <engine:VisualElement class="section">
-        <engine:Label text="Inputs" class="section-head"/>
-        <engine:VisualElement name="inputs" class="section-content"/>
+        <engine:Label text="Custom" class="section-head-2"/>
+        <engine:VisualElement name="custom" class="section-content"/>
+    </engine:VisualElement>
+    <engine:VisualElement class="section top-border">
+        <engine:Label text="Input" class="section-head-2"/>
+        <engine:VisualElement name="input" class="section-content"/>
     </engine:VisualElement>
     <!--Sample-->
     <app:Argument class="input folder sample"/>

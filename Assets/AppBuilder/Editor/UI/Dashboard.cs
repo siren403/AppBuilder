@@ -77,25 +77,26 @@ namespace AppBuilder.UI
                 var cachedVariant = BuildCache.GetString(build, "variant");
                 if (!string.IsNullOrEmpty(cachedVariant))
                 {
-                    args["variant"] = cachedVariant;
+                    args["variant"] = new ArgumentValue("variant", cachedVariant, ArgumentCategory.Custom);
                 }
 
                 var inputs = build.Inputs;
-                var inputArgs = new Dictionary<string, string>();
+                var inputArgs = new Arguments();
                 foreach (var input in inputs)
                 {
                     var cachedValue = BuildCache.GetString(build, input.Name);
                     if (string.IsNullOrEmpty(cachedValue))
                     {
-                        inputArgs[input.Name] = string.Empty;
+                        inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
                     }
                     else
                     {
-                        inputArgs[input.Name] = Smart.Format(cachedValue, args);
+                        inputArgs[input.Name] = new ArgumentValue(input.Name, Smart.Format(cachedValue, args),
+                            ArgumentCategory.Input);
                     }
                 }
 
-                inputArgs["mode"] = "preview";
+                inputArgs["mode"] = new ArgumentValue("mode", "preview", ArgumentCategory.Custom);
 
                 var report = BuildPlayer.Execute(build, inputArgs);
                 RenderReport(build, report);
@@ -182,29 +183,41 @@ namespace AppBuilder.UI
             var argsContainer = rootVisualElement.Q("args");
             argsContainer.RemoveChildren();
 
+            var customContainer = rootVisualElement.Q("custom");
+            customContainer.RemoveChildren();
+
+            var inputContainer = rootVisualElement.Q("input");
+            inputContainer.RemoveChildren();
+
             report.Args.RemoveUnityArgs();
-            // report.Args.Merge(inputs);
 
             foreach (var arg in report.Args)
             {
-                if (inputs.ContainsKey(arg.Key))
+                switch (arg.Value.Category)
                 {
-                    var argComponent = new Argument(arg.Key)
-                    {
-                        IsInput = true,
-                        IsFolder = true,
-                        Input = BuildCache.GetString(build, arg.Key),
-                        Value = arg.Value
-                    };
-                    argComponent.RegisterValueChangedCallback(e => { });
-                    argsContainer.Add(argComponent);
-                }
-                else
-                {
-                    argsContainer.Add(new Argument(arg.Key)
-                    {
-                        Value = arg.Value
-                    });
+                    case ArgumentCategory.Custom:
+                        customContainer.Add(new Argument(arg.Key)
+                        {
+                            Value = arg.Value
+                        });
+                        break;
+                    case ArgumentCategory.Input:
+                        var inputComponent = new Argument(arg.Key)
+                        {
+                            IsInput = true,
+                            IsFolder = true,
+                            Input = BuildCache.GetString(build, arg.Key),
+                            Value = arg.Value
+                        };
+                        inputComponent.RegisterValueChangedCallback(e => { });
+                        inputContainer.Add(inputComponent);
+                        break;
+                    default:
+                        argsContainer.Add(new Argument(arg.Key)
+                        {
+                            Value = arg.Value
+                        });
+                        break;
                 }
             }
         }
@@ -334,9 +347,9 @@ namespace AppBuilder.UI
             var argsContainer = rootVisualElement.Q("args");
             argsContainer.RemoveChildren();
 
-            context.Args.RemoveUnityArgs();
+            // context.Args.RemoveUnityArgs();
 
-            context.Args.Merge(inputs);
+            // context.Args.Merge(inputs);
 
             foreach (var arg in context.Args)
             {

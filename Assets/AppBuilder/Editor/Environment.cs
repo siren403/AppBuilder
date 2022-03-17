@@ -9,6 +9,8 @@ namespace AppBuilder
         Input,
         Require,
         Unity,
+        Command,
+        Custom
     }
 
     public readonly struct ArgumentValue
@@ -25,17 +27,46 @@ namespace AppBuilder
         }
 
         public static implicit operator string(ArgumentValue arg) => arg.Value;
+
+        public static ArgumentValue Empty(string key, ArgumentCategory category = ArgumentCategory.None)
+        {
+            return new ArgumentValue(key, string.Empty, category);
+        }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 
-    public class Arguments : Dictionary<string, string>
+    public class Arguments : Dictionary<string, ArgumentValue>
     {
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendLine("[Arguments]");
+            foreach (var arg in this)
+            {
+                if (string.IsNullOrEmpty(arg.Value))
+                {
+                    builder.AppendLine($"-{arg.Key}");
+                }
+                else
+                {
+                    builder.AppendLine($"-{arg.Key} {arg.Value.ToString()}");
+                }
+            }
+
+            return builder.ToString();
+        }
     }
 
     public static class Environment
     {
-        public static Dictionary<string, string> GetCommandLineArgs()
+        public static Arguments GetCommandLineArgs()
         {
-            var args = new Dictionary<string, string>();
+            var args = new Arguments();
 
             var original = System.Environment.GetCommandLineArgs();
             var commandArgs = new StringBuilder();
@@ -58,13 +89,13 @@ namespace AppBuilder
                     {
                         if (!original[i + 1][0].Equals('-'))
                         {
-                            args.Add(key, original[i + 1]);
+                            args.Add(key, new ArgumentValue(key, original[i + 1], ArgumentCategory.Command));
                             i++;
                             continue;
                         }
                     }
 
-                    args.Add(key, string.Empty);
+                    args.Add(key, ArgumentValue.Empty(key, ArgumentCategory.Command));
                 }
             }
 

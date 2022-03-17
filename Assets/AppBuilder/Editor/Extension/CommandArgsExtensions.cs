@@ -29,23 +29,23 @@ namespace AppBuilder
             return builder.ToString();
         }
 
-        private static void Reserve(this Dictionary<string, string> args, string key, string value)
+        private static void Reserve(this Arguments args, string key, string value)
         {
             if (args.ContainsKey(key))
             {
                 throw new ArgumentException("Contains Reserve Args");
             }
 
-            args.Add(key, value);
+            args.Add(key, new ArgumentValue(key, value, ArgumentCategory.Custom));
         }
 
-        public static Dictionary<string, string> AddReserveArguments(this Dictionary<string, string> args)
+        public static Arguments AddReserveArguments(this Arguments args)
         {
             args.Reserve("productName", Application.productName);
             return args;
         }
 
-        public static void Merge(this Dictionary<string, string> args, Dictionary<string, string> other)
+        public static void Merge(this Arguments args, Arguments other)
         {
             if (other == null) throw new ArgumentNullException();
             if (other.Count == 0) return;
@@ -66,7 +66,7 @@ namespace AppBuilder
             "accessToken",
         };
 
-        public static void RemoveUnityArgs(this Dictionary<string, string> args)
+        public static void RemoveUnityArgs(this Arguments args)
         {
             foreach (var unityArg in _unityArgs)
             {
