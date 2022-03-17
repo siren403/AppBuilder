@@ -66,9 +66,12 @@ namespace AppBuilder
             "accessToken",
         };
 
-        public static IEnumerable<KeyValuePair<string, string>> IgnoreUnityArgs(this Dictionary<string, string> args)
+        public static void RemoveUnityArgs(this Dictionary<string, string> args)
         {
-            return args.Where(pair => !_unityArgs.Contains(pair.Key));
+            foreach (var unityArg in _unityArgs)
+            {
+                args.Remove(unityArg);
+            }
         }
 
         public static void EnableArg(this Dictionary<string, string> args, string key, bool enable)

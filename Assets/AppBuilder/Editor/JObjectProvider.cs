@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 namespace AppBuilder
@@ -6,6 +8,7 @@ namespace AppBuilder
     {
         public TOptions Value { get; } = null;
     }
+
     public class JObjectProvider<TOptions> : IOptions<TOptions> where TOptions : class
     {
         public TOptions Value { get; }
@@ -15,5 +18,5 @@ namespace AppBuilder
             Value = source.ToObject<TOptions>();
         }
     }
-    
+
 }

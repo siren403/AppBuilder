@@ -16,7 +16,7 @@ namespace AppBuilder
         public static void Build(Action<IBuildContext, IUnityPlayerBuilder> configuration, bool isTest = false)
         {
             var args = new Dictionary<string, string>();
-            if (_inputScope != null)
+            if (_inputScope != null)//from editor
             {
                 args.Merge(_inputScope.Args);
             }

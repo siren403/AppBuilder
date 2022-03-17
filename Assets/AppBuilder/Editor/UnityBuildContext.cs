@@ -65,6 +65,11 @@ namespace AppBuilder
             return new JObjectProvider<T>(_appSettings);
         }
 
+        public IOptions GetConfiguration()
+        {
+            return new JObjectProvider(_appSettings);
+        }
+
         public T GetSection<T>(string key)
         {
             if (_appSettings.TryGetValue(key, out var token))

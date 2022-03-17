@@ -1,9 +1,36 @@
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
 
 namespace AppBuilder
 {
+    public enum ArgumentCategory
+    {
+        None,
+        Input,
+        Require,
+        Unity,
+    }
+
+    public readonly struct ArgumentValue
+    {
+        public readonly string Key;
+        public readonly string Value;
+        public readonly ArgumentCategory Category;
+
+        public ArgumentValue(string key, string value, ArgumentCategory category = ArgumentCategory.None)
+        {
+            Key = key;
+            Value = value;
+            Category = category;
+        }
+
+        public static implicit operator string(ArgumentValue arg) => arg.Value;
+    }
+
+    public class Arguments : Dictionary<string, string>
+    {
+    }
+
     public static class Environment
     {
         public static Dictionary<string, string> GetCommandLineArgs()

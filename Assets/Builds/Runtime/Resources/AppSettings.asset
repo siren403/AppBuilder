@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31b8b4b53c8e4bcd90a1f13ea444f6e3, type: 3}
   m_Name: AppSettings
   m_EditorClassIdentifier: 
-  value:
+  optionsValue:
     Host: 127.0.0.1
     Package: com.siren.appbuilder
+    Platform: 0
+  json: 

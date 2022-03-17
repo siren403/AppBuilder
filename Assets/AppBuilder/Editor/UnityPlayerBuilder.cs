@@ -24,7 +24,12 @@ namespace AppBuilder
         public string OutputPath
         {
             set => _outputDirectory = value.Replace("\\", "/");
-            get { return _outputDirectory; }
+            get => _outputDirectory;
+        }
+
+        public string ProductName
+        {
+            set => PlayerSettings.productName = value;
         }
 
         public override string ToString()
@@ -106,17 +111,17 @@ namespace AppBuilder
                         break;
                 }
             }
-            
+
             foreach (var configuration in _configurations)
             {
                 configuration.Invoke();
             }
         }
-        
+
         public BuildReport Execute()
         {
             Configure();
-         
+
             Debug.Log($"[AppBuilder] {JsonConvert.SerializeObject(Options)}");
             return BuildPipeline.BuildPlayer(Options);
         }
@@ -135,10 +140,13 @@ namespace AppBuilder
 
     public static class OptionsExtensions
     {
-        public static void WriteScriptable<TConfig>(this IOptions<TConfig> source, string path) where TConfig : class
+        public static void WriteScriptable<TConfig>(this IOptions<TConfig> source, string path, string withJson = null)
+            where TConfig : class
         {
             var output = Resources.Load<OptionsScriptableObject<TConfig>>(path);
             output.Value = source.Value;
+            output.Json = !string.IsNullOrEmpty(withJson) ? withJson : null;
+            output.Save(); 
         }
     }
 }

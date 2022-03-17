@@ -8,6 +8,7 @@ namespace AppBuilder
     {
         string[] Scenes { set; }
         string OutputPath { set; }
+        string ProductName { set; }
         void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration);
     }
 

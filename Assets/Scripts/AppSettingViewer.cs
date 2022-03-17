@@ -1,3 +1,4 @@
+using System.Linq;
 using Builds;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -14,5 +15,27 @@ public class AppSettingViewer : MonoBehaviour
         var container = document.rootVisualElement.Q("container");
         container.Add(new Label($"host: {appSettings.Value.Host}"));
         container.Add(new Label($"package: {appSettings.Value.Package}"));
+
+        if (appSettings.TryGetSection("AppId", out string appid))
+        {
+            container.Add(new Label($"[AppId] {appid}"));
+        }
+        
+        switch (appSettings.Value.Platform)
+        {
+            case Platform.OneStore:
+                var products = appSettings.GetSections<string>("Products").ToArray();
+                if (products.Any())
+                {
+                    container.Add(new Label("[Products]"));
+                }
+
+                foreach (var product in products)
+                {
+                    container.Add(new Label(product));
+                }
+
+                break;
+        }
     }
 }

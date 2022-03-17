@@ -27,7 +27,9 @@ app.AddRootCommand(async (IOptions<Config> config) =>
         .Quit()
         .ExecuteMethod(config.Value.Method)
         .BuildTarget(config.Value.BuildTarget)
-        .AddArgument("host", "127.0.0.1");
+        .AddArgument("host", "127.0.0.1")
+        .AddArgument("outputPath", "D:/workspace/unity/AppBuilder/Build/Android-Batch/Android");
+    
     var hasLogFile = !string.IsNullOrEmpty(config.Value.LogFile);
     if (hasLogFile)
     {
@@ -58,6 +60,7 @@ app.AddCommand("print", async (IOptions<Config> config) =>
         .AddArgument("host", "127.0.0.1");
 
     await $"echo {builder}";
+
 });
 
 app.Run();

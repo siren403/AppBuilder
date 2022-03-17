@@ -14,7 +14,13 @@
             <engine:DropdownField name="variant-field"/>
         </engine:VisualElement>
         <engine:VisualElement name="toolbar">
+            <engine:Button name="btn-cache-clear">
+                <engine:Image/>
+            </engine:Button>
             <engine:Button name="btn-refresh">
+                <engine:Image/>
+            </engine:Button>
+            <engine:Button name="btn-run">
                 <engine:Image/>
             </engine:Button>
             <engine:Button name="btn-apply">

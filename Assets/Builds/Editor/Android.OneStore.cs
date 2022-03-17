@@ -1,23 +1,26 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using AppBuilder;
 using UnityEditor;
+using UnityEngine;
 
 namespace Builds
 {
     public static partial class Android
     {
-        [Variants("Development")]
         [Build]
+        [Variants("OneStore")]
         [Input("outputPath", ArgumentOptions.Directory)]
-        public static void GooglePlay()
+        public static void OneStore()
         {
             BuildPlayer.Build((ctx, builder) =>
             {
                 ctx.GetConfiguration<AppSettings>()
-                    .WriteScriptable("AppSettings");
+                    .WriteScriptable("AppSettings", ctx.GetConfiguration().ToJson());
 
                 builder.OutputPath = ctx.GetArgument("outputPath");
-
+                builder.ProductName = ctx.GetSection<string>("ProductName");
+                
                 var host = ctx.GetSection<string>("Host");
                 var scenes = ctx.GetSections<string>("Scenes").ToArray();
 
