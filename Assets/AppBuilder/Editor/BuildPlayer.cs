@@ -7,7 +7,6 @@ namespace AppBuilder
 {
     public static partial class BuildPlayer
     {
-        private static InputScope _inputScope;
 
         public static Arguments GetReservedArguments()
         {

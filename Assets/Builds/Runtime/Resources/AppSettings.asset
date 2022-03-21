@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AppSettings
   m_EditorClassIdentifier: 
   optionsValue:
-    Host: merged 127.0.0.1
-    Package: com.siren.appbuilder.dev
+    Host: 127.0.0.1
+    Package: com.siren.appbuilder
     Platform: 0
     Speed: 1
   json: 

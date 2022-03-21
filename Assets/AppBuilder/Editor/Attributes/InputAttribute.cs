@@ -2,18 +2,17 @@
 
 namespace AppBuilder
 {
-    
-    [Flags]
     public enum ArgumentOptions
     {
         None = 0,
-        Smart = 1,
-        Directory = 2
+        Dropdown = 1,
+        Directory = 2,
     }
     
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class InputAttribute : Attribute
     {
+        public string[] Values { get; }
         public string Name { get; }
         public ArgumentOptions Options { get; }
 
@@ -21,6 +20,13 @@ namespace AppBuilder
         {
             Name = name;
             Options = options;
+        }
+
+        public InputAttribute(string name, string[] values)
+        {
+            Name = name;
+            Values = values;
+            Options = ArgumentOptions.Dropdown;
         }
     }
 }

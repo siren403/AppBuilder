@@ -1,0 +1,20 @@
+@startuml 
+
+!include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
+
+left to right direction
+
+commandline 0--> UnityBatch : put arguments
+UnityBatch 0--> StaticMethod 
+
+UnityGui 0--> AppBuilderDashboard
+AppBuilderDashboard 0--> StaticMethod : put arguments (using inputs)
+
+StaticMethod 0--> AppBuilder : configuration
+
+AppBuilder 0--> Initialize : appsettings.json\ncommand args
+
+Initialize 0--> ExecuteConfiguration
+
+
+@enduml

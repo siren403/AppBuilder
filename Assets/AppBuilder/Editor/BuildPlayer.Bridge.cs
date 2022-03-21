@@ -29,51 +29,6 @@ namespace AppBuilder
             }
         }
 
-        public static IDisposable Preview(MethodInfo build, out PreviewContext context)
-        {
-            _previewScope = new PreviewScope();
-            build.Invoke(null, null);
-            context = _previewScope.Context;
-            return _previewScope;
-        }
-
-        public static IDisposable Preview(BuildInfo build, Dictionary<string, string> args,
-            out PreviewContext context)
-        {
-            _previewScope = new PreviewScope();
-            using (_inputScope = new InputScope(args))
-            {
-                build.Method.Invoke(null, null);
-            }
-
-            context = _previewScope.Context;
-            return _previewScope;
-        }
-
-        public static PreviewContext Preview(MethodInfo build)
-        {
-            using (Preview(build, out var context))
-            {
-                return context;
-            }
-        }
-
-        public static PreviewContext Preview(BuildInfo build, Dictionary<string, string> args)
-        {
-            using (Preview(build, args, out var context))
-            {
-                return context;
-            }
-        }
-
-        public static void BuildPreview(BuildInfo build, Dictionary<string, string> args)
-        {
-            using (_inputScope = new InputScope(args))
-            {
-                build.Method.Invoke(null, null);
-            }
-        }
-
         public class Report
         {
             public BuildReport UnityReport { get; }
