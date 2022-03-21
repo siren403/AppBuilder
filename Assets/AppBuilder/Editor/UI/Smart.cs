@@ -18,7 +18,7 @@ namespace AppBuilder.UI
         /// match -> c
         /// </summary>
         // private static readonly Regex Pattern = new Regex(@"(?<=\{).*?(?=\})", RegexOptions.Multiline);
-        public static string Format(string format, Dictionary<string, string> args)
+        public static string Format(string format, Arguments args)
         {
             if (string.IsNullOrEmpty(format)) return format;
 

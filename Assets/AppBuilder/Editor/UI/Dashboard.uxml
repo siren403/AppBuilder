@@ -14,19 +14,19 @@
             <engine:DropdownField name="variant-field"/>
         </engine:VisualElement>
         <engine:VisualElement name="toolbar">
-            <engine:Button name="btn-cache-clear">
+            <engine:Button name="btn-cache-clear" tooltip="clear player prefs">
                 <engine:Image/>
             </engine:Button>
-            <engine:Button name="btn-refresh">
+            <engine:Button name="btn-refresh" tooltip="refresh">
                 <engine:Image/>
             </engine:Button>
-            <engine:Button name="btn-run">
+            <engine:Button name="btn-run" tooltip="run">
                 <engine:Image/>
             </engine:Button>
-            <engine:Button name="btn-apply">
+            <engine:Button name="btn-apply" tooltip="apply configure">
                 <engine:Image/>
             </engine:Button>
-            <engine:Button name="btn-build">
+            <engine:Button name="btn-build" tooltip="build">
                 <engine:Image/>
             </engine:Button>
         </engine:VisualElement>
@@ -36,7 +36,7 @@
         <engine:Label text="Settings" class="section-head"/>
         <engine:VisualElement name="preview" class="section-content"/>
     </engine:VisualElement>
-    <engine:VisualElement class="section">
+    <engine:VisualElement class="section top-border-red">
         <engine:Label text="Arguments" class="section-head"/>
         <engine:VisualElement name="args" class="section-content"/>
     </engine:VisualElement>
@@ -44,7 +44,7 @@
         <engine:Label text="Custom" class="section-head-2"/>
         <engine:VisualElement name="custom" class="section-content"/>
     </engine:VisualElement>
-    <engine:VisualElement class="section top-border">
+    <engine:VisualElement class="section top-border-blue">
         <engine:Label text="Input" class="section-head-2"/>
         <engine:VisualElement name="input" class="section-content"/>
     </engine:VisualElement>

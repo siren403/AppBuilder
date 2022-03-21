@@ -20,7 +20,7 @@ namespace Builds
 
                 builder.OutputPath = ctx.GetArgument("outputPath");
                 builder.ProductName = ctx.GetSection<string>("ProductName");
-                
+
                 var host = ctx.GetSection<string>("Host");
                 var scenes = ctx.GetSections<string>("Scenes").ToArray();
 

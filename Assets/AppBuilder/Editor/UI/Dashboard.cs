@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -23,11 +21,32 @@ namespace AppBuilder.UI
         }
     }
 
+    public static class DashboardExtensions
+    {
+        public static DropdownField BuildField(this Dashboard window) =>
+            window.rootVisualElement.Q<DropdownField>("build-field");
+
+        public static DropdownField VariantField(this Dashboard window) =>
+            window.rootVisualElement.Q<DropdownField>("variant-field");
+    }
+
+    public enum BuildMode
+    {
+        Build,
+        Preview,
+        Configure
+    }
+
     public class Dashboard : EditorWindow
     {
         private static readonly List<string> NothingBuilds = new()
         {
             "Nothing"
+        };
+
+        private static readonly List<string> BaseVariants = new()
+        {
+            "Auto"
         };
 
         [MenuItem("AppBuilder/Dashboard")]
@@ -39,7 +58,7 @@ namespace AppBuilder.UI
         }
 
         private Dictionary<string, BuildInfo> _builds;
-        private string _selectedBuild;
+
         private PreviewContext _context;
 
         private static void Load(VisualElement visualElement)
@@ -66,42 +85,14 @@ namespace AppBuilder.UI
             Load(root);
 
             _builds = BuildPlayer.GetBuilds().ToDictionary(build => build.Name, build => build);
+            var buildNames = _builds.Any() ? _builds.Keys.ToList() : NothingBuilds;
 
             var builds = root.Q<DropdownField>("build-field");
             builds.RegisterCallback<ChangeEvent<string>>(e =>
             {
                 Debug.Log($"Build: {e.newValue}");
-                if (!_builds.TryGetValue(e.newValue, out var build)) return;
-
-                var args = BuildPlayer.GetReservedArguments();
-                var cachedVariant = BuildCache.GetString(build, "variant");
-                if (!string.IsNullOrEmpty(cachedVariant))
-                {
-                    args["variant"] = new ArgumentValue("variant", cachedVariant, ArgumentCategory.Custom);
-                }
-
-                var inputs = build.Inputs;
-                var inputArgs = new Arguments();
-                foreach (var input in inputs)
-                {
-                    var cachedValue = BuildCache.GetString(build, input.Name);
-                    if (string.IsNullOrEmpty(cachedValue))
-                    {
-                        inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
-                    }
-                    else
-                    {
-                        inputArgs[input.Name] = new ArgumentValue(input.Name, Smart.Format(cachedValue, args),
-                            ArgumentCategory.Input);
-                    }
-                }
-
-                inputArgs["mode"] = new ArgumentValue("mode", "preview", ArgumentCategory.Custom);
-
-                var report = BuildPlayer.Execute(build, inputArgs);
-                RenderReport(build, report);
+                ExecuteBuild(BuildMode.Preview);
             });
-            var buildNames = _builds.Keys.ToList();
             if (buildNames.Any())
             {
                 builds.choices = buildNames;
@@ -114,42 +105,112 @@ namespace AppBuilder.UI
             }
 
             root.Q<Button>("btn-cache-clear").clicked += PlayerPrefs.DeleteAll;
-            root.Q<Button>("btn-refresh").clicked += () => { RefreshPreview(); };
+            root.Q<Button>("btn-refresh").clicked += () => { ExecuteBuild(BuildMode.Preview); };
             root.Q<Button>("btn-run").clicked += () =>
             {
-                RefreshPreview();
+                ExecuteBuild(BuildMode.Configure);
                 EditorApplication.EnterPlaymode();
             };
-            root.Q<Button>("btn-apply").clicked += () =>
-            {
-                if (_builds.TryGetValue(_selectedBuild, out var method) && _context != null)
-                {
-                    _context.Args.EnableArg("CONFIGURE_ONLY", true);
-                    BuildPlayer.BuildPreview(method, _context.Args);
-                    _context.Args.EnableArg("CONFIGURE_ONLY", false);
-                }
-            };
-            root.Q<Button>("btn-build").clicked += () =>
-            {
-                if (_builds.TryGetValue(_selectedBuild, out var method) && _context != null)
-                {
-                    //todo: validate
-                    //ex) output empty -> open folder panel
-                    BuildPlayer.BuildPreview(method, _context.Args);
-                }
-            };
-            root.Bind(new SerializedObject(this));
+            root.Q<Button>("btn-apply").clicked += () => { ExecuteBuild(BuildMode.Configure); };
+            root.Q<Button>("btn-build").clicked += () => { ExecuteBuild(); };
+            // root.Bind(new SerializedObject(this));
         }
 
+        private bool TryGetSelectedBuild(out BuildInfo build)
+        {
+            var buildName = this.BuildField().value;
+            if (_builds.TryGetValue(buildName, out build))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+
+        private void ExecuteBuild(BuildMode mode = BuildMode.Build)
+        {
+            if (!TryGetSelectedBuild(out var build)) return;
+
+            RenderVariants(build);
+
+            var args = BuildPlayer.GetReservedArguments();
+            var inputArgs = new Arguments();
+
+            var variantName = BuildCache.GetString(build, "variant");
+            if (!string.IsNullOrEmpty(variantName))
+            {
+                args["variant"] = new ArgumentValue("variant", variantName, ArgumentCategory.Custom);
+                inputArgs["variant"] = args["variant"];
+            }
+
+            var inputs = build.Inputs;
+            foreach (var input in inputs)
+            {
+                var cachedValue = BuildCache.GetString(build, input.Name);
+                if (string.IsNullOrEmpty(cachedValue))
+                {
+                    inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
+                }
+                else
+                {
+                    inputArgs[input.Name] = new ArgumentValue(input.Name, Smart.Format(cachedValue, args),
+                        ArgumentCategory.Input);
+                }
+            }
+
+            switch (mode)
+            {
+                case BuildMode.Preview:
+                    inputArgs["mode"] = new ArgumentValue("mode", "preview", ArgumentCategory.Custom);
+                    break;
+                case BuildMode.Configure:
+                    inputArgs["mode"] = new ArgumentValue("mode", "configure", ArgumentCategory.Custom);
+                    break;
+            }
+
+            var report = BuildPlayer.Execute(build, inputArgs);
+            if (mode == BuildMode.Configure)
+            {
+                ExecuteBuild(BuildMode.Preview);
+            }
+            else
+            {
+                RenderReport(build, report);
+            }
+        }
+
+        private void RenderVariants(BuildInfo build)
+        {
+            var variantField = this.VariantField();
+
+            if (string.IsNullOrEmpty(variantField.value))
+            {
+                variantField.choices = BaseVariants.Concat(build.Variants).ToList();
+                variantField.SetValueWithoutNotify(variantField.choices.First());
+                variantField.RegisterValueChangedCallback(e => { ExecuteBuild(BuildMode.Preview); });
+            }
+
+            var selectedVariant = variantField.value;
+            if (selectedVariant == "Auto")
+            {
+                selectedVariant = build.Name;
+            }
+
+            BuildCache.SetString(build, "variant", selectedVariant);
+        }
 
         private void RenderReport(BuildInfo build, BuildPlayer.Report report)
         {
             var preview = rootVisualElement.Q("preview");
             preview.RemoveChildren();
 
-            foreach (var property in report.Properties)
+            if (report != null)
             {
-                preview.Add(CreateItem(property.Name, property.Value));
+                foreach (var property in report.Properties)
+                {
+                    preview.Add(CreateItem(property.Name, property.Value));
+                }
             }
 
             #region Args
@@ -176,10 +237,6 @@ namespace AppBuilder.UI
 
         private void RenderArgs(BuildInfo build, BuildPlayer.Report report)
         {
-            var inputs = build.Inputs
-                .Select(attr => attr.Name)
-                .ToDictionary(key => key, key => string.Empty);
-
             var argsContainer = rootVisualElement.Q("args");
             argsContainer.RemoveChildren();
 
@@ -189,8 +246,10 @@ namespace AppBuilder.UI
             var inputContainer = rootVisualElement.Q("input");
             inputContainer.RemoveChildren();
 
-            report.Args.RemoveUnityArgs();
+            if (report == null) return;
 
+
+            report.Args.RemoveUnityArgs();
             foreach (var arg in report.Args)
             {
                 switch (arg.Value.Category)
@@ -209,7 +268,11 @@ namespace AppBuilder.UI
                             Input = BuildCache.GetString(build, arg.Key),
                             Value = arg.Value
                         };
-                        inputComponent.RegisterValueChangedCallback(e => { });
+                        inputComponent.RegisterValueChangedCallback(e =>
+                        {
+                            BuildCache.SetString(build, arg.Key, e.newValue);
+                            ExecuteBuild(BuildMode.Preview);
+                        });
                         inputContainer.Add(inputComponent);
                         break;
                     default:
@@ -219,191 +282,6 @@ namespace AppBuilder.UI
                         });
                         break;
                 }
-            }
-        }
-
-
-        private void SelectBuild(string buildName)
-        {
-            if (!_builds.TryGetValue(buildName, out var build)) return;
-            _selectedBuild = buildName;
-
-            var inputs = build.Inputs;
-
-            string GetPrefsKey(MethodInfo method, InputAttribute arg)
-            {
-                return $"SAVED_{method.Name}_{arg.Name}";
-            }
-
-            var savedArgs = inputs.Select(arg =>
-                {
-                    return (key: arg.Name, value: PlayerPrefs.GetString(GetPrefsKey(build.Method, arg)));
-                })
-                .Where(arg => !string.IsNullOrEmpty(arg.value))
-                .ToDictionary(arg => arg.key, arg => arg.value);
-
-            var variants = build.Variants;
-
-            var variantField = rootVisualElement.Q<DropdownField>("variant-field");
-            if (!variants.Any())
-            {
-                variantField.visible = false;
-            }
-            else
-            {
-                variantField.visible = true;
-                var choices = new List<string>() {"Auto"};
-                choices.AddRange(variants);
-                variantField.choices = choices;
-                // variantField.value = variantField.choices.First(); //todo: or default or saved
-
-                variantField.RegisterValueChangedCallback(e =>
-                {
-                    if (_context != null)
-                    {
-                        var variant = e.newValue;
-                        if (string.IsNullOrEmpty(e.newValue))
-                        {
-                            variant = variantField.choices.First();
-                            variantField.SetValueWithoutNotify(variant);
-                        }
-
-                        if (variant.Equals("Auto"))
-                        {
-                            variant = build.Name;
-                        }
-
-                        _context.Args["variant"] = variant;
-                        _context.Args["outputPath"] =
-                            Smart.Format(PlayerPrefs.GetString($"{build.Name}_outputPath"), _context.Args);
-                        RefreshPreview();
-                    }
-                });
-                // if (variantField.value.Equals("Auto"))
-                // {
-                //     savedArgs["variant"] = build.Name;
-                // }
-                // else
-                // {
-                //     savedArgs["variant"] = variantField.value;
-                // }
-            }
-
-            // ApplyPreview(build, BuildPlayer.Preview(build, savedArgs));
-        }
-
-        private void RefreshPreview(BuildInfo build = null, PreviewContext context = null)
-        {
-            if (build == null && !_builds.TryGetValue(_selectedBuild, out build)) return;
-            context ??= _context;
-            if (context == null) return;
-
-            using (BuildPlayer.Preview(build, context.Args, out var newContext))
-            {
-                ApplyPreview(build, newContext);
-            }
-        }
-
-        private void ApplyPreview(BuildInfo build, PreviewContext context)
-        {
-            _context = context;
-
-            var preview = rootVisualElement.Q("preview");
-            preview.RemoveChildren();
-
-            foreach (var property in context.Properties)
-            {
-                preview.Add(CreateItem(property.Name, property.Value));
-            }
-
-            #region Args
-
-            RenderArgs(build, context);
-
-            #endregion
-
-            VisualElement CreateItem(string label, string text)
-            {
-                var itemContainer = new VisualElement()
-                {
-                    style =
-                    {
-                        flexDirection = FlexDirection.Row,
-                        justifyContent = Justify.SpaceBetween
-                    }
-                };
-                itemContainer.Add(new Label(label));
-                itemContainer.Add(new Label(text.Replace("\\", "/")));
-                return itemContainer;
-            }
-        }
-
-        private void RenderArgs(BuildInfo build, PreviewContext context)
-        {
-            var inputs = build.Inputs
-                .Select(attr => attr.Name)
-                .ToDictionary(key => key, key => string.Empty);
-
-            var argsContainer = rootVisualElement.Q("args");
-            argsContainer.RemoveChildren();
-
-            // context.Args.RemoveUnityArgs();
-
-            // context.Args.Merge(inputs);
-
-            foreach (var arg in context.Args)
-            {
-                if (inputs.ContainsKey(arg.Key))
-                {
-                    var prefsKey = $"{build.Name}_{arg.Key}";
-
-                    var savedInput = PlayerPrefs.GetString(prefsKey, string.Empty);
-
-                    string GetInputToArg(string input)
-                    {
-                        string str = string.Empty;
-                        try
-                        {
-                            str = Smart.Format(input, context.Args);
-                        }
-                        catch (FormattingException e)
-                        {
-                            str = "formatting error! check error log";
-                            Debug.LogError(e);
-                        }
-
-                        return str;
-                    }
-
-                    var value = GetInputToArg(savedInput);
-                    var argComponent = new Argument(arg.Key)
-                    {
-                        IsInput = true,
-                        IsFolder = true,
-                        Input = savedInput,
-                        Value = value
-                    };
-                    argComponent.RegisterValueChangedCallback(e =>
-                    {
-                        PlayerPrefs.SetString(prefsKey, e.newValue);
-                        context.Args[arg.Key] = GetInputToArg(e.newValue);
-                        RefreshPreview(build, context);
-                    });
-                    argsContainer.Add(argComponent);
-                    inputs[arg.Key] = value;
-                }
-                else
-                {
-                    argsContainer.Add(new Argument(arg.Key)
-                    {
-                        Value = arg.Value
-                    });
-                }
-            }
-
-            foreach (var input in inputs)
-            {
-                context.Args[input.Key] = input.Value;
             }
         }
     }

@@ -29,7 +29,11 @@ namespace AppBuilder
 
         public string ProductName
         {
-            set => PlayerSettings.productName = value;
+            set
+            {
+                Recorder.Enqueue(() => PlayerSettings.productName = value,
+                    new BuildProperty("ProductName", value));
+            }
         }
 
         public override string ToString()
@@ -146,7 +150,7 @@ namespace AppBuilder
             var output = Resources.Load<OptionsScriptableObject<TConfig>>(path);
             output.Value = source.Value;
             output.Json = !string.IsNullOrEmpty(withJson) ? withJson : null;
-            output.Save(); 
+            output.Save();
         }
     }
 }

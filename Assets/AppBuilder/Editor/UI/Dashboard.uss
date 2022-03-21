@@ -1,3 +1,8 @@
+:colors {
+    --red: #FF0F55;
+    --blue: #0294FE;
+}
+
 .section {
     margin-bottom: 15px;
 }
@@ -17,9 +22,15 @@
 .section .section-content {
 }
 
-.top-border {
+.top-border-red {
     border-top-width: 2px;
-    border-top-color: slateblue;
+    border-top-color: var(--red);
+    padding-top: 5px;
+}
+
+.top-border-blue {
+    border-top-width: 2px;
+    border-top-color: var(--blue);
     padding-top: 5px;
 }
 
