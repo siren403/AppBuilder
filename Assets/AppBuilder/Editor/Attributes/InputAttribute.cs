@@ -57,4 +57,12 @@ namespace AppBuilder
             Options = InputOptions.None;
         }
     }
+
+    public class InputVariantAttribute : InputAttribute
+    {
+        public InputVariantAttribute(string name, params string[] values) : base(name, values)
+        {
+            
+        }
+    }
 }

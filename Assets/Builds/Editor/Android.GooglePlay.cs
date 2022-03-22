@@ -6,8 +6,8 @@ namespace Builds
 {
     public static partial class Android
     {
-        [Build]
-        [Input("variant", new[] {"GooglePlay", "GooglePlay.dev"})]
+        [Build("Name.GooglePlay")]
+        [InputVariant("variant", "GooglePlay", "GooglePlay.dev")]
         [Input("outputPath", InputOptions.Directory)]
         [InputFile("keystore", "keystore")]
         [Input("keystore.passwd")]
@@ -24,7 +24,6 @@ namespace Builds
                 ctx.GetConfiguration<AppSettings>()
                     .WriteScriptable("AppSettings");
 
-
                 builder.OutputPath = ctx.GetArgument("outputPath");
                 builder.ProductName = $"{ctx.GetSection<string>("ProductName")}-{ctx.GetArgument("variant")}";
 
@@ -34,13 +33,13 @@ namespace Builds
                 if (scenes.Any()) builder.Scenes = scenes;
                 else builder.UsingEnableEditorScenes();
 
-                builder.ConfigureAndroid(_ =>
+                builder.ConfigureAndroid(android =>
                 {
-                    _.PackageName(ctx.GetSection<string>("Package"));
-                    _.IL2CPP();
-                    _.Architectures(AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64);
-                    _.SupportEmulator();
-                    _.EnableKeystore(ctx.TryGetArgument("keystore", out var keystorePath),
+                    android.PackageName(ctx.GetSection<string>("Package"));
+                    android.IL2CPP();
+                    android.Architectures(AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64);
+                    android.SupportEmulator();
+                    android.EnableKeystore(ctx.TryGetArgument("keystore", out var keystorePath),
                         keystorePath,
                         ctx.GetArgument("keystore.passwd"),
                         ctx.GetArgument("keystore.alias"),

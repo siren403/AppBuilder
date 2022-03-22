@@ -15,14 +15,15 @@ TextInput {
 
 #key {
     flex-shrink: 1;
-    min-width: 80px;
+    min-width: 150px;
     justify-content: center;
 }
-
-#value {
+#content {
     flex-shrink: 6;
-    display: none;
     flex-grow: 1;
+}
+#value {
+    display: none;
     -unity-text-align: middle-right;
 }
 
@@ -33,7 +34,6 @@ TextInput {
 #input {
     flex-direction: row;
     display: none;
-    flex-grow: 1;
 }
 
 .input #input {
@@ -46,7 +46,7 @@ TextInput {
     flex-grow: 1;
 }
 
-#input > TextField >TextInput {
+#input > TextField > TextInput {
     -unity-text-align: middle-right;
 }
 
@@ -87,7 +87,6 @@ TextInput {
 
 #dropdown {
     display: none;
-    flex-grow: 1;
 }
 
 #dropdown > DropdownField {

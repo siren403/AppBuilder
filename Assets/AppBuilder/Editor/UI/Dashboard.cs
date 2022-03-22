@@ -188,7 +188,7 @@ namespace AppBuilder.UI
                             section.AddToClassList("section");
 
                             var head = new Label(property.Name);
-                            head.AddToClassList("section-head-2");
+                            head.AddToClassList("section-head");
                             section.Add(head);
 
                             preview.Add(section);
@@ -198,7 +198,12 @@ namespace AppBuilder.UI
                             break;
                         default:
                             var parent = section ?? preview;
-                            parent.Add(CreateItem(property.Name, property.Value));
+                            // parent.Add(CreateItem(property.Name, property.Value));
+                            parent.Add(new SettingProperty()
+                            {
+                                Key = property.Name,
+                                Value = property.Value
+                            });
                             break;
                     }
                 }
@@ -209,21 +214,6 @@ namespace AppBuilder.UI
             RenderArgs(build, report);
 
             #endregion
-
-            VisualElement CreateItem(string label, string text)
-            {
-                var itemContainer = new VisualElement()
-                {
-                    style =
-                    {
-                        flexDirection = FlexDirection.Row,
-                        justifyContent = Justify.SpaceBetween
-                    }
-                };
-                itemContainer.Add(new Label(label));
-                itemContainer.Add(new Label(text.Replace("\\", "/")).EnableTextTooltip());
-                return itemContainer;
-            }
         }
 
         private void RenderArgs(BuildInfo build, BuildPlayer.Report report)

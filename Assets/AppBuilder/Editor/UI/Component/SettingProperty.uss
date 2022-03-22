@@ -1,0 +1,39 @@
+.debug #root {
+    border-width: 1px;
+    border-color: brown;
+}
+
+#root {
+    flex-direction: row;
+}
+
+#key {
+    
+}
+
+#value-container {
+    flex-shrink: 1;
+    flex-grow: 1;
+    margin-left: 5px;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#value-container > Toggle {
+    display: none;
+    margin: 0;
+    margin-right: 3px;
+}
+
+.boolean #value-container > Toggle {
+    display: flex;
+}
+
+#label-value {
+    overflow: hidden;
+    display: none;
+}
+
+.string #label-value {
+    display: flex;
+}

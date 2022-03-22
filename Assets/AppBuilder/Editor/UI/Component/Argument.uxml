@@ -12,20 +12,22 @@
             <engine:VisualElement name="key">
                 <engine:Label text="key"/>
             </engine:VisualElement>
-            <engine:VisualElement name="value">
-                <engine:Label text="value"/>
-            </engine:VisualElement>
-            <engine:VisualElement name="input">
-                <engine:TextField text="input"/>
-                <engine:Button name="btn-folder">
-                    <engine:Image/>
-                </engine:Button>
-                <engine:Button name="btn-file">
-                    <engine:Image/>
-                </engine:Button>
-            </engine:VisualElement>
-            <engine:VisualElement name="dropdown">
-                <engine:DropdownField/>
+            <engine:VisualElement name="content">
+                <engine:VisualElement name="value">
+                    <engine:Label text="value"/>
+                </engine:VisualElement>
+                <engine:VisualElement name="input">
+                    <engine:TextField text="input"/>
+                    <engine:Button name="btn-folder">
+                        <engine:Image/>
+                    </engine:Button>
+                    <engine:Button name="btn-file">
+                        <engine:Image/>
+                    </engine:Button>
+                </engine:VisualElement>
+                <engine:VisualElement name="dropdown">
+                    <engine:DropdownField/>
+                </engine:VisualElement>
             </engine:VisualElement>
         </engine:VisualElement>
     </engine:VisualElement>

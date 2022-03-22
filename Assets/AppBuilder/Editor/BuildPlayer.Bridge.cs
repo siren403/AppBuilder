@@ -111,9 +111,10 @@ namespace AppBuilder
                     return _.GetTypes()
                         .SelectMany(t =>
                             t.GetMethods(BindingFlags.Static | BindingFlags.Public)
-                                .Select(method => (classType: t, method)))
-                        .Where(_ => _.method.GetCustomAttribute<BuildAttribute>() != null)
-                        .Select(_ => new BuildInfo(_.classType.FullName, _.method));
+                                .Select(method => (classType: t, method,
+                                    attr: method.GetCustomAttribute<BuildAttribute>())))
+                        .Where(_ => _.attr != null)
+                        .Select(_ => new BuildInfo(_.classType.FullName, _.method, _.attr.Name));
                 });
         }
     }
@@ -121,8 +122,9 @@ namespace AppBuilder
     public class BuildInfo
     {
         private readonly string _className;
-        public string Name => Method.Name;
-        public string FullName => $"{_className}.{Name}";
+        private readonly string _name;
+        public string Name => string.IsNullOrEmpty(_name) ? Method.Name : _name;
+        public string FullName => $"{_className}.{Method.Name}";
 
         /// <summary>
         /// [Argument("key", "value")]
@@ -139,6 +141,13 @@ namespace AppBuilder
         {
             _className = className;
             Method = method;
+        }
+
+        public BuildInfo(string className, MethodInfo method, string name)
+        {
+            _className = className;
+            Method = method;
+            _name = name;
         }
     }
 }

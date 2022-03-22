@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine.UIElements;
 
 namespace AppBuilder
@@ -16,6 +17,12 @@ namespace AppBuilder
         {
             label.tooltip = isEnable ? label.text : string.Empty;
             return label;
+        }
+
+        public static void SetPickingMode(this Toggle toggle, PickingMode mode)
+        {
+            toggle.pickingMode = mode;
+            toggle.Children().First().pickingMode = mode;
         }
     }
 }

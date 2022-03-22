@@ -68,5 +68,6 @@
             </engine:Instance>
         </engine:VisualElement>
         <app:ColorAndText initial-color="green" class="sample"/>
+        <app:SettingProperty class="debug sample"/>
     </engine:ScrollView>
 </engine:UXML>

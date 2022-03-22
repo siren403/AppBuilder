@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 namespace AppBuilder
 {
@@ -87,9 +88,15 @@ namespace AppBuilder
                     var key = original[i].Substring(1);
                     if (i + 1 < original.Length && !string.IsNullOrEmpty(original[i + 1]))
                     {
-                        if (!original[i + 1][0].Equals('-'))
+                        var value = original[i + 1];
+                        if (!value.StartsWith('-'))
                         {
-                            args.Add(key, new ArgumentValue(key, original[i + 1], ArgumentCategory.Command));
+                            if (!Application.isBatchMode)
+                            {
+                                value = value.Replace("\\", "/");
+                            }
+
+                            args.Add(key, new ArgumentValue(key, value, ArgumentCategory.Command));
                             i++;
                             continue;
                         }

@@ -9,7 +9,6 @@ namespace Builds
     public static partial class Android
     {
         [Build]
-        [Variants("OneStore")]
         [Input("outputPath", InputOptions.Directory)]
         public static void OneStore()
         {

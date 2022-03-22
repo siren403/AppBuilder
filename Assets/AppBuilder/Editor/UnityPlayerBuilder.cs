@@ -67,7 +67,7 @@ namespace AppBuilder
                 Recorder.Write(new BuildProperty("Scenes", BuildPropertyOptions.SectionBegin));
                 for (int i = 0; i < _buildOptions.scenes.Length; i++)
                 {
-                    Recorder.Write(new BuildProperty(string.Empty, _buildOptions.scenes[i]));
+                    Recorder.Write(new BuildProperty($"[{i}]", _buildOptions.scenes[i]));
                 }
 
                 Recorder.Write(new BuildProperty("Scenes", BuildPropertyOptions.SectionEnd));
