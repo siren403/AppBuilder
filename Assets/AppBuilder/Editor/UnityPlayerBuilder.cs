@@ -64,16 +64,21 @@ namespace AppBuilder
             }
             else
             {
-                Recorder.Write(new BuildProperty("Scenes", _buildOptions.scenes[0]));
-
-                for (int i = 1; i < _buildOptions.scenes.Length; i++)
+                Recorder.Write(new BuildProperty("Scenes", BuildPropertyOptions.SectionBegin));
+                for (int i = 0; i < _buildOptions.scenes.Length; i++)
                 {
                     Recorder.Write(new BuildProperty(string.Empty, _buildOptions.scenes[i]));
                 }
+
+                Recorder.Write(new BuildProperty("Scenes", BuildPropertyOptions.SectionEnd));
             }
 
-            Recorder.Write("BuildTarget", _buildOptions.target.ToString());
-            Recorder.Write("BuildTargetGroup", _buildOptions.targetGroup.ToString());
+            using (Recorder.Section("Target"))
+            {
+                Recorder.Write("BuildTarget", _buildOptions.target.ToString());
+                Recorder.Write("BuildTargetGroup", _buildOptions.targetGroup.ToString());
+            }
+
             Recorder.Write("OutputPath", _buildOptions.locationPathName);
 
             return new BuildExecutor(_buildOptions, Recorder.Export());

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   optionsValue:
     Host: 127.0.0.1
-    Package: com.siren.appbuilder
-    Platform: 0
+    Package: com.appbuilder.googleplay
+    Platform: 1
     Speed: 1
   json: 

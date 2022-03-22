@@ -131,7 +131,7 @@ namespace AppBuilder
         /// </summary>
         public IEnumerable<InputAttribute> Inputs => Method.GetCustomAttributes<InputAttribute>();
 
-        public string[] Variants => Method.GetCustomAttribute<VariantsAttribute>()?.Keys ?? Array.Empty<string>();
+        // public string[] Variants => Method.GetCustomAttribute<VariantsAttribute>()?.Keys ?? Array.Empty<string>();
 
         public MethodInfo Method { get; }
 

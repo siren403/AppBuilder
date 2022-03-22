@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -12,7 +13,14 @@ namespace AppBuilder.UI
 
         public static void SetString(BuildInfo build, string key, string value)
         {
-            PlayerPrefs.SetString(build.GetKey(key), value);
+            if (string.IsNullOrEmpty(value))
+            {
+                PlayerPrefs.DeleteKey(build.GetKey(key));
+            }
+            else
+            {
+                PlayerPrefs.SetString(build.GetKey(key), value);
+            }
         }
 
         public static string GetString(BuildInfo build, string key, string defaultValue = null)
@@ -25,9 +33,6 @@ namespace AppBuilder.UI
     {
         public static DropdownField BuildField(this Dashboard window) =>
             window.rootVisualElement.Q<DropdownField>("build-field");
-
-        public static DropdownField VariantField(this Dashboard window) =>
-            window.rootVisualElement.Q<DropdownField>("variant-field");
     }
 
     public enum BuildMode
@@ -132,17 +137,7 @@ namespace AppBuilder.UI
         {
             if (!TryGetSelectedBuild(out var build)) return;
 
-            RenderVariants(build);
-
-            var args = BuildPlayer.GetReservedArguments();
             var inputArgs = new Arguments();
-
-            var variantName = BuildCache.GetString(build, "variant");
-            if (!string.IsNullOrEmpty(variantName))
-            {
-                args["variant"] = new ArgumentValue("variant", variantName, ArgumentCategory.Custom);
-                inputArgs["variant"] = args["variant"];
-            }
 
             var inputs = build.Inputs;
             foreach (var input in inputs)
@@ -154,8 +149,7 @@ namespace AppBuilder.UI
                 }
                 else
                 {
-                    inputArgs[input.Name] = new ArgumentValue(input.Name, Smart.Format(cachedValue, args),
-                        ArgumentCategory.Input);
+                    inputArgs[input.Name] = new ArgumentValue(input.Name, cachedValue, ArgumentCategory.Input);
                 }
             }
 
@@ -170,34 +164,11 @@ namespace AppBuilder.UI
             }
 
             var report = BuildPlayer.Execute(build, inputArgs);
+            RenderReport(build, report);
             if (mode == BuildMode.Configure)
             {
                 ExecuteBuild(BuildMode.Preview);
             }
-            else
-            {
-                RenderReport(build, report);
-            }
-        }
-
-        private void RenderVariants(BuildInfo build)
-        {
-            var variantField = this.VariantField();
-
-            if (string.IsNullOrEmpty(variantField.value))
-            {
-                variantField.choices = BaseVariants.Concat(build.Variants).ToList();
-                variantField.SetValueWithoutNotify(variantField.choices.First());
-                variantField.RegisterValueChangedCallback(e => { ExecuteBuild(BuildMode.Preview); });
-            }
-
-            var selectedVariant = variantField.value;
-            if (selectedVariant == "Auto")
-            {
-                selectedVariant = build.Name;
-            }
-
-            BuildCache.SetString(build, "variant", selectedVariant);
         }
 
         private void RenderReport(BuildInfo build, BuildPlayer.Report report)
@@ -207,9 +178,29 @@ namespace AppBuilder.UI
 
             if (report != null)
             {
+                VisualElement section = null;
                 foreach (var property in report.Properties)
                 {
-                    preview.Add(CreateItem(property.Name, property.Value));
+                    switch (property.Options)
+                    {
+                        case BuildPropertyOptions.SectionBegin:
+                            section = new VisualElement();
+                            section.AddToClassList("section");
+
+                            var head = new Label(property.Name);
+                            head.AddToClassList("section-head-2");
+                            section.Add(head);
+
+                            preview.Add(section);
+                            break;
+                        case BuildPropertyOptions.SectionEnd:
+                            section = null;
+                            break;
+                        default:
+                            var parent = section ?? preview;
+                            parent.Add(CreateItem(property.Name, property.Value));
+                            break;
+                    }
                 }
             }
 
@@ -230,7 +221,7 @@ namespace AppBuilder.UI
                     }
                 };
                 itemContainer.Add(new Label(label));
-                itemContainer.Add(new Label(text.Replace("\\", "/")));
+                itemContainer.Add(new Label(text.Replace("\\", "/")).EnableTextTooltip());
                 return itemContainer;
             }
         }
@@ -248,6 +239,7 @@ namespace AppBuilder.UI
 
             if (report == null) return;
 
+            var inputs = build.Inputs.ToDictionary(i => i.Name, i => i);
 
             report.Args.RemoveUnityArgs();
             foreach (var arg in report.Args)
@@ -257,27 +249,67 @@ namespace AppBuilder.UI
                     case ArgumentCategory.Custom:
                         customContainer.Add(new Argument(arg.Key)
                         {
+                            IsValue = true,
                             Value = arg.Value
                         });
                         break;
                     case ArgumentCategory.Input:
-                        var inputComponent = new Argument(arg.Key)
+                        if (!inputs.TryGetValue(arg.Key, out var input)) continue;
+                        var inputComponent = new Argument(arg.Key);
+                        switch (input.Options)
                         {
-                            IsInput = true,
-                            IsFolder = true,
-                            Input = BuildCache.GetString(build, arg.Key),
-                            Value = arg.Value
-                        };
-                        inputComponent.RegisterValueChangedCallback(e =>
-                        {
-                            BuildCache.SetString(build, arg.Key, e.newValue);
-                            ExecuteBuild(BuildMode.Preview);
-                        });
+                            case InputOptions.Directory:
+                                inputComponent.IsInput = true;
+                                inputComponent.IsFolder = true;
+                                inputComponent.Value = BuildCache.GetString(build, arg.Key, arg.Value);
+                                inputComponent.RegisterInputChangedCallback(e =>
+                                {
+                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    ExecuteBuild(BuildMode.Preview);
+                                });
+                                break;
+                            case InputOptions.File:
+                                inputComponent.IsInput = true;
+                                inputComponent.IsFile = true;
+                                inputComponent.FileExtension = input.Extension;
+                                inputComponent.Value = BuildCache.GetString(build, arg.Key, arg.Value);
+                                inputComponent.RegisterInputChangedCallback(e =>
+                                {
+                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    ExecuteBuild(BuildMode.Preview);
+                                });
+                                break;
+                            case InputOptions.Dropdown:
+                                inputComponent.IsDropdown = true;
+                                inputComponent.Choices = new List<string>()
+                                {
+                                    "None",
+                                    // "Auto"
+                                }.Concat(input.Values).ToList();
+                                inputComponent.Value = BuildCache.GetString(build, arg.Key, "None");
+                                inputComponent.RegisterDropdownChangedCallback(e =>
+                                {
+                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    ExecuteBuild(BuildMode.Preview);
+                                });
+                                break;
+                            default:
+                                inputComponent.IsInput = true;
+                                inputComponent.Value = BuildCache.GetString(build, arg.Key, input.Value);
+                                inputComponent.RegisterInputChangedCallback(e =>
+                                {
+                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    ExecuteBuild(BuildMode.Preview);
+                                });
+                                break;
+                        }
+
                         inputContainer.Add(inputComponent);
                         break;
                     default:
                         argsContainer.Add(new Argument(arg.Key)
                         {
+                            IsValue = true,
                             Value = arg.Value
                         });
                         break;

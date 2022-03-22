@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace AppBuilder.UI
 {
-    public static class Smart
+    public static class String
     {
         /// <summary>
         /// in -> a/b/{c}

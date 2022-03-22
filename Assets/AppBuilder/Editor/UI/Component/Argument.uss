@@ -1,5 +1,12 @@
-#root {
+.debug * {
+    border-width: 1px;
+    border-color: slateblue;
 }
+
+TextInput {
+    padding: 0;
+}
+
 #data {
     flex-direction: row;
     justify-content: space-between;
@@ -8,26 +15,39 @@
 
 #key {
     flex-shrink: 1;
+    min-width: 80px;
+    justify-content: center;
 }
 
 #value {
     flex-shrink: 6;
+    display: none;
+    flex-grow: 1;
+    -unity-text-align: middle-right;
 }
 
+.value #value {
+    display: flex;
+}
 
 #input {
-    margin-top: 2px;
     flex-direction: row;
-    justify-content: flex-start;
-}
-.input #input {
     display: none;
+    flex-grow: 1;
+}
+
+.input #input {
+    display: flex;
 }
 
 #input > TextField {
     margin: 0;
     flex-shrink: 1;
     flex-grow: 1;
+}
+
+#input > TextField >TextInput {
+    -unity-text-align: middle-right;
 }
 
 
@@ -41,13 +61,45 @@
     margin: 0;
     display: none;
 }
-#btn-folder > Image{
+
+#btn-folder > Image {
     --unity-image: resource("d_Folder Icon");
     height: 15px;
+}
+
+#btn-file {
+    margin: 0;
+    display: none;
+}
+#btn-file > Image {
+    --unity-image: resource("winbtn_win_max@2x");
+    height: 15px;
+    background-color: white;
 }
 
 .folder #btn-folder {
     display: flex;
 }
 
+.file #btn-file {
+    display: flex;
+}
+
+#dropdown {
+    display: none;
+    flex-grow: 1;
+}
+
+#dropdown > DropdownField {
+    margin: 0;
+    border-width: 0;
+}
+
+#dropdown PopupTextElement {
+    -unity-text-align: middle-center;
+}
+
+.dropdown #dropdown {
+    display: flex;
+}
 

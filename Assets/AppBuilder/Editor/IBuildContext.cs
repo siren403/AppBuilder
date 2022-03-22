@@ -10,5 +10,6 @@ namespace AppBuilder
         IEnumerable<T> GetSections<T>(string key);
 
         string GetArgument(string key, string defaultValue = null);
+        bool TryGetArgument(string key, out string arg);
     }
 }

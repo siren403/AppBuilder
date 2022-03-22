@@ -72,10 +72,7 @@ namespace AppBuilder
         public void PackageName(string package)
         {
             _recorder.Enqueue(
-                () =>
-                {
-                    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, package);
-                },
+                () => { PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, package); },
                 new BuildProperty(
                     "Android:PackageName", package
                 )
@@ -90,6 +87,59 @@ namespace AppBuilder
                     "PlayerSettings:Android:optimizedFramePacing", "false"
                 )
             );
+        }
+
+        public void UseDebugKeystore()
+        {
+            _recorder.Enqueue(
+                () => { PlayerSettings.Android.useCustomKeystore = false; },
+                new BuildProperty(
+                    "PlayerSettings:Android:useCustomKeystore", "false"
+                )
+            );
+        }
+
+        public void UseCustomKeystore(string path, string passwd, string alias, string aliasPasswd)
+        {
+            _recorder.Enqueue(
+                () =>
+                {
+                    PlayerSettings.Android.useCustomKeystore = true;
+                    PlayerSettings.Android.keystoreName = path;
+                    PlayerSettings.Android.keystorePass = passwd;
+                    PlayerSettings.Android.keyaliasName = alias;
+                    PlayerSettings.Android.keyaliasPass = aliasPasswd;
+                },
+                "Keystore",
+                new BuildProperty(
+                    "PlayerSettings:Android:useCustomKeystore", "true"
+                ),
+                new BuildProperty(
+                    "PlayerSettings:Android:keystoreName", path
+                ),
+                new BuildProperty(
+                    "PlayerSettings:Android:keystorePass", passwd
+                ),
+                new BuildProperty(
+                    "PlayerSettings:Android:keyaliasName", alias
+                ),
+                new BuildProperty(
+                    "PlayerSettings:Android:keyaliasPass", aliasPasswd
+                )
+            );
+        }
+
+        public void EnableKeystore(bool isEnable, string path = null, string passwd = null, string alias = null,
+            string aliasPasswd = null)
+        {
+            if (isEnable)
+            {
+                UseCustomKeystore(path, passwd, alias, aliasPasswd);
+            }
+            else
+            {
+                UseDebugKeystore();
+            }
         }
     }
 }

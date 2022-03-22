@@ -7,24 +7,63 @@ namespace AppBuilder
 {
     public static partial class BuildPlayer
     {
-
-        public static Arguments GetReservedArguments()
-        {
-            return Environment.GetCommandLineArgs()
-                .AddReserveArguments();
-        }
-
         private static BuildScope _buildScope;
 
-        public static Report Build(Action<IBuildContext, IUnityPlayerBuilder> configuration, bool isTest = false)
+        public readonly struct ArgumentsBuilder
         {
-            var args = new Arguments();
-            args.Merge(GetReservedArguments());
-            if (_buildScope != null) //from editor
+            private readonly Arguments _arguments;
+
+            public ArgumentsBuilder(Arguments arguments)
             {
-                args.Merge(_buildScope.InputArgs);
+                _arguments = arguments;
             }
 
+            public void Add(string key, string value)
+            {
+                _arguments[key] = new ArgumentValue(key, value, ArgumentCategory.Custom);
+            }
+        }
+
+        public static Report Build(Action<ArgumentsBuilder> arguments,
+            Action<IBuildContext, IUnityPlayerBuilder> configuration)
+        {
+            var args = new Arguments();
+            arguments(new ArgumentsBuilder(args));
+
+            args.Merge(Environment.GetCommandLineArgs()
+                .AddReserveArguments());
+
+            if (_buildScope != null) //from editor
+            {
+                var inputs = _buildScope.InputArgs;
+                foreach (var input in inputs)
+                {
+                    args.Add(input.Key, input.Value.Format(args));
+                }
+            }
+
+            return Build(args, configuration);
+        }
+
+        public static Report Build(Action<IBuildContext, IUnityPlayerBuilder> configuration)
+        {
+            var args = Environment.GetCommandLineArgs()
+                .AddReserveArguments();
+
+            if (_buildScope != null) //from editor
+            {
+                var inputs = _buildScope.InputArgs;
+                foreach (var input in inputs)
+                {
+                    args.Add(input.Key, input.Value.Format(args));
+                }
+            }
+
+            return Build(args, configuration);
+        }
+
+        private static Report Build(Arguments args, Action<IBuildContext, IUnityPlayerBuilder> configuration)
+        {
             Debug.Log(args);
             var context = new UnityBuildContext(args);
             var builder = new UnityPlayerBuilder();
@@ -34,10 +73,12 @@ namespace AppBuilder
 
             if (args.TryGetValue("mode", out var mode))
             {
+                args.Remove("mode");
                 if (mode == "preview")
                 {
                     return Complete(new Report(context, builder));
                 }
+
                 if (mode == "configure")
                 {
                     executor.Configure();

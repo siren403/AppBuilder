@@ -11,5 +11,11 @@ namespace AppBuilder
                 element.RemoveAt(i);
             }
         }
+
+        public static Label EnableTextTooltip(this Label label, bool isEnable = true)
+        {
+            label.tooltip = isEnable ? label.text : string.Empty;
+            return label;
+        }
     }
 }

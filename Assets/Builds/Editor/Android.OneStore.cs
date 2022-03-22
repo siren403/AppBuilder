@@ -10,7 +10,7 @@ namespace Builds
     {
         [Build]
         [Variants("OneStore")]
-        [Input("outputPath", ArgumentOptions.Directory)]
+        [Input("outputPath", InputOptions.Directory)]
         public static void OneStore()
         {
             BuildPlayer.Build((ctx, builder) =>
@@ -34,7 +34,7 @@ namespace Builds
                     _.Architectures(AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64);
                     _.SupportEmulator();
                 });
-            }, false);
+            });
         }
     }
 }

@@ -14,6 +14,12 @@ namespace AppBuilder
         {
             Args = args;
             var variant = args.ContainsKey("variant") ? args["variant"] : string.Empty;
+            variant = variant switch
+            {
+                "None" => string.Empty,
+                // "Auto" => args.TryGetValue("BuildName", out var buildName) ? buildName : string.Empty,
+                _ => variant
+            };
             _appSettings = LoadAppSettings(AppSettingsDirectory, variant);
         }
 
@@ -98,6 +104,18 @@ namespace AppBuilder
             }
 
             return defaultValue ?? string.Empty;
+        }
+
+        public bool TryGetArgument(string key, out string arg)
+        {
+            if (Args.TryGetValue(key, out var value))
+            {
+                arg = value.Value;
+                return true;
+            }
+
+            arg = null;
+            return false;
         }
     }
 }

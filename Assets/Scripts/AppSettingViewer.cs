@@ -14,6 +14,7 @@ public class AppSettingViewer : MonoBehaviour
     [SerializeField] private float distance = 2;
 
     [field: SerializeField] public int A;
+
     private void Awake()
     {
         var appSettings = Resources.Load<AppSettingsScriptableObject>(path);
@@ -29,6 +30,7 @@ public class AppSettingViewer : MonoBehaviour
             container.Add(new Label($"[AppId] {appid}"));
         }
 
+        container.Add(new Label($"[Platform] {appSettings.Value.Platform.ToString()}"));
         switch (appSettings.Value.Platform)
         {
             case Platform.OneStore:
