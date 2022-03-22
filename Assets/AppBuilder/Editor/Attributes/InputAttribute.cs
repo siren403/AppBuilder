@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace AppBuilder
 {
@@ -62,7 +63,17 @@ namespace AppBuilder
     {
         public InputVariantAttribute(string name, params string[] values) : base(name, values)
         {
-            
+        }
+    }
+
+    /// <summary>
+    /// key: appsettings
+    /// </summary>
+    public class AppSettings : InputAttribute
+    {
+        public AppSettings() : base("appsettings")
+        {
+            Options = InputOptions.Directory;
         }
     }
 }

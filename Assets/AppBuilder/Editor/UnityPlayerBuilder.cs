@@ -36,6 +36,17 @@ namespace AppBuilder
             }
         }
 
+        public BuildTarget Target
+        {
+            get => _buildOptions.target;
+            set => _buildOptions.target = value;
+        }
+
+        public BuildTargetGroup TargetGroup
+        {
+            set => _buildOptions.targetGroup = value;
+        }
+
         public override string ToString()
         {
             return Recorder.ToString();
@@ -140,8 +151,8 @@ namespace AppBuilder
     {
         public void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration)
         {
-            _buildOptions.target = BuildTarget.Android;
-            _buildOptions.targetGroup = BuildTargetGroup.Android;
+            Target = BuildTarget.Android;
+            TargetGroup = BuildTargetGroup.Android;
             var builder = new AndroidSettingsBuilder(Recorder);
             configuration(builder);
         }

@@ -101,7 +101,10 @@ namespace AppBuilder
 
             var unityReport = executor.Execute();
             //todo: BatchMode -> Revert? builder.Revert()
-            EditorUtility.RevealInFinder(Path.GetDirectoryName(unityReport.summary.outputPath));
+            if (!Application.isBatchMode)
+            {
+                EditorUtility.RevealInFinder(unityReport.summary.outputPath);
+            }
 
             return Complete(new Report(context, builder, unityReport));
 

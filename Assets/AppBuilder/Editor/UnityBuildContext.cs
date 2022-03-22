@@ -7,6 +7,9 @@ namespace AppBuilder
 {
     public class UnityBuildContext : IBuildContext
     {
+        private static string DefaultAppSettingsDirectory =>
+            Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Builds");
+
         public readonly Arguments Args;
         private readonly JObject _appSettings;
 
@@ -20,7 +23,7 @@ namespace AppBuilder
                 // "Auto" => args.TryGetValue("BuildName", out var buildName) ? buildName : string.Empty,
                 _ => variant
             };
-            _appSettings = LoadAppSettings(AppSettingsDirectory, variant);
+            _appSettings = LoadAppSettings(GetAppSettingsDirectory(args), variant);
         }
 
         private JObject LoadAppSettings(string directory, string variant = null)
@@ -33,6 +36,10 @@ namespace AppBuilder
             {
                 using var baseSettingReader = new StreamReader(baseSettingsPath);
                 settings = JObject.Parse(baseSettingReader.ReadToEnd());
+            }
+            else
+            {
+                throw new DirectoryNotFoundException();
             }
 
             if (!string.IsNullOrEmpty(variant))
@@ -57,13 +64,14 @@ namespace AppBuilder
             return settings ?? new JObject();
         }
 
-        public string AppSettingsDirectory
+        private string GetAppSettingsDirectory(Arguments arguments)
         {
-            get
+            if (arguments.TryGetValue("appsettings", out var value))
             {
-                //todo: args, player prefs
-                return Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Builds");
+                return value;
             }
+
+            return DefaultAppSettingsDirectory;
         }
 
         public IOptions<T> GetConfiguration<T>() where T : class
