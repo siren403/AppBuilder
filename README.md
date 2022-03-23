@@ -3,7 +3,7 @@ AppBuilder
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
+- [Getting started](#getting-started)
 - [Dashboard](#dashboard)
 - [Attributes](#attributes-for-dashboard)
 - [AppSettings](#appsettings)
@@ -13,8 +13,13 @@ AppBuilder
 - [Platform Configure](#platform-configure)
   
 
-Quick Start
+Getting started
 ---
+
+Unity PackageManager > Add package from git URL
+
+`https://github.com/qkrsogusl3/AppBuilder.git?path=/Assets/AppBuilder`
+
 ```csharp
 namespace Builds
 {
