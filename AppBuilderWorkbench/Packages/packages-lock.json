@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.qkrsogusl3.appbuilder": {
-      "version": "file:D:/workspace/unity/AppBuilder/Package",
+      "version": "file:../../Package",
       "depth": 0,
       "source": "local",
       "dependencies": {
