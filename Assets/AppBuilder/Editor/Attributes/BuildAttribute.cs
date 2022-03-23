@@ -5,11 +5,11 @@ namespace AppBuilder
     [AttributeUsage(AttributeTargets.Method)]
     public class BuildAttribute : Attribute
     {
-        public string Name { get; }
+        public string DisplayName { get; }
 
-        public BuildAttribute(string name = null)
+        public BuildAttribute(string displayName = null)
         {
-            Name = name;
+            DisplayName = displayName;
         }
     }
 }

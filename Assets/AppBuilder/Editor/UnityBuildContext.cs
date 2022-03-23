@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
+using UnityEngine;
 
 namespace AppBuilder
 {
@@ -39,7 +41,7 @@ namespace AppBuilder
             }
             else
             {
-                throw new DirectoryNotFoundException();
+                Debug.LogError("not found appsettings.json directory");
             }
 
             if (!string.IsNullOrEmpty(variant))
@@ -86,22 +88,62 @@ namespace AppBuilder
 
         public T GetSection<T>(string key)
         {
-            if (_appSettings.TryGetValue(key, out var token))
+            if (TryGetSection<T>(key, out var result))
             {
-                return token.Value<T>();
+                return result;
             }
 
             return default;
         }
 
-        public IEnumerable<T> GetSections<T>(string key)
+        public bool TryGetSection<T>(string key, out T result)
         {
             if (_appSettings.TryGetValue(key, out var token))
             {
-                return token.Values<T>();
+                if (token.Type == JTokenType.Object)
+                {
+                    result = token.ToObject<T>();
+                }
+                else
+                {
+                    result = token.Value<T>();
+                }
+
+                return true;
+            }
+
+            result = default;
+            return false;
+        }
+
+        public IEnumerable<T> GetSections<T>(string key)
+        {
+            if (TryGetSections<T>(key, out var result))
+            {
+                return result;
             }
 
             return Array.Empty<T>();
+        }
+
+        public bool TryGetSections<T>(string key, out IEnumerable<T> result)
+        {
+            if (_appSettings.TryGetValue(key, out var token))
+            {
+                if (token.First().Type == JTokenType.Object)
+                {
+                    result = token.Select(t => t.ToObject<T>());
+                }
+                else
+                {
+                    result = token.Values<T>();
+                }
+
+                return true;
+            }
+
+            result = null;
+            return false;
         }
 
         public string GetArgument(string key, string defaultValue = null)

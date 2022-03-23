@@ -16,7 +16,7 @@ namespace Builds
 
                 builder.OutputPath = ctx.GetArgument("customBuildPath", string.Empty);
 
-                builder.UsingEnableEditorScenes();
+                builder.UseEnableEditorScenes();
 
                 builder.ConfigureAndroid(_ =>
                 {

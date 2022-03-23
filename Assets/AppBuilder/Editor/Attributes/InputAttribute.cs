@@ -26,23 +26,23 @@ namespace AppBuilder
             Options = options;
         }
 
-        public InputAttribute(string name, string[] values)
-        {
-            Name = name;
-            Values = values;
-            Options = InputOptions.Dropdown;
-        }
-
         public InputAttribute(string name)
         {
             Name = name;
             Options = InputOptions.None;
         }
+
+        public InputAttribute(string name, string defaultValue = null)
+        {
+            Name = name;
+            Value = defaultValue ?? string.Empty;
+            Options = InputOptions.None;
+        }
     }
 
-    public class InputFileAttribute : InputAttribute
+    public class FileAttribute : InputAttribute
     {
-        public InputFileAttribute(string name, string extension = "*") : base(name)
+        public FileAttribute(string name, string extension = "*") : base(name)
         {
             Name = name;
             Extension = extension;
@@ -50,28 +50,30 @@ namespace AppBuilder
         }
     }
 
-    public class InputStringAttribute : InputAttribute
+    public class DirectoryAttribute : InputAttribute
     {
-        public InputStringAttribute(string name, string defaultValue = null) : base(name)
+        public DirectoryAttribute(string name) : base(name)
         {
-            Value = defaultValue ?? string.Empty;
-            Options = InputOptions.None;
+            Name = name;
+            Options = InputOptions.Directory;
         }
     }
 
-    public class InputVariantAttribute : InputAttribute
+    public class VariantAttribute : InputAttribute
     {
-        public InputVariantAttribute(string name, params string[] values) : base(name, values)
+        public VariantAttribute(params string[] values) : base("variant")
         {
+            Values = values;
+            Options = InputOptions.Dropdown;
         }
     }
 
     /// <summary>
     /// key: appsettings
     /// </summary>
-    public class AppSettings : InputAttribute
+    public class AppSettingsAttribute : InputAttribute
     {
-        public AppSettings() : base("appsettings")
+        public AppSettingsAttribute() : base("appsettings")
         {
             Options = InputOptions.Directory;
         }

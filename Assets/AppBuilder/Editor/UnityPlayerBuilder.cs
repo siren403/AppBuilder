@@ -47,6 +47,17 @@ namespace AppBuilder
             set => _buildOptions.targetGroup = value;
         }
 
+        public void Display(params (string key, string value)[] pairs)
+        {
+            using (Recorder.Section("Display"))
+            {
+                foreach (var (key, value) in pairs)
+                {
+                    Recorder.Write(new BuildProperty(key, value));
+                }
+            }
+        }
+
         public override string ToString()
         {
             return Recorder.ToString();
@@ -151,10 +162,13 @@ namespace AppBuilder
     {
         public void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration)
         {
-            Target = BuildTarget.Android;
-            TargetGroup = BuildTargetGroup.Android;
-            var builder = new AndroidSettingsBuilder(Recorder);
-            configuration(builder);
+            using (Recorder.Section("Android"))
+            {
+                Target = BuildTarget.Android;
+                TargetGroup = BuildTargetGroup.Android;
+                var builder = new AndroidSettingsBuilder(Recorder);
+                configuration(builder);
+            }
         }
     }
 

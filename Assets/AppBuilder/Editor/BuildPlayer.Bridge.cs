@@ -11,24 +11,6 @@ namespace AppBuilder
     /// </summary>
     public static partial class BuildPlayer
     {
-        private static PreviewScope _previewScope;
-
-        private class PreviewScope : IDisposable
-        {
-            public PreviewContext Context { get; private set; }
-
-            public PreviewScope()
-            {
-                Context = new PreviewContext();
-            }
-
-            public void Dispose()
-            {
-                Context = null;
-                _previewScope = null;
-            }
-        }
-
         public class Report
         {
             public BuildReport UnityReport { get; }
@@ -114,7 +96,7 @@ namespace AppBuilder
                                 .Select(method => (classType: t, method,
                                     attr: method.GetCustomAttribute<BuildAttribute>())))
                         .Where(_ => _.attr != null)
-                        .Select(_ => new BuildInfo(_.classType.FullName, _.method, _.attr.Name));
+                        .Select(_ => new BuildInfo(_.classType.FullName, _.method, _.attr.DisplayName));
                 });
         }
     }

@@ -1,6 +1,8 @@
 :colors {
     --red: #FF0F55;
     --blue: #0294FE;
+    --section-content-2-border: #00ff95;
+    --section-head-2: #d3d3d3
 }
 
 .section {
@@ -15,11 +17,20 @@
 }
 
 .section .section-head-2 {
-    font-size: 13px;
+    font-size: 14px;
     -unity-font-style: bold;
+    margin-bottom: 3px;
+    color: var(--section-head-2);
 }
 
 .section .section-content {
+    /*border-width: 1px;*/
+    /*border-color: slateblue;*/
+}
+.section .section-content-2 {
+    border-width: 1px 0;
+    padding: 5px 0;
+    border-color: var(--section-content-2-border);
 }
 
 .top-border-red {
@@ -32,6 +43,10 @@
     border-top-width: 2px;
     border-top-color: var(--blue);
     padding-top: 5px;
+}
+
+#root {
+    margin: 0 2px;
 }
 
 #builds {

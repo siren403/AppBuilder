@@ -3,6 +3,10 @@
     border-color: slateblue;
 }
 
+Label {
+    font-size: 13px;
+}
+
 TextInput {
     padding: 0;
 }

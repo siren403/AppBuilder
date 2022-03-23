@@ -7,11 +7,11 @@ namespace Builds
     public static partial class Android
     {
         [Build("Name.GooglePlay")]
-        [InputVariant("variant", "GooglePlay", "GooglePlay.dev")]
+        [Variant("GooglePlay", "GooglePlay.dev")]
         [Input("outputPath", InputOptions.Directory)]
-        [InputFile("keystore", "keystore")]
+        [File("keystore", "keystore")]
         [Input("keystore.passwd")]
-        [InputString("keystore.alias", "alias")]
+        [Input("keystore.alias", "alias")]
         [Input("keystore.alias.passwd")]
         public static void GooglePlay()
         {
@@ -31,7 +31,7 @@ namespace Builds
                 var scenes = ctx.GetSections<string>("Scenes").ToArray();
 
                 if (scenes.Any()) builder.Scenes = scenes;
-                else builder.UsingEnableEditorScenes();
+                else builder.UseEnableEditorScenes();
 
                 builder.ConfigureAndroid(android =>
                 {

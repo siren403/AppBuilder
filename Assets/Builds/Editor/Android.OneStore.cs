@@ -24,7 +24,7 @@ namespace Builds
                 var scenes = ctx.GetSections<string>("Scenes").ToArray();
 
                 if (scenes.Any()) builder.Scenes = scenes;
-                else builder.UsingEnableEditorScenes();
+                else builder.UseEnableEditorScenes();
 
                 builder.ConfigureAndroid(_ =>
                 {

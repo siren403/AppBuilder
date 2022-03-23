@@ -188,10 +188,16 @@ namespace AppBuilder.UI
                             section.AddToClassList("section");
 
                             var head = new Label(property.Name);
-                            head.AddToClassList("section-head");
+                            head.AddToClassList("section-head-2");
                             section.Add(head);
 
+                            var content = new VisualElement();
+                            content.AddToClassList("section-content-2");
+                            section.Add(content);
+
                             preview.Add(section);
+
+                            section = content;
                             break;
                         case BuildPropertyOptions.SectionEnd:
                             section = null;
@@ -216,6 +222,12 @@ namespace AppBuilder.UI
             #endregion
         }
 
+        private HashSet<string> _reservedArgName = new()
+        {
+            "appsettings",
+            "variant",
+        };
+
         private void RenderArgs(BuildInfo build, BuildPlayer.Report report)
         {
             var argsContainer = rootVisualElement.Q("args");
@@ -234,10 +246,16 @@ namespace AppBuilder.UI
             report.Args.RemoveUnityArgs();
             foreach (var arg in report.Args)
             {
+                var name = arg.Key;
+                if (_reservedArgName.Contains(name))
+                {
+                    name = name.Insert(0, "* ");
+                }
+
                 switch (arg.Value.Category)
                 {
                     case ArgumentCategory.Custom:
-                        customContainer.Add(new Argument(arg.Key)
+                        customContainer.Add(new Argument(name)
                         {
                             IsValue = true,
                             Value = arg.Value
@@ -245,7 +263,7 @@ namespace AppBuilder.UI
                         break;
                     case ArgumentCategory.Input:
                         if (!inputs.TryGetValue(arg.Key, out var input)) continue;
-                        var inputComponent = new Argument(arg.Key);
+                        var inputComponent = new Argument(name);
                         switch (input.Options)
                         {
                             case InputOptions.Directory:
@@ -297,7 +315,7 @@ namespace AppBuilder.UI
                         inputContainer.Add(inputComponent);
                         break;
                     default:
-                        argsContainer.Add(new Argument(arg.Key)
+                        argsContainer.Add(new Argument(name)
                         {
                             IsValue = true,
                             Value = arg.Value
