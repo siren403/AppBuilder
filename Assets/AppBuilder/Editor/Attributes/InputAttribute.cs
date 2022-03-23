@@ -48,6 +48,14 @@ namespace AppBuilder
             Extension = extension;
             Options = InputOptions.File;
         }
+
+        public FileAttribute(string name, string defaultValue, string extension = "*") : base(name)
+        {
+            Name = name;
+            Extension = extension;
+            Options = InputOptions.File;
+            Value = defaultValue;
+        }
     }
 
     public class DirectoryAttribute : InputAttribute
@@ -76,6 +84,12 @@ namespace AppBuilder
         public AppSettingsAttribute() : base("appsettings")
         {
             Options = InputOptions.Directory;
+        }
+
+        public AppSettingsAttribute(string defaultValue) : base("appsettings")
+        {
+            Options = InputOptions.Directory;
+            Value = defaultValue;
         }
     }
 }

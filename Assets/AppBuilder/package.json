@@ -12,5 +12,22 @@
         "name": "qkrsogusl3",
         "email": "qkrsogusl3@gmail.com",
         "url": ""
-    }
+    },
+    "samples": [
+        {
+            "displayName": "Quick Start",
+            "description": "Use Current Unity Player Settings",
+            "path": "Samples~/QuickStart"
+        },
+        {
+            "displayName": "Attribute",
+            "description": "Attributes for Dashboard",
+            "path": "Samples~/Attributes"
+        },
+        {
+            "displayName": "Use appsettings.json",
+            "description": "appsettings.json Use Case",
+            "path": "Samples~/UseAppSettingsJson"
+        }
+    ]
 }

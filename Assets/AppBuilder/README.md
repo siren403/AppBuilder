@@ -5,14 +5,14 @@ AppBuilder
 
 - [Quick Start](#quick-start)
 - [Dashboard](#dashboard)
-- [Attributes](#attribute)
+- [Attributes](#attributes-for-dashboard)
 - [AppSettings](#appsettings)
 - [IBuildContext](#ibuildcontext)
   - [GetConfiguration\<T>](#getconfigurationt)
   - [GetSection\<T>, GetSections\<T>](#getsectiont-getsectionst)
 - [Platform Configure](#platform-configure)
   
-  
+
 Quick Start
 ---
 ```csharp
@@ -64,10 +64,10 @@ AppBuilder > Dashboard
       - 전달된 Argument에 임의로 추가한 Argument.
     - Input
       - 각 빌드별로 필요한 Argument.
-      - 전달된 Argument들로 Formatting가능.
+      - 전달된 Argument들로 Formatting.
       > ex. /custom/{productName}-{variant}  
 
-Attributes
+Attributes (for Dashboard)
 ---
 
 ```csharp
@@ -108,7 +108,7 @@ AppSettings
 ---
 * appsettings.json을 구성 설정에 사용가능
 * override variant
-  * -variant 값을 사용해서 appsettings.json을 override 가능
+  * -variant 값을 사용해서 appsettings.json을 override
   > ex. -variant "Dev" -> appsettings.Dev.json
 * use [IBuildContext](#ibuildcontext)
 

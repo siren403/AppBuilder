@@ -90,6 +90,7 @@ namespace AppBuilder.UI
             Load(root);
 
             _builds = BuildPlayer.GetBuilds().ToDictionary(build => build.Name, build => build);
+
             var buildNames = _builds.Any() ? _builds.Keys.ToList() : NothingBuilds;
 
             var builds = root.Q<DropdownField>("build-field");
@@ -145,7 +146,14 @@ namespace AppBuilder.UI
                 var cachedValue = BuildCache.GetString(build, input.Name);
                 if (string.IsNullOrEmpty(cachedValue))
                 {
-                    inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
+                    if (string.IsNullOrEmpty(input.Value))
+                    {
+                        inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
+                    }
+                    else
+                    {
+                        inputArgs[input.Name] = new ArgumentValue(input.Name, input.Value, ArgumentCategory.Input);
+                    }
                 }
                 else
                 {
@@ -244,35 +252,37 @@ namespace AppBuilder.UI
             var inputs = build.Inputs.ToDictionary(i => i.Name, i => i);
 
             report.Args.RemoveUnityArgs();
-            foreach (var arg in report.Args)
+            foreach (var pair in report.Args)
             {
-                var name = arg.Key;
-                if (_reservedArgName.Contains(name))
+                var key = pair.Key;
+                if (_reservedArgName.Contains(key))
                 {
-                    name = name.Insert(0, "* ");
+                    key = key.Insert(0, "* ");
                 }
 
-                switch (arg.Value.Category)
+                var value = pair.Value.Value;
+
+                switch (pair.Value.Category)
                 {
                     case ArgumentCategory.Custom:
-                        customContainer.Add(new Argument(name)
+                        customContainer.Add(new Argument(key)
                         {
                             IsValue = true,
-                            Value = arg.Value
+                            Value = value
                         });
                         break;
                     case ArgumentCategory.Input:
-                        if (!inputs.TryGetValue(arg.Key, out var input)) continue;
-                        var inputComponent = new Argument(name);
+                        if (!inputs.TryGetValue(pair.Key, out var input)) continue;
+                        var inputComponent = new Argument(key);
                         switch (input.Options)
                         {
                             case InputOptions.Directory:
                                 inputComponent.IsInput = true;
                                 inputComponent.IsFolder = true;
-                                inputComponent.Value = BuildCache.GetString(build, arg.Key, arg.Value);
+                                inputComponent.Value = BuildCache.GetString(build, pair.Key, value);
                                 inputComponent.RegisterInputChangedCallback(e =>
                                 {
-                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    BuildCache.SetString(build, pair.Key, e.newValue);
                                     ExecuteBuild(BuildMode.Preview);
                                 });
                                 break;
@@ -280,10 +290,10 @@ namespace AppBuilder.UI
                                 inputComponent.IsInput = true;
                                 inputComponent.IsFile = true;
                                 inputComponent.FileExtension = input.Extension;
-                                inputComponent.Value = BuildCache.GetString(build, arg.Key, arg.Value);
+                                inputComponent.Value = BuildCache.GetString(build, pair.Key, value);
                                 inputComponent.RegisterInputChangedCallback(e =>
                                 {
-                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    BuildCache.SetString(build, pair.Key, e.newValue);
                                     ExecuteBuild(BuildMode.Preview);
                                 });
                                 break;
@@ -294,19 +304,19 @@ namespace AppBuilder.UI
                                     "None",
                                     // "Auto"
                                 }.Concat(input.Values).ToList();
-                                inputComponent.Value = BuildCache.GetString(build, arg.Key, "None");
+                                inputComponent.Value = BuildCache.GetString(build, pair.Key, "None");
                                 inputComponent.RegisterDropdownChangedCallback(e =>
                                 {
-                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    BuildCache.SetString(build, pair.Key, e.newValue);
                                     ExecuteBuild(BuildMode.Preview);
                                 });
                                 break;
                             default:
                                 inputComponent.IsInput = true;
-                                inputComponent.Value = BuildCache.GetString(build, arg.Key, input.Value);
+                                inputComponent.Value = BuildCache.GetString(build, pair.Key, input.Value);
                                 inputComponent.RegisterInputChangedCallback(e =>
                                 {
-                                    BuildCache.SetString(build, arg.Key, e.newValue);
+                                    BuildCache.SetString(build, pair.Key, e.newValue);
                                     ExecuteBuild(BuildMode.Preview);
                                 });
                                 break;
@@ -315,10 +325,10 @@ namespace AppBuilder.UI
                         inputContainer.Add(inputComponent);
                         break;
                     default:
-                        argsContainer.Add(new Argument(name)
+                        argsContainer.Add(new Argument(key)
                         {
                             IsValue = true,
-                            Value = arg.Value
+                            Value = value
                         });
                         break;
                 }

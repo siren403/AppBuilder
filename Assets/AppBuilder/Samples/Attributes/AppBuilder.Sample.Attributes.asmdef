@@ -1,8 +1,8 @@
 {
-    "name": "AppBuilder.Editor",
+    "name": "AppBuilder.Sample.Attributes",
     "rootNamespace": "",
     "references": [
-        "GUID:99b49f9fbb20ef84d9edcb0f2f445bf6"
+        "GUID:ddc2cbf5ad234594595c84926c23760f"
     ],
     "includePlatforms": [
         "Editor"
@@ -10,9 +10,7 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "Newtonsoft.Json.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

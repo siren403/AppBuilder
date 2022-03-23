@@ -96,8 +96,11 @@ namespace AppBuilder
                                 .Select(method => (classType: t, method,
                                     attr: method.GetCustomAttribute<BuildAttribute>())))
                         .Where(_ => _.attr != null)
-                        .Select(_ => new BuildInfo(_.classType.FullName, _.method, _.attr.DisplayName));
-                });
+                        .Select(_ => (order: _.attr.Order,
+                            info: new BuildInfo(_.classType.FullName, _.method, _.attr.DisplayName)));
+                })
+                .OrderByDescending(_ => _.order)
+                .Select(_ => _.info);
         }
     }
 

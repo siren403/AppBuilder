@@ -30,9 +30,11 @@ namespace AppBuilder
 
         private JObject LoadAppSettings(string directory, string variant = null)
         {
-            var baseSettingsPath = Path.Combine(directory, "appsettings.json");
-
             JObject settings = null;
+
+            if (string.IsNullOrEmpty(directory)) return new JObject();
+
+            var baseSettingsPath = Path.Combine(directory, "appsettings.json");
 
             if (File.Exists(baseSettingsPath))
             {
@@ -73,7 +75,7 @@ namespace AppBuilder
                 return value;
             }
 
-            return DefaultAppSettingsDirectory;
+            return string.Empty;
         }
 
         public IOptions<T> GetConfiguration<T>() where T : class
