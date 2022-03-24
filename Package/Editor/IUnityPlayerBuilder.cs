@@ -27,6 +27,7 @@ namespace AppBuilder
                 .ToArray();
         }
 
+
         /// <summary>
         /// * Scenes - Use Enable Editor Scenes
         /// * Target - active Build Target
@@ -36,9 +37,7 @@ namespace AppBuilder
         {
             builder.UseEnableEditorScenes();
             builder.Target = EditorUserBuildSettings.activeBuildTarget;
-            builder.TargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
-            builder.OutputPath = Path.Combine(Directory.GetCurrentDirectory(), "Build", builder.Target.ToString(),
-                Application.productName);
+            builder.TargetGroup = BuildPipeline.GetBuildTargetGroup(builder.Target);
         }
     }
 }

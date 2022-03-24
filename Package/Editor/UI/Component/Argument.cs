@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace AppBuilder.UI
@@ -8,7 +9,7 @@ namespace AppBuilder.UI
     public class Argument : VisualElement
     {
         public static readonly string UXML = PackageInfo.GetPath("Editor/UI/Component/Argument.uxml");
-        
+
         private Label _labelKey;
 
         private TextField _inputField;
@@ -118,8 +119,11 @@ namespace AppBuilder.UI
 
             _btnFolder.clicked += () =>
             {
-                var directory = EditorUtility.OpenFolderPanel("Select Directory",
-                    Directory.GetCurrentDirectory(), string.Empty);
+                var folder = string.IsNullOrEmpty(_inputField.value)
+                    ? Application.dataPath
+                    : _inputField.value;
+                
+                var directory = EditorUtility.OpenFolderPanel(_labelKey.text, folder, string.Empty);
                 if (!string.IsNullOrEmpty(directory))
                 {
                     _inputField.value = directory.Replace("\\", "/");
@@ -131,13 +135,17 @@ namespace AppBuilder.UI
             _btnFile = this.Q<Button>("btn-file");
             _btnFile.clicked += () =>
             {
-                var file = EditorUtility.OpenFilePanel("Select File", Directory.GetCurrentDirectory(), _fileExtension);
+                var directory = string.IsNullOrEmpty(_inputField.value)
+                    ? Application.dataPath
+                    : Path.GetDirectoryName(_inputField.value);
+                var file = EditorUtility.OpenFilePanel(_labelKey.text, directory, _fileExtension);
                 if (!string.IsNullOrEmpty(file))
                 {
                     _inputField.value = file.Replace("\\", "/");
                 }
             };
         }
+
 
         public void RegisterInputChangedCallback(EventCallback<ChangeEvent<string>> callback)
         {

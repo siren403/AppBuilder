@@ -27,10 +27,13 @@ namespace AppBuilder
             get => _outputDirectory;
         }
 
+        private string _productName;
+
         public string ProductName
         {
             set
             {
+                _productName = value;
                 Recorder.Enqueue(() => PlayerSettings.productName = value,
                     new BuildProperty("ProductName", value));
             }
@@ -65,6 +68,12 @@ namespace AppBuilder
 
         public BuildExecutor Build()
         {
+            if (string.IsNullOrEmpty(_outputDirectory))
+            {
+                _outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Build", Target.ToString(),
+                    _productName ?? Application.productName).Replace("\\", "/");
+            }
+
             if (!Path.HasExtension(_outputDirectory))
             {
                 _buildOptions.locationPathName = Path.ChangeExtension(

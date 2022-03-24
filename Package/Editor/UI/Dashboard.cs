@@ -106,6 +106,11 @@ namespace AppBuilder.UI
             builds.RegisterCallback<ChangeEvent<string>>(e =>
             {
                 Debug.Log($"Build: {e.newValue}");
+                if (!builds.choices.Contains(e.newValue))
+                {
+                    builds.SetValueWithoutNotify(builds.choices.First());                    
+                }
+
                 ExecuteBuild(BuildMode.Preview);
             });
             if (buildNames.Any())

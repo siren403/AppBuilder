@@ -28,6 +28,11 @@
             "displayName": "Use appsettings.json",
             "description": "appsettings.json Use Case",
             "path": "Samples~/UseAppSettingsJson"
+        },
+        {
+            "displayName": "Basic Android",
+            "description": "Android Configure",
+            "path": "Samples~/Basic Android"
         }
     ]
 }
