@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace AppBuilder
@@ -36,12 +37,7 @@ namespace AppBuilder
 
             var baseSettingsPath = Path.Combine(directory, "appsettings.json");
 
-            if (File.Exists(baseSettingsPath))
-            {
-                using var baseSettingReader = new StreamReader(baseSettingsPath);
-                settings = JObject.Parse(baseSettingReader.ReadToEnd());
-            }
-            else
+            if (!TryLoadJson(baseSettingsPath, out settings))
             {
                 Debug.LogError("not found appsettings.json directory");
             }
@@ -49,11 +45,8 @@ namespace AppBuilder
             if (!string.IsNullOrEmpty(variant))
             {
                 var overwriteSettingsPath = Path.Combine(directory, $"appsettings.{variant}.json");
-                if (File.Exists(overwriteSettingsPath))
+                if (TryLoadJson(overwriteSettingsPath, out var overwriteSettings))
                 {
-                    using var overwriteSettingsReader = new StreamReader(overwriteSettingsPath);
-                    var overwriteSettings = JObject.Parse(overwriteSettingsReader.ReadToEnd());
-
                     if (settings == null)
                     {
                         settings = overwriteSettings;
@@ -66,6 +59,27 @@ namespace AppBuilder
             }
 
             return settings ?? new JObject();
+        }
+
+        private bool TryLoadJson(string path, out JObject result)
+        {
+            string json = null;
+            if (File.Exists(path))
+            {
+                if (path.StartsWith("Assets") || path.StartsWith("Packages"))
+                {
+                    var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(path);
+                    json = asset.text;
+                }
+                else
+                {
+                    using var reader = new StreamReader(path);
+                    json = reader.ReadToEnd();
+                }
+            }
+
+            result = !string.IsNullOrEmpty(json) ? JObject.Parse(json) : null;
+            return result != null;
         }
 
         private string GetAppSettingsDirectory(Arguments arguments)

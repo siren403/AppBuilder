@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using UnityEditor;
 using UnityEditor.Build.Reporting;
 
 namespace AppBuilder
@@ -13,30 +16,51 @@ namespace AppBuilder
     {
         public class Report
         {
-            public BuildReport UnityReport { get; }
             private readonly BuildProperty[] _properties;
             private readonly string _recorderLog;
+            private readonly BuildPlayerOptions _options;
+            public BuildReport UnityReport { get; }
+
             public BuildProperty[] Properties => _properties ?? Array.Empty<BuildProperty>();
             public Arguments Args { get; }
 
-            public Report(UnityBuildContext context, UnityPlayerBuilder builder)
+            public Report(UnityBuildContext context, UnityPlayerBuilder builder, BuildPlayerOptions options)
             {
                 Args = context.Args;
                 _properties = builder.Recorder.GetProperties();
                 _recorderLog = builder.Recorder.ToString();
+                _options = options;
             }
 
-            public Report(UnityBuildContext context, UnityPlayerBuilder builder, BuildReport unityReport)
+            public Report(UnityBuildContext context, UnityPlayerBuilder builder, BuildReport unityReport,
+                BuildPlayerOptions options)
             {
                 Args = context.Args;
                 _properties = builder.Recorder.GetProperties();
                 _recorderLog = builder.Recorder.ToString();
                 UnityReport = unityReport;
+                _options = options;
             }
 
             public override string ToString()
             {
                 return _recorderLog ?? string.Empty;
+            }
+
+            public string ToCommandLineArgs(BuildInfo build)
+            {
+                var stringBuilder = new StringBuilder();
+                stringBuilder.Append("-batchmode ");
+                stringBuilder.Append("-quit ");
+                stringBuilder.Append($"-executeMethod \"{build.FullName}\" ");
+                stringBuilder.Append($"-buildTarget \"{_options.target.ToString()}\"");
+                if (Args.TryGetValue("projectPath", out var arg))
+                {
+                    stringBuilder.Append($"-{arg.Key} \"{arg.Value}\"");
+                }
+
+                return Args.Where(pair => pair.Value.Category == ArgumentCategory.Input)
+                    .Aggregate(stringBuilder.ToString(), (acc, arg) => $"{acc} -{arg.Key} \"{arg.Value.Value}\"");
             }
         }
 

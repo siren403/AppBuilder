@@ -13,7 +13,7 @@ namespace AppBuilder
         string ProductName { set; }
         BuildTarget Target { set; get; }
         BuildTargetGroup TargetGroup { set; }
-        void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration);
+        void ConfigureAndroid(Action<AndroidConfigureBuilder> configuration);
         void Display(params (string key, string value)[] pairs);
     }
 

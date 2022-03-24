@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.UIElements;
+using PopupWindow = UnityEngine.UIElements.PopupWindow;
 
 namespace AppBuilder.UI
 {
@@ -12,6 +13,10 @@ namespace AppBuilder.UI
     {
         public const string Name = "com.qkrsogusl3.appbuilder";
         public static string GetPath(string path) => $"Packages/{Name}/{path}";
+
+        public const string Version = "0.0.1";
+
+        public static string SamplesPath => $"Assets/Samples/AppBuilder/{Version}";
     }
 
     public static class BuildCache
@@ -108,7 +113,7 @@ namespace AppBuilder.UI
                 Debug.Log($"Build: {e.newValue}");
                 if (!builds.choices.Contains(e.newValue))
                 {
-                    builds.SetValueWithoutNotify(builds.choices.First());                    
+                    builds.SetValueWithoutNotify(builds.choices.First());
                 }
 
                 ExecuteBuild(BuildMode.Preview);
@@ -124,6 +129,30 @@ namespace AppBuilder.UI
                 builds.value = NothingBuilds.First();
             }
 
+            root.Q<Button>("btn-copy-arguments").clicked += () =>
+            {
+                if (TryExecuteBuild(BuildMode.Preview, out var build, out var report))
+                {
+                    Debug.Log(report.ToCommandLineArgs(build));
+                }
+
+                var popup = new PopupWindow()
+                {
+                    style =
+                    {
+                        position = Position.Absolute,
+                        marginTop = new StyleLength(new Length(25)),
+                        marginLeft = new StyleLength(new Length(25)),
+                        width = new StyleLength(new Length(300)),
+                        height = new StyleLength(new Length(500)),
+                    }
+                };
+                popup.Add(new Button(() => { popup.RemoveFromHierarchy(); })
+                {
+                    text = "Close",
+                });
+                root.Add(popup);
+            };
             root.Q<Button>("btn-cache-clear").clicked += PlayerPrefs.DeleteAll;
             root.Q<Button>("btn-refresh").clicked += () => { ExecuteBuild(BuildMode.Preview); };
             root.Q<Button>("btn-run").clicked += () =>
@@ -147,10 +176,14 @@ namespace AppBuilder.UI
             return false;
         }
 
-
-        private void ExecuteBuild(BuildMode mode = BuildMode.Build)
+        private bool TryExecuteBuild(BuildMode mode, out BuildInfo build, out BuildPlayer.Report report)
         {
-            if (!TryGetSelectedBuild(out var build)) return;
+            if (!TryGetSelectedBuild(out build))
+            {
+                build = null;
+                report = null;
+                return false;
+            }
 
             var inputArgs = new Arguments();
 
@@ -185,19 +218,24 @@ namespace AppBuilder.UI
                     break;
             }
 
-            var report = BuildPlayer.Execute(build, inputArgs);
+            report = BuildPlayer.Execute(build, inputArgs);
             RenderReport(build, report);
-            if (mode == BuildMode.Configure)
-            {
-                ExecuteBuild(BuildMode.Preview);
-            }
+            // if (mode == BuildMode.Configure)
+            // {
+            //     ExecuteBuild(BuildMode.Preview);
+            // }
+            return true;
+        }
+
+        private void ExecuteBuild(BuildMode mode = BuildMode.Build)
+        {
+            TryExecuteBuild(mode, out var build, out var report);
         }
 
         private void RenderReport(BuildInfo build, BuildPlayer.Report report)
         {
             var preview = rootVisualElement.Q("preview");
-            preview.RemoveChildren();
-
+            preview.Clear();
             if (report != null)
             {
                 VisualElement section = null;
@@ -253,13 +291,13 @@ namespace AppBuilder.UI
         private void RenderArgs(BuildInfo build, BuildPlayer.Report report)
         {
             var argsContainer = rootVisualElement.Q("args");
-            argsContainer.RemoveChildren();
+            argsContainer.Clear();
 
             // var customContainer = rootVisualElement.Q("custom");
             // customContainer.RemoveChildren();
 
             var inputContainer = rootVisualElement.Q("input");
-            inputContainer.RemoveChildren();
+            inputContainer.Clear();
 
             if (report == null) return;
 
@@ -278,6 +316,13 @@ namespace AppBuilder.UI
 
                 switch (pair.Value.Category)
                 {
+                    case ArgumentCategory.Reserve:
+                        argsContainer.Add(new Argument($"* {key}")
+                        {
+                            IsValue = true,
+                            Value = value
+                        });
+                        break;
                     case ArgumentCategory.Custom:
                         argsContainer.Add(new Argument(key)
                         {

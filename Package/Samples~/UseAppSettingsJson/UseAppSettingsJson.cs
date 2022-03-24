@@ -1,6 +1,7 @@
 ﻿using System.Linq;
+using AppBuilder;
 
-namespace AppBuilder.Samples
+namespace AppBuilderSamples
 {
     public static partial class Builds
     {
@@ -15,7 +16,7 @@ namespace AppBuilder.Samples
         }
 
         [Build(order: -3)]
-        [AppSettings("{projectPath}/Assets/Samples/AppBuilder/0.0.1/Use appsettings.json/AppSettings")]
+        [AppSettings("Assets/Samples/AppBuilder/0.0.1/Use appsettings.json/AppSettings")]
         [Variant("Development", "GooglePlay", "GooglePlay.Dev")]
         public static void UseAppSettingsJson()
         {

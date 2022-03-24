@@ -11,7 +11,8 @@ namespace AppBuilder
         Require,
         Unity,
         Command,
-        Custom
+        Custom,
+        Reserve
     }
 
     public readonly struct ArgumentValue
@@ -80,7 +81,8 @@ namespace AppBuilder
             {
                 commandArgs.AppendLine(s);
             }
-
+            Debug.Log(commandArgs.ToString());
+            
             for (int i = 0; i < original.Length; i++)
             {
                 if (string.IsNullOrEmpty(original[i]))

@@ -21,11 +21,11 @@ namespace AppBuilder
      *      }
      * }
      */
-    public readonly struct AndroidSettingsBuilder
+    public readonly struct AndroidConfigureBuilder
     {
         private readonly BuildConfigureRecorder _recorder;
 
-        public AndroidSettingsBuilder(BuildConfigureRecorder recorder)
+        public AndroidConfigureBuilder(BuildConfigureRecorder recorder)
         {
             _recorder = recorder;
         }

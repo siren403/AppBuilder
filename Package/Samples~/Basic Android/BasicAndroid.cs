@@ -1,30 +1,34 @@
+using AppBuilder;
+using AppBuilder.Helper.Android;
+using KeyStore = AppBuilder.Helper.Android.KeyStore;
 using UnityEditor;
+using PackageInfo = AppBuilder.UI.PackageInfo;
 
-namespace AppBuilder.Samples
+namespace AppBuilderSamples
 {
     public static partial class Builds
     {
         [Build("Basic Android", -4)]
-        [File("keystore", "{projectPath}/Assets/Samples/AppBuilder/0.0.1/Basic Android/user.keystore", "keystore")]
-        [Input("keystore.passwd", "111111")]
-        [Input("keystore.alias", "appbuilder")]
-        [Input("keystore.alias.passwd","111111")]
+        [AppSettings("{samples}/Basic Android")]
+        [KeyStore("{samples}/Basic Android/user.keystore")]
+        [KeyStore.Password("111111")]
+        [KeyStore.Alias("appbuilder")]
+        [KeyStore.Alias.Password("111111")]
         public static void BasicAndroid()
         {
-            BuildPlayer.Build((ctx, builder) =>
+            BuildPlayer.Build((args) =>
             {
-                
+                args.Add("samples", PackageInfo.SamplesPath);
+            }, (ctx, builder) =>
+            {
+                builder.Display(("packageName",ctx.GetSection<string>("PackageName")));
                 builder.UseEnableEditorScenes();
                 builder.ConfigureAndroid(android =>
                 {
                     android.IL2CPP();
                     android.Architectures(AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64);
                     android.SupportEmulator();
-                    android.EnableKeystore(ctx.TryGetArgument("keystore", out var keystorePath),
-                        keystorePath,
-                        ctx.GetArgument("keystore.passwd"),
-                        ctx.GetArgument("keystore.alias"),
-                        ctx.GetArgument("keystore.alias.passwd"));
+                    android.UseKeyStore(ctx);
                 });
             });
         }

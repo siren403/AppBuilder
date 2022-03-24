@@ -1,13 +1,14 @@
-﻿using UnityEditor;
+﻿using AppBuilder;
+using UnityEditor;
 using UnityEngine;
 using PackageInfo = AppBuilder.UI.PackageInfo;
 
-namespace AppBuilder.Samples
+namespace AppBuilderSamples
 {
     public static partial class Builds
     {
         [Build("AppBuilder.Samples.Attributes", -2)]
-        [AppSettings("{projectPath}/Assets/Samples/AppBuilder/0.0.1/Attributes/AppSettings")]
+        [AppSettings("Assets/Samples/AppBuilder/0.0.1/Attributes/AppSettings")]
         [Variant("Development", "Production", "GooglePlay", "GooglePlay.Dev")]
         [Directory("outputPath")]
         [File("keystore", "keystore")]

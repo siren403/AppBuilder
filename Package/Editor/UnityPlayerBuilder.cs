@@ -170,13 +170,13 @@ namespace AppBuilder
 
     public partial class UnityPlayerBuilder
     {
-        public void ConfigureAndroid(Action<AndroidSettingsBuilder> configuration)
+        public void ConfigureAndroid(Action<AndroidConfigureBuilder> configuration)
         {
             using (Recorder.Section("Android"))
             {
                 Target = BuildTarget.Android;
                 TargetGroup = BuildTargetGroup.Android;
-                var builder = new AndroidSettingsBuilder(Recorder);
+                var builder = new AndroidConfigureBuilder(Recorder);
                 configuration(builder);
             }
         }

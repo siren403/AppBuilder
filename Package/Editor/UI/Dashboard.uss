@@ -45,6 +45,7 @@
     padding-top: 5px;
 }
 
+
 #root {
     margin: 0 2px;
 }
@@ -73,13 +74,27 @@
     flex-direction: row;
     margin-right: 4px;
 }
-
-#toolbar > Button {
+#toolbar .toolbar-btn-1 {
     margin: 1px;
+    width: 20px;
+}
+#toolbar .toolbar-btn-2 {
+    margin: 1px;
+    width: 60px;
+}
+.toolbar-section {
+    flex-direction: row;
+    margin: 0 5px;
 }
 
-#toolbar > Button {
-    width: 20px;
+#btn-copy-arguments > Image {
+    --unity-image: resource("d_VerticalLayoutGroup Icon");
+    height: 20px;
+    
+    /*--unity-image: resource("VerticalLayoutGroup Icon");*/
+    /*align-self: center;*/
+    /*width: 20px;*/
+    /*background-color: white;*/
 }
 
 #btn-cache-clear {

@@ -15,19 +15,26 @@
                 <engine:DropdownField name="build-field" view-data-key="build"/>
             </engine:VisualElement>
             <engine:VisualElement name="toolbar">
-                <engine:Button name="btn-cache-clear" tooltip="clear player prefs">
+                <engine:VisualElement class="toolbar-section">
+                    <engine:Button name="btn-copy-arguments" tooltip="copy build args to clipboard" class="toolbar-btn-2">
+                        <engine:Image/>
+                    </engine:Button>
+                </engine:VisualElement>
+                <engine:Button name="btn-cache-clear" tooltip="clear player prefs" class="toolbar-btn-1">
                     <engine:Image/>
                 </engine:Button>
-                <engine:Button name="btn-refresh" tooltip="reload">
-                    <engine:Image/>
-                </engine:Button>
-                <engine:Button name="btn-run" tooltip="configure and run">
-                    <engine:Image/>
-                </engine:Button>
-                <engine:Button name="btn-apply" tooltip="configure only">
-                    <engine:Image/>
-                </engine:Button>
-                <engine:Button name="btn-build" tooltip="build">
+                <engine:VisualElement class="toolbar-section">
+                    <engine:Button name="btn-refresh" tooltip="reload" class="toolbar-btn-1">
+                        <engine:Image/>
+                    </engine:Button>
+                    <engine:Button name="btn-run" tooltip="configure and run" class="toolbar-btn-1">
+                        <engine:Image/>
+                    </engine:Button>
+                    <engine:Button name="btn-apply" tooltip="configure only" class="toolbar-btn-1">
+                        <engine:Image/>
+                    </engine:Button>
+                </engine:VisualElement>
+                <engine:Button name="btn-build" tooltip="build" class="toolbar-btn-1">
                     <engine:Image/>
                 </engine:Button>
             </engine:VisualElement>
@@ -41,10 +48,10 @@
                 <engine:Label text="Arguments" class="section-head"/>
                 <engine:VisualElement name="args" class="section-content"/>
             </engine:VisualElement>
-<!--            <engine:VisualElement class="section">-->
-<!--                <engine:Label text="Custom" class="section-head-2"/>-->
-<!--                <engine:VisualElement name="custom" class="section-content"/>-->
-<!--            </engine:VisualElement>-->
+            <!--            <engine:VisualElement class="section">-->
+            <!--                <engine:Label text="Custom" class="section-head-2"/>-->
+            <!--                <engine:VisualElement name="custom" class="section-content"/>-->
+            <!--            </engine:VisualElement>-->
             <engine:VisualElement class="section top-border-blue">
                 <engine:Label text="Input" class="section-head-2"/>
                 <engine:VisualElement name="input" class="section-content"/>

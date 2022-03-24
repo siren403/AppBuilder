@@ -36,13 +36,17 @@ namespace AppBuilder
                 throw new ArgumentException("Contains Reserve Args");
             }
 
-            args.Add(key, new ArgumentValue(key, value, ArgumentCategory.Custom));
+            args.Add(key, new ArgumentValue(key, value, ArgumentCategory.Reserve));
         }
 
         public static Arguments AddReserveArguments(this Arguments args)
         {
             args.Reserve("productName", Application.productName);
-            args.Reserve("projectPath", Directory.GetCurrentDirectory().Replace("\\", "/"));
+            if (!Application.isBatchMode)
+            {
+                args.Reserve("projectPath", Directory.GetCurrentDirectory().Replace("\\", "/"));
+            }
+
             return args;
         }
 

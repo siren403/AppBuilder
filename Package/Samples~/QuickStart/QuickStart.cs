@@ -1,4 +1,6 @@
-﻿namespace AppBuilder.Samples
+﻿using AppBuilder;
+
+namespace AppBuilderSamples
 {
     public static partial class Builds
     {

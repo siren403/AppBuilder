@@ -30,15 +30,26 @@ namespace AppBuilder
             var args = new Arguments();
             arguments(new ArgumentsBuilder(args));
 
-            args.Merge(Environment.GetCommandLineArgs()
-                .AddReserveArguments());
-
-            if (_buildScope != null) //from editor
+            if (Application.isBatchMode)
             {
-                var inputs = _buildScope.InputArgs;
-                foreach (var input in inputs)
+                args.AddReserveArguments();
+
+                var commandArgs = Environment.GetCommandLineArgs();
+                foreach (var arg in commandArgs)
                 {
-                    args.Add(input.Key, input.Value.Format(args));
+                    args.Add(arg.Key, arg.Value.Format(args));
+                }
+            }
+            else
+            {
+                args.AddReserveArguments();
+                if (_buildScope != null) //from editor
+                {
+                    var inputs = _buildScope.InputArgs;
+                    foreach (var input in inputs)
+                    {
+                        args.Add(input.Key, input.Value.Format(args));
+                    }
                 }
             }
 
@@ -64,7 +75,7 @@ namespace AppBuilder
 
         private static Report Build(Arguments args, Action<IBuildContext, IUnityPlayerBuilder> configuration)
         {
-            Debug.Log(args);
+            // Debug.Log(args);
             var context = new UnityBuildContext(args);
             var builder = new UnityPlayerBuilder();
             configuration(context, builder);
@@ -76,13 +87,13 @@ namespace AppBuilder
                 args.Remove("mode");
                 if (mode == "preview")
                 {
-                    return Complete(new Report(context, builder));
+                    return Complete(new Report(context, builder, executor.Options));
                 }
 
                 if (mode == "configure")
                 {
                     executor.Configure();
-                    return Complete(new Report(context, builder));
+                    return Complete(new Report(context, builder, executor.Options));
                 }
             }
 
@@ -106,7 +117,7 @@ namespace AppBuilder
                 EditorUtility.RevealInFinder(unityReport.summary.outputPath);
             }
 
-            return Complete(new Report(context, builder, unityReport));
+            return Complete(new Report(context, builder, unityReport, executor.Options));
 
             Report Complete(Report report)
             {
