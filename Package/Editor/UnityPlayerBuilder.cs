@@ -71,8 +71,9 @@ namespace AppBuilder
                     _outputDirectory,
                     _buildOptions.target switch
                     {
-                        BuildTarget.Android => ".apk",
-                        _ => _outputDirectory
+                        BuildTarget.StandaloneWindows64 => "exe",
+                        BuildTarget.Android => "apk",
+                        _ => string.Empty
                     });
             }
             else
