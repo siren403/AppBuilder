@@ -250,8 +250,8 @@ namespace AppBuilder.UI
             var argsContainer = rootVisualElement.Q("args");
             argsContainer.RemoveChildren();
 
-            var customContainer = rootVisualElement.Q("custom");
-            customContainer.RemoveChildren();
+            // var customContainer = rootVisualElement.Q("custom");
+            // customContainer.RemoveChildren();
 
             var inputContainer = rootVisualElement.Q("input");
             inputContainer.RemoveChildren();
@@ -260,7 +260,7 @@ namespace AppBuilder.UI
 
             var inputs = build.Inputs.ToDictionary(i => i.Name, i => i);
 
-            report.Args.RemoveUnityArgs();
+            // report.Args.RemoveUnityArgs();
             foreach (var pair in report.Args)
             {
                 var key = pair.Key;
@@ -274,7 +274,7 @@ namespace AppBuilder.UI
                 switch (pair.Value.Category)
                 {
                     case ArgumentCategory.Custom:
-                        customContainer.Add(new Argument(key)
+                        argsContainer.Add(new Argument(key)
                         {
                             IsValue = true,
                             Value = value

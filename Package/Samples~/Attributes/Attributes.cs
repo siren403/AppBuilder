@@ -7,7 +7,7 @@ namespace AppBuilder.Samples
     public static partial class Builds
     {
         [Build("AppBuilder.Samples.Attributes", -2)]
-        [AppSettings("{projectpath}/Assets/Samples/AppBuilder/0.0.1/Attributes/AppSettings")]
+        [AppSettings("{projectPath}/Assets/Samples/AppBuilder/0.0.1/Attributes/AppSettings")]
         [Variant("Development", "Production", "GooglePlay", "GooglePlay.Dev")]
         [Directory("outputPath")]
         [File("keystore", "keystore")]

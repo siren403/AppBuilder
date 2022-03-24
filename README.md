@@ -18,7 +18,7 @@ Getting started
 
 Unity PackageManager > Add package from git URL
 
-`https://github.com/qkrsogusl3/AppBuilder.git?path=/Assets/AppBuilder`
+`https://github.com/qkrsogusl3/AppBuilder.git?path=/Package`
 
 ```csharp
 namespace Builds

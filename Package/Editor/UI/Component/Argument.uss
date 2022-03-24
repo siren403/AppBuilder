@@ -31,6 +31,10 @@ TextInput {
     -unity-text-align: middle-right;
 }
 
+#value > Label{
+    overflow: hidden;
+}
+
 .value #value {
     display: flex;
 }

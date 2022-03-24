@@ -15,7 +15,7 @@ namespace AppBuilder.Samples
         }
 
         [Build(order: -3)]
-        [AppSettings("{projectpath}/Assets/Samples/AppBuilder/0.0.1/Use appsettings.json/AppSettings")]
+        [AppSettings("{projectPath}/Assets/Samples/AppBuilder/0.0.1/Use appsettings.json/AppSettings")]
         [Variant("Development", "GooglePlay", "GooglePlay.Dev")]
         public static void UseAppSettingsJson()
         {

@@ -69,6 +69,11 @@ namespace AppBuilder
         {
             var args = new Arguments();
 
+            if (!Application.isBatchMode)
+            {
+                return args;
+            }
+
             var original = System.Environment.GetCommandLineArgs();
             var commandArgs = new StringBuilder();
             foreach (var s in original)

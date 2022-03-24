@@ -42,6 +42,7 @@ namespace AppBuilder
         public static Arguments AddReserveArguments(this Arguments args)
         {
             args.Reserve("productName", Application.productName);
+            args.Reserve("projectPath", Directory.GetCurrentDirectory().Replace("\\", "/"));
             return args;
         }
 
