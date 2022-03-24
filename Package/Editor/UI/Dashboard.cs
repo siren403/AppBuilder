@@ -136,22 +136,18 @@ namespace AppBuilder.UI
                     Debug.Log(report.ToCommandLineArgs(build));
                 }
 
-                var popup = new PopupWindow()
-                {
-                    style =
-                    {
-                        position = Position.Absolute,
-                        marginTop = new StyleLength(new Length(25)),
-                        marginLeft = new StyleLength(new Length(25)),
-                        width = new StyleLength(new Length(300)),
-                        height = new StyleLength(new Length(500)),
-                    }
-                };
-                popup.Add(new Button(() => { popup.RemoveFromHierarchy(); })
-                {
-                    text = "Close",
-                });
-                root.Add(popup);
+                // var popup = new PopupWindow()
+                // {
+                //     style =
+                //     {
+                //         position = Position.Absolute,
+                //         marginTop = new StyleLength(new Length(25)),
+                //         marginLeft = new StyleLength(new Length(25)),
+                //         width = new StyleLength(new Length(300)),
+                //         height = new StyleLength(new Length(500)),
+                //     }
+                // };
+                root.Add(new ArgumentsViewer());
             };
             root.Q<Button>("btn-cache-clear").clicked += PlayerPrefs.DeleteAll;
             root.Q<Button>("btn-refresh").clicked += () => { ExecuteBuild(BuildMode.Preview); };
