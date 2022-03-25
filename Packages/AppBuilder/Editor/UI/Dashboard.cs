@@ -4,11 +4,27 @@ using System.Linq;
 using UnityEditor;
 using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.Accessibility;
 using UnityEngine.UIElements;
 using PopupWindow = UnityEngine.UIElements.PopupWindow;
 
 namespace AppBuilder.UI
 {
+    public abstract class AppBuilderVisualElement : VisualElement
+    {
+        protected abstract string UXML { get; }
+        protected abstract string USS { get; }
+
+        protected AppBuilderVisualElement()
+        {
+            var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(PackageInfo.GetPath(UXML));
+            uxml.CloneTree(this);
+
+            var uss = AssetDatabase.LoadAssetAtPath<StyleSheet>(PackageInfo.GetPath(USS));
+            styleSheets.Add(uss);
+        }
+    }
+
     public static class PackageInfo
     {
         public const string Name = "com.qkrsogusl3.appbuilder";
@@ -85,9 +101,9 @@ namespace AppBuilder.UI
             // Import UXML
             var visualTree =
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML);
-            VisualElement uxml = visualTree.Instantiate();
-            visualElement.Add(uxml);
-            // visualTree.CloneTree(visualElement); 
+            // VisualElement uxml = visualTree.Instantiate();
+            // visualElement.Add(uxml);
+            visualTree.CloneTree(visualElement); 
 
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
@@ -133,21 +149,11 @@ namespace AppBuilder.UI
             {
                 if (TryExecuteBuild(BuildMode.Preview, out var build, out var report))
                 {
-                    Debug.Log(report.ToCommandLineArgs(build));
+                    var viewer = root.Q<ArgumentsViewer>();
+                    viewer.Args = report.Args;
+                    viewer.CommandLineArgs = report.ToCommandLineArgs(build);
+                    viewer.Show();
                 }
-
-                // var popup = new PopupWindow()
-                // {
-                //     style =
-                //     {
-                //         position = Position.Absolute,
-                //         marginTop = new StyleLength(new Length(25)),
-                //         marginLeft = new StyleLength(new Length(25)),
-                //         width = new StyleLength(new Length(300)),
-                //         height = new StyleLength(new Length(500)),
-                //     }
-                // };
-                root.Add(new ArgumentsViewer());
             };
             root.Q<Button>("btn-cache-clear").clicked += PlayerPrefs.DeleteAll;
             root.Q<Button>("btn-refresh").clicked += () => { ExecuteBuild(BuildMode.Preview); };
@@ -159,6 +165,7 @@ namespace AppBuilder.UI
             root.Q<Button>("btn-apply").clicked += () => { ExecuteBuild(BuildMode.Configure); };
             root.Q<Button>("btn-build").clicked += () => { ExecuteBuild(); };
             // root.Bind(new SerializedObject(this));
+            
         }
 
         private bool TryGetSelectedBuild(out BuildInfo build)

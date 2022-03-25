@@ -1,0 +1,8 @@
+{
+    "logViewer.watch": [
+        {
+            "title": "Unity Editor.log",
+            "pattern": "./Editor.log"
+        }
+    ]
+}

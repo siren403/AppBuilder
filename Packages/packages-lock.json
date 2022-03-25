@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "com.qkrsogusl3.appbuilder": {
-      "version": "file:../../Package",
+      "version": "file:AppBuilder",
       "depth": 0,
-      "source": "local",
+      "source": "embedded",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "2.0.2"
       }

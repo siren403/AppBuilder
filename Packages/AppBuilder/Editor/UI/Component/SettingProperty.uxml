@@ -4,7 +4,7 @@
         xmlns:engine="UnityEngine.UIElements"
         xmlns:editor="UnityEditor.UIElements"
         xmlns:app="AppBuilder.UI"
-        xsi:noNamespaceSchemaLocation="../../../../AppBuilderWorkbench/UIElementsSchema/UIElements.xsd"
+        xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
 >
     <engine:VisualElement name="root">
         <engine:Style src="./SettingProperty.uss"/>

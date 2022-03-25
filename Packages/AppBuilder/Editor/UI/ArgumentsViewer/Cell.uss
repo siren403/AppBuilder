@@ -1,0 +1,57 @@
+.cell {
+    margin: 1 0 1 0;
+}
+
+Label {
+    overflow: hidden;
+    color: #D2D2D2;
+
+    transition-property: color;
+    transition-duration: 0.3;
+    transition-timing-function: ease-out-circ;
+}
+
+.column-1:hover > Label {
+    color: #282828;
+}
+
+.column-1 .column-back {
+    position: absolute;
+    background-color: #52f6a4;
+    width: 0%;
+    height: 100%;
+
+    transition-property: width;
+    transition-duration: 0.3s;
+    transition-timing-function: ease-out-circ;
+}
+
+.column-1:hover .column-back {
+    width: 100%;
+}
+
+.column-1 {
+    width: 30%;
+    border-width: 0 2 0 0;
+    border-color: #ababab;
+    padding-right: 3;
+
+    /*transition-property:all;*/
+    /*transition-property: background-color;*/
+    /*transition-duration: 0.3s;*/
+    /*transition-timing-function: ease-out-circ;*/
+}
+
+.column-1 > Label {
+    -unity-text-align: middle-left;
+}
+
+
+.column-2 {
+    width: 70%;
+    padding-left: 3;
+}
+
+.column-2 > Label {
+    -unity-text-align: middle-right;
+}

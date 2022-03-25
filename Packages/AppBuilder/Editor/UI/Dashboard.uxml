@@ -4,10 +4,9 @@
         xmlns:engine="UnityEngine.UIElements"
         xmlns:editor="UnityEditor.UIElements"
         xmlns:app="AppBuilder.UI"
-        xsi:noNamespaceSchemaLocation="../../../AppBuilderWorkbench/UIElementsSchema/UIElements.xsd"
+        xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
 >
     <engine:Template name="PropertyLabel" src="./Component/PropertyLabel.uxml"/>
-
     <engine:VisualElement name="root">
         <engine:Style src="./Dashboard.uss"/>
         <engine:VisualElement name="builds">
@@ -79,4 +78,5 @@
             <app:SettingProperty class="debug sample"/>
         </engine:ScrollView>
     </engine:VisualElement>
+    <app:ArgumentsViewer/>
 </engine:UXML>
