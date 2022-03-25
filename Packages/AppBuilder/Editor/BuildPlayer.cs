@@ -22,6 +22,11 @@ namespace AppBuilder
             {
                 _arguments[key] = new ArgumentValue(key, value, ArgumentCategory.Custom);
             }
+
+            public void Add(string key)
+            {
+                _arguments[key] = ArgumentValue.Empty(key, ArgumentCategory.Custom);
+            }
         }
 
         public static Report Build(Action<ArgumentsBuilder> arguments,

@@ -103,7 +103,7 @@ namespace AppBuilder.UI
                 AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML);
             // VisualElement uxml = visualTree.Instantiate();
             // visualElement.Add(uxml);
-            visualTree.CloneTree(visualElement); 
+            visualTree.CloneTree(visualElement);
 
             // A stylesheet can be added to a VisualElement.
             // The style will be applied to the VisualElement and all of its children.
@@ -165,7 +165,6 @@ namespace AppBuilder.UI
             root.Q<Button>("btn-apply").clicked += () => { ExecuteBuild(BuildMode.Configure); };
             root.Q<Button>("btn-build").clicked += () => { ExecuteBuild(); };
             // root.Bind(new SerializedObject(this));
-            
         }
 
         private bool TryGetSelectedBuild(out BuildInfo build)
@@ -194,7 +193,11 @@ namespace AppBuilder.UI
             foreach (var input in inputs)
             {
                 var cachedValue = BuildCache.GetString(build, input.Name);
-                if (string.IsNullOrEmpty(cachedValue))
+                if (cachedValue == "None")
+                {
+                    inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
+                }
+                else if (string.IsNullOrEmpty(cachedValue))
                 {
                     if (string.IsNullOrEmpty(input.Value))
                     {

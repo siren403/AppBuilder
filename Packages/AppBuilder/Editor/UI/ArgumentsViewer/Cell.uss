@@ -1,5 +1,6 @@
 .cell {
     margin: 1 0 1 0;
+    justify-content: center;
 }
 
 Label {

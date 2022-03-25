@@ -32,28 +32,28 @@ namespace AppBuilder
         public string Name { get; }
         public string Value { get; }
     }
+    
+    public readonly struct ConfigureSection : IDisposable
+    {
+        private readonly BuildConfigureRecorder _recorder;
 
+        public ConfigureSection(BuildConfigureRecorder recorder, string name)
+        {
+            _recorder = recorder;
+            _recorder.Write(new BuildProperty(name, BuildPropertyOptions.SectionBegin));
+        }
+
+        public void Dispose()
+        {
+            _recorder.Write(new BuildProperty(string.Empty, BuildPropertyOptions.SectionEnd));
+        }
+    }
+    
     public static class BuildConfigureRecorderExtensions
     {
         public static ConfigureSection Section(this BuildConfigureRecorder recorder, string name)
         {
             return new ConfigureSection(recorder, name);
-        }
-
-        public readonly struct ConfigureSection : IDisposable
-        {
-            private readonly BuildConfigureRecorder _recorder;
-
-            public ConfigureSection(BuildConfigureRecorder recorder, string name)
-            {
-                _recorder = recorder;
-                _recorder.Write(new BuildProperty(name, BuildPropertyOptions.SectionBegin));
-            }
-
-            public void Dispose()
-            {
-                _recorder.Write(new BuildProperty(string.Empty, BuildPropertyOptions.SectionEnd));
-            }
         }
     }
 

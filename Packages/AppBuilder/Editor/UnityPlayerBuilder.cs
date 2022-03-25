@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using Builds;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -59,6 +58,12 @@ namespace AppBuilder
                     Recorder.Write(new BuildProperty(key, value));
                 }
             }
+        }
+
+        public ConfigureSection Display(out Action<string, string> add)
+        {
+            add = (key, value) => { Recorder.Write(new BuildProperty(key, value)); };
+            return Recorder.Section("Display");
         }
 
         public override string ToString()

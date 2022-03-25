@@ -4,7 +4,7 @@ using AppBuilder;
 using UnityEditor;
 using UnityEngine;
 
-namespace Builds
+namespace AppBuilder
 {
     public abstract class OptionsScriptableObject<TOptions> : ScriptableObject, IOptions<TOptions>, IOptions
         where TOptions : class

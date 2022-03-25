@@ -15,7 +15,9 @@ namespace AppBuilder
         BuildTargetGroup TargetGroup { set; }
         void ConfigureAndroid(Action<AndroidConfigureBuilder> configuration);
         void Display(params (string key, string value)[] pairs);
+        ConfigureSection Display(out Action<string, string> add);
     }
+
 
     public static class UnityPlayerBuilderExtensions
     {
@@ -31,13 +33,35 @@ namespace AppBuilder
         /// <summary>
         /// * Scenes - Use Enable Editor Scenes
         /// * Target - active Build Target
-        /// * OutputPath - {CurrentDirectory}/Build/{Target}/{productName}
         /// </summary>
         public static void ConfigureCurrentSettings(this IUnityPlayerBuilder builder)
         {
             builder.UseEnableEditorScenes();
             builder.Target = EditorUserBuildSettings.activeBuildTarget;
             builder.TargetGroup = BuildPipeline.GetBuildTargetGroup(builder.Target);
+        }
+
+        public static void UseVariantProductName(this IUnityPlayerBuilder builder, IBuildContext context,
+            string productName = null, string format = null)
+        {
+            if (string.IsNullOrEmpty(productName))
+            {
+                productName = Application.productName;
+            }
+
+            if (context.TryGetArgument("variant", out var variant) && !string.IsNullOrEmpty(variant))
+            {
+                if (string.IsNullOrEmpty(format))
+                {
+                    format = "{0}-{1}";
+                }
+
+                builder.ProductName = string.Format(format, productName, variant);
+            }
+            else
+            {
+                builder.ProductName = productName;
+            }
         }
     }
 }
