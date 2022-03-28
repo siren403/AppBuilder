@@ -1,0 +1,16 @@
+{
+    "name": "AppBuilderSample.ExportConfigs.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:99b49f9fbb20ef84d9edcb0f2f445bf6"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

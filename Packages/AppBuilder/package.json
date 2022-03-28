@@ -33,6 +33,11 @@
             "displayName": "Basic Android",
             "description": "Android Configure",
             "path": "Samples~/Basic Android"
+        },
+        {
+            "displayName": "Export configs to runtime",
+            "description": "Export Config ScriptableObject",
+            "path": "Samples~/Export configs to runtime"
         }
     ]
 }

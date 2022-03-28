@@ -41,7 +41,7 @@ namespace AppBuilder
 
         public static Arguments AddReserveArguments(this Arguments args)
         {
-            args.Reserve("productName", Application.productName);
+            // args.Reserve("productName", Application.productName);
             if (!Application.isBatchMode)
             {
                 args.Reserve("projectPath", Directory.GetCurrentDirectory().Replace("\\", "/"));

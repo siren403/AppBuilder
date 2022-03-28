@@ -46,10 +46,12 @@ namespace AppBuilder
         {
             if (string.IsNullOrEmpty(productName))
             {
-                productName = Application.productName;
+                context.TryGetSection("ProductName", out productName);
             }
 
-            if (context.TryGetArgument("variant", out var variant) && !string.IsNullOrEmpty(variant))
+            context.TryGetArgument("variant", out var variant);
+
+            if (!string.IsNullOrEmpty(productName) && !string.IsNullOrEmpty(variant))
             {
                 if (string.IsNullOrEmpty(format))
                 {
@@ -57,6 +59,10 @@ namespace AppBuilder
                 }
 
                 builder.ProductName = string.Format(format, productName, variant);
+            }
+            else if (!string.IsNullOrEmpty(variant))
+            {
+                builder.ProductName = variant;
             }
             else
             {

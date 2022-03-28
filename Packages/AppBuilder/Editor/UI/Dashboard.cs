@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.PackageManager;
@@ -369,7 +370,13 @@ namespace AppBuilder.UI
                                     "None",
                                     // "Auto"
                                 }.Concat(input.Values).ToList();
-                                inputComponent.Value = BuildCache.GetString(build, pair.Key, "None");
+                                var dropdownValue = pair.Value.Value;
+                                BuildCache.SetString(build, pair.Key, dropdownValue);
+                                if (string.IsNullOrEmpty(dropdownValue))
+                                {
+                                    dropdownValue = "None";
+                                }
+                                inputComponent.Value = dropdownValue;
                                 inputComponent.RegisterDropdownChangedCallback(e =>
                                 {
                                     BuildCache.SetString(build, pair.Key, e.newValue);

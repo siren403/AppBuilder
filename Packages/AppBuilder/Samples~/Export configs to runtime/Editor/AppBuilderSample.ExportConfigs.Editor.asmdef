@@ -1,0 +1,20 @@
+{
+    "name": "AppBuilderSample.ExportConfigs.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ddc2cbf5ad234594595c84926c23760f",
+        "GUID:99b49f9fbb20ef84d9edcb0f2f445bf6",
+        "GUID:42f12b350ed66c045a59fab60872dbe3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
