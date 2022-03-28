@@ -7,19 +7,13 @@ using Microsoft.Extensions.Options;
 using Zx;
 using static Zx.Env;
 
-
 var builder = ConsoleApp.CreateBuilder(args);
-builder.ConfigureServices((ctx, services) =>
-{
-    services.Configure<Config>(ctx.Configuration);
-});
+builder.ConfigureServices((ctx, services) => { services.Configure<Config>(ctx.Configuration); });
 
 var app = builder.Build();
 // app.AddAllCommandType();
 app.AddRootCommand(async (IOptions<Config> config) =>
 {
-    shell = "powershell";
-
     // string env(string path) => $"$env:{path}";
     var builder = new UnityCommandBuilder(config.Value.Editor, config.Value.Project)
         .BatchMode()
@@ -29,7 +23,7 @@ app.AddRootCommand(async (IOptions<Config> config) =>
         .BuildTarget(config.Value.BuildTarget)
         .AddArgument("host", "127.0.0.1")
         .AddArgument("outputPath", "D:/workspace/unity/AppBuilder/Build/Android-Batch/Android");
-    
+
     var hasLogFile = !string.IsNullOrEmpty(config.Value.LogFile);
     if (hasLogFile)
     {
@@ -37,7 +31,7 @@ app.AddRootCommand(async (IOptions<Config> config) =>
     }
     // .AddArgument("variant", "Development")
     // .Build();
-    
+
     Console.WriteLine(builder.ToString());
     await builder.Build();
 
@@ -48,8 +42,6 @@ app.AddRootCommand(async (IOptions<Config> config) =>
 });
 app.AddCommand("print", async (IOptions<Config> config) =>
 {
-    shell = "powershell";
-
     // string env(string path) => $"$env:{path}";
     var builder = new UnityCommandBuilder(config.Value.Editor, config.Value.Project)
         .BatchMode()
@@ -60,11 +52,40 @@ app.AddCommand("print", async (IOptions<Config> config) =>
         .AddArgument("host", "127.0.0.1");
 
     await $"echo {builder}";
-
 });
+
+app.AddCommands<EmulatorCommands>();
 
 app.Run();
 
+
+public class EmulatorCommands : ConsoleAppBase, IDisposable
+{
+
+    [Command("adb")]
+    public async Task Adb(string apk, string? device = null)
+    {
+        if (string.IsNullOrEmpty(device))
+        {
+            var devices = await "adb devices";
+            var list = devices.Split("\n").Skip(1);
+            foreach (var s in list)
+            {
+                Console.WriteLine(s);
+            }
+
+            Console.WriteLine(apk);
+        }
+        else
+        {
+            await $"adb -s {device} install -r \"{apk}\"";
+        }
+    }
+    
+    public void Dispose()
+    {
+    }
+}
 
 // await $"./Unity.exe -batchmode -nographics -quit -projectPath '{project}' -executeMethod '{method}' -buildTarget '{buildTarget}'";
 // await $"./Unity.exe -batchmode -nographics -quit -projectPath '{project}' -executeMethod '{method}'";
