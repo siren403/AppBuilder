@@ -87,7 +87,7 @@
     margin: 0 5px;
 }
 
-#btn-copy-arguments > Image {
+#btn-arguments-viewer > Image {
     --unity-image: resource("d_VerticalLayoutGroup Icon");
     height: 20px;
     

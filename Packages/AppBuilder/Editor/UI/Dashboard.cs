@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.PackageManager;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Accessibility;
 using UnityEngine.UIElements;
@@ -56,6 +57,23 @@ namespace AppBuilder.UI
         {
             return PlayerPrefs.GetString(build.GetKey(key), defaultValue);
         }
+
+        public static void SetString(string key, string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                PlayerPrefs.DeleteKey($"{nameof(AppBuilder)}_{key}");
+            }
+            else
+            {
+                PlayerPrefs.SetString($"{nameof(AppBuilder)}_{key}", value);
+            }
+        }
+
+        public static string GetString(string key, string defaultValue = null)
+        {
+            return PlayerPrefs.GetString($"{nameof(AppBuilder)}_{key}", defaultValue);
+        }
     }
 
     public static class DashboardExtensions
@@ -94,25 +112,13 @@ namespace AppBuilder.UI
         }
 
         private Dictionary<string, BuildInfo> _builds;
-
         private PreviewContext _context;
 
         private static void Load(VisualElement visualElement)
         {
             // Import UXML
-            var visualTree =
-                AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML);
-            // VisualElement uxml = visualTree.Instantiate();
-            // visualElement.Add(uxml);
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML);
             visualTree.CloneTree(visualElement);
-
-            // A stylesheet can be added to a VisualElement.
-            // The style will be applied to the VisualElement and all of its children.
-            // var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/AppBuilder/Editor/UI/Dashboard.uss");
-            // VisualElement labelWithStyle = new Label("Hello World! With Style");
-            // labelWithStyle.styleSheets.Add(styleSheet);
-            // visualElement.Add(labelWithStyle);
-            // visualElement.styleSheets.Add(styleSheet);
         }
 
         public void CreateGUI()
@@ -124,21 +130,22 @@ namespace AppBuilder.UI
 
             var buildNames = _builds.Any() ? _builds.Keys.ToList() : NothingBuilds;
 
+            //todo: refactoring (binder)
             var builds = root.Q<DropdownField>("build-field");
             builds.RegisterCallback<ChangeEvent<string>>(e =>
             {
-                Debug.Log($"Build: {e.newValue}");
                 if (!builds.choices.Contains(e.newValue))
                 {
                     builds.SetValueWithoutNotify(builds.choices.First());
                 }
 
+                BuildCache.SetString(builds.name, builds.value);
                 ExecuteBuild(BuildMode.Preview);
             });
             if (buildNames.Any())
             {
                 builds.choices = buildNames;
-                builds.value = buildNames.First();
+                builds.value = BuildCache.GetString(builds.name, buildNames.First());
             }
             else
             {
@@ -146,7 +153,7 @@ namespace AppBuilder.UI
                 builds.value = NothingBuilds.First();
             }
 
-            root.Q<Button>("btn-copy-arguments").clicked += () =>
+            root.Q<Button>("btn-arguments-viewer").clicked += () =>
             {
                 if (TryExecuteBuild(BuildMode.Preview, out var build, out var report))
                 {
@@ -165,7 +172,6 @@ namespace AppBuilder.UI
             };
             root.Q<Button>("btn-apply").clicked += () => { ExecuteBuild(BuildMode.Configure); };
             root.Q<Button>("btn-build").clicked += () => { ExecuteBuild(); };
-            // root.Bind(new SerializedObject(this));
         }
 
         private bool TryGetSelectedBuild(out BuildInfo build)
@@ -177,6 +183,17 @@ namespace AppBuilder.UI
             }
 
             return false;
+        }
+
+        private BuildInfo GetSelectedBuild()
+        {
+            var buildName = this.BuildField().value;
+            if (_builds.TryGetValue(buildName, out var build))
+            {
+                return build;
+            }
+
+            throw new ArgumentNullException(buildName);
         }
 
         private bool TryExecuteBuild(BuildMode mode, out BuildInfo build, out BuildPlayer.Report report)
@@ -227,10 +244,6 @@ namespace AppBuilder.UI
 
             report = BuildPlayer.Execute(build, inputArgs);
             RenderReport(build, report);
-            // if (mode == BuildMode.Configure)
-            // {
-            //     ExecuteBuild(BuildMode.Preview);
-            // }
             return true;
         }
 
@@ -376,6 +389,7 @@ namespace AppBuilder.UI
                                 {
                                     dropdownValue = "None";
                                 }
+
                                 inputComponent.Value = dropdownValue;
                                 inputComponent.RegisterDropdownChangedCallback(e =>
                                 {

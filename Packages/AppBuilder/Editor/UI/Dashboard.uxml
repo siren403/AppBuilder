@@ -11,11 +11,11 @@
         <engine:Style src="./Dashboard.uss"/>
         <engine:VisualElement name="builds">
             <engine:VisualElement name="fields">
-                <engine:DropdownField name="build-field" view-data-key="build"/>
+                <engine:DropdownField name="build-field"/>
             </engine:VisualElement>
             <engine:VisualElement name="toolbar">
                 <engine:VisualElement class="toolbar-section">
-                    <engine:Button name="btn-copy-arguments" tooltip="copy build args to clipboard" class="toolbar-btn-2">
+                    <engine:Button name="btn-arguments-viewer" tooltip="arguments viewer" class="toolbar-btn-2">
                         <engine:Image/>
                     </engine:Button>
                 </engine:VisualElement>
