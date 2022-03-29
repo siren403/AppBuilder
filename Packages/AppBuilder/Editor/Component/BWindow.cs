@@ -28,6 +28,28 @@ namespace Editor.Component
 
     #region BWindow
 
+    public class CounterDisposeButton : Component
+    {
+        private readonly Button _button;
+
+        public CounterDisposeButton()
+        {
+            Add(new Button() {text = "dispose"}, out _button);
+        }
+
+        protected override void Init()
+        {
+            if (Window is SharedCounter.ICounterContext context)
+            {
+                _button.clicked += () => context.Count.Dispose();
+            }
+        }
+
+        public new class UxmlFactory : UxmlFactory<CounterDisposeButton>
+        {
+        }
+    }
+
     public class SharedCounter : Component
     {
         public interface ICounterContext
@@ -52,16 +74,20 @@ namespace Editor.Component
 
         protected override void Init()
         {
-            if (!(Window is ICounterContext context)) return;
+            var property = State.GetProperty(nameof(SharedCounter), 0);
+            property.SubscribeToLabel(_labelCount).AddTo(this);
+            _button.clicked += () => { property.Value++; };
 
-            context.Count.SubscribeToLabel(_labelCount).AddTo(this);
-            _button.clicked += () => { context.Count.Value++; };
+
+            // if (!(Window is ICounterContext context)) return;
+            //
+            // context.Count.SubscribeToLabel(_labelCount).AddTo(this);
+            // _button.clicked += () => { context.Count.Value++; };
         }
 
         public new class UxmlFactory : UxmlFactory<SharedCounter>
         {
         }
-        
     }
 
     #endregion

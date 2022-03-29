@@ -21,6 +21,8 @@ namespace Editor.Component
 
         private CompositeDisposable _disposable;
 
+        protected IReactiveStateStorage State => Window.State;
+
         protected Component()
         {
             RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
