@@ -6,13 +6,6 @@ using UnityEngine.UIElements;
 
 namespace AppBuilder.UI
 {
-    public enum TransitionState
-    {
-        None,
-        In,
-        Out
-    }
-
     public class ArgumentsViewer : AppBuilderVisualElement
     {
         protected override string UXML => $"Editor/UI/{nameof(ArgumentsViewer)}/{nameof(ArgumentsViewer)}.uxml";
@@ -47,8 +40,9 @@ namespace AppBuilder.UI
 
         public string CommandLineArgs { set; private get; }
         private readonly Label _labelLog;
-        private TransitionState _logState = TransitionState.None;
+        private readonly EnabledTransitionController _logTransitionController;
         private readonly VisualElement _overlay;
+
         public ArgumentsViewer()
         {
             AddToClassList("popup");
@@ -78,29 +72,14 @@ namespace AppBuilder.UI
             });
 
             _labelLog = this.Q<Label>("label-log");
-            _labelLog.SetEnabled(false);
-            _labelLog.RegisterCallback<TransitionEndEvent>(e =>
-            {
-                switch (_logState)
-                {
-                    case TransitionState.In:
-                        _labelLog.SetEnabled(false);
-                        _logState = TransitionState.Out;
-                        break;
-                    case TransitionState.Out:
-                        _logState = TransitionState.None;
-                        break;
-                }
-            });
+            _logTransitionController = new EnabledTransitionController(_labelLog);
         }
 
         private void CopyToClipboard()
         {
             GUIUtility.systemCopyBuffer = CommandLineArgs;
             _labelLog.text = "success";
-            if (_logState != TransitionState.None) return;
-            _logState = TransitionState.In;
-            _labelLog.SetEnabled(true);
+            _logTransitionController.In();
         }
 
         public void Show()

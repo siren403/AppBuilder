@@ -82,12 +82,12 @@ namespace AppBuilder.UI
             window.rootVisualElement.Q<DropdownField>("build-field");
     }
 
-    public enum BuildMode
-    {
-        Build,
-        Preview,
-        Configure
-    }
+    // public enum BuildMode
+    // {
+    //     Build,
+    //     Preview,
+    //     Configure
+    // }
 
     public class Dashboard : EditorWindow
     {
@@ -111,8 +111,10 @@ namespace AppBuilder.UI
             wnd.minSize = new Vector2(450, 600);
         }
 
-        private Dictionary<string, BuildInfo> _builds;
-        private PreviewContext _context;
+
+        private readonly BuildController _controller = new();
+        private readonly ArgumentsRenderer _argumentsRenderer = new();
+        private string _selectedBuild;
 
         private static void Load(VisualElement visualElement)
         {
@@ -126,130 +128,47 @@ namespace AppBuilder.UI
             VisualElement root = rootVisualElement;
             Load(root);
 
-            _builds = BuildPlayer.GetBuilds().ToDictionary(build => build.Name, build => build);
+            // _builds = BuildPlayer.GetBuilds().ToDictionary(build => build.Name, build => build);
+            _controller.Initialize();
 
-            var buildNames = _builds.Any() ? _builds.Keys.ToList() : NothingBuilds;
+            var buildNames = _controller.Any() ? _controller.BuildNames : NothingBuilds;
 
-            //todo: refactoring (binder)
-            var builds = root.Q<DropdownField>("build-field");
-            builds.RegisterCallback<ChangeEvent<string>>(e =>
-            {
-                if (!builds.choices.Contains(e.newValue))
+            var builds = this.BuildField();
+            builds.Initialize(buildNames, 0, e =>
                 {
-                    builds.SetValueWithoutNotify(builds.choices.First());
-                }
-
-                BuildCache.SetString(builds.name, builds.value);
-                ExecuteBuild(BuildMode.Preview);
-            });
-            if (buildNames.Any())
-            {
-                builds.choices = buildNames;
-                builds.value = BuildCache.GetString(builds.name, buildNames.First());
-            }
-            else
-            {
-                builds.choices = NothingBuilds;
-                builds.value = NothingBuilds.First();
-            }
+                    _selectedBuild = e.newValue;
+                    ExecuteAndRender(BuildController.BuildMode.Preview);
+                },
+                _ => BuildCache.SetString(builds.name, _),
+                _ => BuildCache.GetString(builds.name, _),
+                NothingBuilds
+            );
 
             root.Q<Button>("btn-arguments-viewer").clicked += () =>
             {
-                if (TryExecuteBuild(BuildMode.Preview, out var build, out var report))
-                {
-                    var viewer = root.Q<ArgumentsViewer>();
-                    viewer.Args = report.Args;
-                    viewer.CommandLineArgs = report.ToCommandLineArgs(build);
-                    viewer.Show();
-                }
+                var (build, report) = ExecuteAndRender(BuildController.BuildMode.Preview);
+                var viewer = root.Q<ArgumentsViewer>();
+                viewer.Args = report.Args;
+                viewer.CommandLineArgs = report.ToCommandLineArgs(build);
+                viewer.Show();
             };
             root.Q<Button>("btn-cache-clear").clicked += PlayerPrefs.DeleteAll;
-            root.Q<Button>("btn-refresh").clicked += () => { ExecuteBuild(BuildMode.Preview); };
+            root.Q<Button>("btn-refresh").clicked += () => { ExecuteAndRender(BuildController.BuildMode.Preview); };
             root.Q<Button>("btn-run").clicked += () =>
             {
-                ExecuteBuild(BuildMode.Configure);
+                ExecuteAndRender(BuildController.BuildMode.Configure);
                 EditorApplication.EnterPlaymode();
             };
-            root.Q<Button>("btn-apply").clicked += () => { ExecuteBuild(BuildMode.Configure); };
-            root.Q<Button>("btn-build").clicked += () => { ExecuteBuild(); };
+            root.Q<Button>("btn-apply").clicked += () => { ExecuteAndRender(BuildController.BuildMode.Configure); };
+            root.Q<Button>("btn-build").clicked += () => { ExecuteAndRender(BuildController.BuildMode.Build); };
         }
 
-        private bool TryGetSelectedBuild(out BuildInfo build)
+        public (BuildInfo, BuildPlayer.Report) ExecuteAndRender(BuildController.BuildMode mode)
         {
-            var buildName = this.BuildField().value;
-            if (_builds.TryGetValue(buildName, out build))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private BuildInfo GetSelectedBuild()
-        {
-            var buildName = this.BuildField().value;
-            if (_builds.TryGetValue(buildName, out var build))
-            {
-                return build;
-            }
-
-            throw new ArgumentNullException(buildName);
-        }
-
-        private bool TryExecuteBuild(BuildMode mode, out BuildInfo build, out BuildPlayer.Report report)
-        {
-            if (!TryGetSelectedBuild(out build))
-            {
-                build = null;
-                report = null;
-                return false;
-            }
-
-            var inputArgs = new Arguments();
-
-            var inputs = build.Inputs;
-            foreach (var input in inputs)
-            {
-                var cachedValue = BuildCache.GetString(build, input.Name);
-                if (cachedValue == "None")
-                {
-                    inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
-                }
-                else if (string.IsNullOrEmpty(cachedValue))
-                {
-                    if (string.IsNullOrEmpty(input.Value))
-                    {
-                        inputArgs[input.Name] = ArgumentValue.Empty(input.Name, ArgumentCategory.Input);
-                    }
-                    else
-                    {
-                        inputArgs[input.Name] = new ArgumentValue(input.Name, input.Value, ArgumentCategory.Input);
-                    }
-                }
-                else
-                {
-                    inputArgs[input.Name] = new ArgumentValue(input.Name, cachedValue, ArgumentCategory.Input);
-                }
-            }
-
-            switch (mode)
-            {
-                case BuildMode.Preview:
-                    inputArgs["mode"] = new ArgumentValue("mode", "preview", ArgumentCategory.Custom);
-                    break;
-                case BuildMode.Configure:
-                    inputArgs["mode"] = new ArgumentValue("mode", "configure", ArgumentCategory.Custom);
-                    break;
-            }
-
-            report = BuildPlayer.Execute(build, inputArgs);
-            RenderReport(build, report);
-            return true;
-        }
-
-        private void ExecuteBuild(BuildMode mode = BuildMode.Build)
-        {
-            TryExecuteBuild(mode, out var build, out var report);
+            if (string.IsNullOrEmpty(_selectedBuild) || NothingBuilds.Contains(_selectedBuild)) return (null, null);
+            var result = _controller.ExecuteBuild(_selectedBuild, mode);
+            RenderReport(result.build, result.report);
+            return result;
         }
 
         private void RenderReport(BuildInfo build, BuildPlayer.Report report)
@@ -295,130 +214,7 @@ namespace AppBuilder.UI
                 }
             }
 
-            #region Args
-
-            RenderArgs(build, report);
-
-            #endregion
-        }
-
-        private HashSet<string> _reservedArgName = new()
-        {
-            "appsettings",
-            "variant",
-        };
-
-        private void RenderArgs(BuildInfo build, BuildPlayer.Report report)
-        {
-            var argsContainer = rootVisualElement.Q("args");
-            argsContainer.Clear();
-
-            // var customContainer = rootVisualElement.Q("custom");
-            // customContainer.RemoveChildren();
-
-            var inputContainer = rootVisualElement.Q("input");
-            inputContainer.Clear();
-
-            if (report == null) return;
-
-            var inputs = build.Inputs.ToDictionary(i => i.Name, i => i);
-
-            // report.Args.RemoveUnityArgs();
-            foreach (var pair in report.Args)
-            {
-                var key = pair.Key;
-                if (_reservedArgName.Contains(key))
-                {
-                    key = key.Insert(0, "* ");
-                }
-
-                var value = pair.Value.Value;
-
-                switch (pair.Value.Category)
-                {
-                    case ArgumentCategory.Reserve:
-                        argsContainer.Add(new Argument($"* {key}")
-                        {
-                            IsValue = true,
-                            Value = value
-                        });
-                        break;
-                    case ArgumentCategory.Custom:
-                        argsContainer.Add(new Argument(key)
-                        {
-                            IsValue = true,
-                            Value = value
-                        });
-                        break;
-                    case ArgumentCategory.Input:
-                        if (!inputs.TryGetValue(pair.Key, out var input)) continue;
-                        var inputComponent = new Argument(key);
-                        switch (input.Options)
-                        {
-                            case InputOptions.Directory:
-                                inputComponent.IsInput = true;
-                                inputComponent.IsFolder = true;
-                                inputComponent.Value = BuildCache.GetString(build, pair.Key, value);
-                                inputComponent.RegisterInputChangedCallback(e =>
-                                {
-                                    BuildCache.SetString(build, pair.Key, e.newValue);
-                                    ExecuteBuild(BuildMode.Preview);
-                                });
-                                break;
-                            case InputOptions.File:
-                                inputComponent.IsInput = true;
-                                inputComponent.IsFile = true;
-                                inputComponent.FileExtension = input.Extension;
-                                inputComponent.Value = BuildCache.GetString(build, pair.Key, value);
-                                inputComponent.RegisterInputChangedCallback(e =>
-                                {
-                                    BuildCache.SetString(build, pair.Key, e.newValue);
-                                    ExecuteBuild(BuildMode.Preview);
-                                });
-                                break;
-                            case InputOptions.Dropdown:
-                                inputComponent.IsDropdown = true;
-                                inputComponent.Choices = new List<string>()
-                                {
-                                    "None",
-                                    // "Auto"
-                                }.Concat(input.Values).ToList();
-                                var dropdownValue = pair.Value.Value;
-                                BuildCache.SetString(build, pair.Key, dropdownValue);
-                                if (string.IsNullOrEmpty(dropdownValue))
-                                {
-                                    dropdownValue = "None";
-                                }
-
-                                inputComponent.Value = dropdownValue;
-                                inputComponent.RegisterDropdownChangedCallback(e =>
-                                {
-                                    BuildCache.SetString(build, pair.Key, e.newValue);
-                                    ExecuteBuild(BuildMode.Preview);
-                                });
-                                break;
-                            default:
-                                inputComponent.IsInput = true;
-                                inputComponent.Value = BuildCache.GetString(build, pair.Key, input.Value);
-                                inputComponent.RegisterInputChangedCallback(e =>
-                                {
-                                    BuildCache.SetString(build, pair.Key, e.newValue);
-                                    ExecuteBuild(BuildMode.Preview);
-                                });
-                                break;
-                        }
-
-                        inputContainer.Add(inputComponent);
-                        break;
-                    default:
-                        argsContainer.Add(new Argument(key)
-                        {
-                            IsValue = true,
-                            Value = value
-                        });
-                        break;
-                }
-            }
+            _argumentsRenderer.Render(this, build, report);
         }
     }
 }
