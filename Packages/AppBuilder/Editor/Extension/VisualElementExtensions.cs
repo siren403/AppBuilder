@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace AppBuilder
@@ -47,6 +49,22 @@ namespace AppBuilder
                 field.choices = defaultChoices;
                 field.value = defaultChoices.First();
             }
+        }
+
+        public static void LoadAsset(this VisualElement element, string uxml, string uss)
+        {
+            if (string.IsNullOrEmpty(uxml)) throw new ArgumentNullException(nameof(uxml));
+
+            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxml);
+            if (tree == null) throw new ArgumentNullException(uxml);
+
+            tree.CloneTree(element);
+
+            if (string.IsNullOrEmpty(uss)) return;
+
+            var style = AssetDatabase.LoadAssetAtPath<StyleSheet>(uss);
+            if (style == null) Debug.LogWarning($"not found uss: {uss}");
+            else element.styleSheets.Add(style);
         }
     }
 }

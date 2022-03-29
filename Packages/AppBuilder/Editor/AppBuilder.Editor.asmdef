@@ -2,7 +2,8 @@
     "name": "AppBuilder.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:99b49f9fbb20ef84d9edcb0f2f445bf6"
+        "GUID:99b49f9fbb20ef84d9edcb0f2f445bf6",
+        "GUID:560b04d1a97f54a4e82edc0cbbb69285"
     ],
     "includePlatforms": [
         "Editor"
