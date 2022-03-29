@@ -8,7 +8,6 @@
 >
     <engine:Template name="PropertyLabel" src="./Component/PropertyLabel.uxml"/>
     <engine:VisualElement name="root">
-        <engine:Style src="./Dashboard.uss"/>
         <engine:VisualElement name="builds">
             <engine:VisualElement name="fields">
                 <engine:DropdownField name="build-field"/>

@@ -1,32 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using UnityEditor;
-using UnityEditor.PackageManager;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Accessibility;
 using UnityEngine.UIElements;
-using PopupWindow = UnityEngine.UIElements.PopupWindow;
 
 namespace AppBuilder.UI
 {
-    public abstract class AppBuilderVisualElement : VisualElement
-    {
-        protected abstract string UXML { get; }
-        protected abstract string USS { get; }
-
-        protected AppBuilderVisualElement()
-        {
-            var uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(PackageInfo.GetPath(UXML));
-            uxml.CloneTree(this);
-
-            var uss = AssetDatabase.LoadAssetAtPath<StyleSheet>(PackageInfo.GetPath(USS));
-            styleSheets.Add(uss);
-        }
-    }
-
     public static class PackageInfo
     {
         public const string Name = "com.qkrsogusl3.appbuilder";
@@ -37,70 +15,20 @@ namespace AppBuilder.UI
         public static string SamplesPath => $"Assets/Samples/AppBuilder/{Version}";
     }
 
-    public static class BuildCache
-    {
-        public static string GetKey(this BuildInfo build, string key) => $"{build.FullName}_{key}";
-
-        public static void SetString(BuildInfo build, string key, string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                PlayerPrefs.DeleteKey(build.GetKey(key));
-            }
-            else
-            {
-                PlayerPrefs.SetString(build.GetKey(key), value);
-            }
-        }
-
-        public static string GetString(BuildInfo build, string key, string defaultValue = null)
-        {
-            return PlayerPrefs.GetString(build.GetKey(key), defaultValue);
-        }
-
-        public static void SetString(string key, string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                PlayerPrefs.DeleteKey($"{nameof(AppBuilder)}_{key}");
-            }
-            else
-            {
-                PlayerPrefs.SetString($"{nameof(AppBuilder)}_{key}", value);
-            }
-        }
-
-        public static string GetString(string key, string defaultValue = null)
-        {
-            return PlayerPrefs.GetString($"{nameof(AppBuilder)}_{key}", defaultValue);
-        }
-    }
-
     public static class DashboardExtensions
     {
         public static DropdownField BuildField(this Dashboard window) =>
             window.rootVisualElement.Q<DropdownField>("build-field");
     }
 
-    // public enum BuildMode
-    // {
-    //     Build,
-    //     Preview,
-    //     Configure
-    // }
-
     public class Dashboard : EditorWindow
     {
         public static readonly string UXML = PackageInfo.GetPath("Editor/UI/Dashboard.uxml");
+        public static readonly string USS = PackageInfo.GetPath("Editor/UI/Dashboard.uss");
 
         private static readonly List<string> NothingBuilds = new()
         {
             "Nothing"
-        };
-
-        private static readonly List<string> BaseVariants = new()
-        {
-            "Auto"
         };
 
         [MenuItem("AppBuilder/Dashboard")]
@@ -119,8 +47,11 @@ namespace AppBuilder.UI
         private static void Load(VisualElement visualElement)
         {
             // Import UXML
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML);
-            visualTree.CloneTree(visualElement);
+            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UXML);
+            tree.CloneTree(visualElement);
+
+            var style = AssetDatabase.LoadAssetAtPath<StyleSheet>(USS);
+            visualElement.styleSheets.Add(style);
         }
 
         public void CreateGUI()
@@ -161,6 +92,7 @@ namespace AppBuilder.UI
             };
             root.Q<Button>("btn-apply").clicked += () => { ExecuteAndRender(BuildController.BuildMode.Configure); };
             root.Q<Button>("btn-build").clicked += () => { ExecuteAndRender(BuildController.BuildMode.Build); };
+
         }
 
         public (BuildInfo, BuildPlayer.Report) ExecuteAndRender(BuildController.BuildMode mode)
