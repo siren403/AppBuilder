@@ -1,0 +1,72 @@
+﻿.dynamic-input-field {
+    flex-direction: row;
+}
+
+/* key */
+.key-container {
+    justify-content: center;
+}
+
+#key {
+    min-width: 150px;
+}
+
+/* value */
+.value-container {
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+/* value - label */
+.value-label-container {
+    justify-content: center;
+    display: none;
+    width: 100%;
+}
+
+.enable-value-label .value-label-container {
+    display: flex;
+}
+
+#value-label {
+    overflow: hidden;
+    -unity-text-align: middle-right;
+}
+
+/* value - path */
+.value-path-container {
+    display: none;
+    width: 100%;
+}
+
+.enable-value-path .value-path-container {
+    display: flex;
+}
+
+/* value - dropdown */
+.value-dropdown-container {
+    display: none;
+    width: 100%;
+}
+
+.enable-value-dropdown .value-dropdown-container {
+    display: flex;
+}
+
+#value-dropdown {
+
+}
+
+
+/* elements */
+Label {
+    justify-content: center;
+}
+
+DropdownField {
+    margin: 0;
+}
+
+PopupTextElement {
+    -unity-text-align: middle-center;
+}

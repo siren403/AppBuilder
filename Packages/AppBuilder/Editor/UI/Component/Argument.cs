@@ -122,7 +122,7 @@ namespace AppBuilder.UI
                 var folder = string.IsNullOrEmpty(_inputField.value)
                     ? Application.dataPath
                     : _inputField.value;
-                
+
                 var directory = EditorUtility.OpenFolderPanel(_labelKey.text, folder, string.Empty);
                 if (!string.IsNullOrEmpty(directory))
                 {
@@ -157,8 +157,29 @@ namespace AppBuilder.UI
             _dropdownField.RegisterValueChangedCallback(callback);
         }
 
-        public new class UxmlFactory : UxmlFactory<Argument>
+        public new class UxmlFactory : UxmlFactory<Argument, UxmlTraits>
         {
+        }
+
+        public new class UxmlTraits : VisualElement.UxmlTraits
+        {
+            public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
+            {
+                get { yield break; }
+            }
+
+            private readonly UxmlStringAttributeDescription _value = new() {name = "value"};
+
+            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+            {
+                base.Init(ve, bag, cc);
+
+                if (ve is not Argument e) return;
+
+                bag.TryGetAttributeValue("class", out var classes);
+                e.AddToClassList(classes);
+                e.Value = _value.GetValueFromBag(bag, cc);
+            }
         }
     }
 }

@@ -1,11 +1,30 @@
 ﻿using System;
-using UniRx;
+using System.Text.RegularExpressions;
+using AppBuilder;
+using UnityEngine;
 using UnityEngine.UIElements;
-using ObservableExtensions = UniRx.ObservableExtensions;
 
 namespace Editor.Component
 {
-    public class Component : VisualElement
+    public static class StringExtensions
+    {
+        public static string PascalToKebabCase(this string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return value;
+
+            //support number pattern : "(?<!^)([AZ][az]|(?<=[az])[A-Z0-9])" 
+            return Regex.Replace(
+                    value,
+                    "(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])",
+                    "-$1",
+                    RegexOptions.Compiled)
+                .Trim()
+                .ToLower();
+        }
+    }
+
+    public abstract class Component : VisualElement
     {
         public class Initializer
         {
@@ -19,51 +38,44 @@ namespace Editor.Component
         private UIToolkitWindow _window;
         protected UIToolkitWindow Window { get; set; }
 
-        private CompositeDisposable _disposable;
-
-        protected IReactiveStateStorage State => Window.State;
+        protected virtual string Path { get; } = string.Empty;
+        protected virtual string UXML { get; } = string.Empty;
+        protected virtual string USS { get; } = string.Empty;
 
         protected Component()
         {
-            RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
+            AddToClassList(GetType().Name.PascalToKebabCase());
+
+            var path = Path;
+            string uxml;
+            string uss;
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                uxml = path;
+                uss = path;
+            }
+            else
+            {
+                uxml = UXML;
+                uss = USS;
+            }
+            
+            if (!string.IsNullOrEmpty(uxml)) this.LoadUXML(uxml);
+            if (!string.IsNullOrEmpty(uss)) this.LoadUSS(uss);
+            // RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
         }
 
-        protected virtual void Init()
-        {
-        }
+        protected abstract void Init();
 
         private void OnDetachFromPanel(DetachFromPanelEvent e)
         {
-            _disposable?.Dispose();
-            _disposable = null;
         }
 
         protected void Add<T>(T child, out T element) where T : VisualElement
         {
             base.Add(child);
             element = child;
-        }
-
-        public void AddDispose(IDisposable disposable)
-        {
-            _disposable ??= new();
-            _disposable.Add(disposable);
-        }
-    }
-
-    public static class DisposableExtensions
-    {
-        public static void AddTo(this IDisposable disposable, Component component)
-        {
-            component.AddDispose(disposable);
-        }
-    }
-
-    public static class ReactivePropertyExtensions
-    {
-        public static IDisposable SubscribeToLabel(this ReactiveProperty<int> property, Label label)
-        {
-            return ObservableExtensions.Subscribe(property, _ => label.text = _.ToString());
         }
     }
 }

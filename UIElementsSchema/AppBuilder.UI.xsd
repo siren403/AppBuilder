@@ -44,9 +44,6 @@
   <xs:complexType name="ArgumentType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">
-        <xs:sequence minOccurs="0" maxOccurs="unbounded">
-          <xs:element ref="engine:VisualElement" />
-        </xs:sequence>
         <xs:attribute default="" name="name" type="xs:string" use="optional" />
         <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
         <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
@@ -57,6 +54,7 @@
         <xs:attribute default="" name="class" type="xs:string" use="optional" />
         <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
         <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:attribute default="" name="value" type="xs:string" use="optional" />
         <xs:anyAttribute processContents="lax" />
       </xs:restriction>
     </xs:complexContent>
@@ -81,6 +79,61 @@
     </xs:complexContent>
   </xs:complexType>
   <xs:element name="ColorAndText" substitutionGroup="engine:VisualElement" type="app:ColorAndTextType" />
+  <xs:simpleType name="DynamicInputField_input-type_Type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Label" />
+      <xs:enumeration value="Directory" />
+      <xs:enumeration value="File" />
+      <xs:enumeration value="Dropdown" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="DynamicInputFieldType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:attribute default="" name="value" type="xs:string" use="optional" />
+        <xs:attribute default="Label" name="input-type" type="app:DynamicInputField_input-type_Type" use="optional" />
+        <xs:attribute default="" name="choices" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="DynamicInputField" substitutionGroup="engine:VisualElement" type="app:DynamicInputFieldType" />
+  <xs:simpleType name="PathField_path-type_Type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Directory" />
+      <xs:enumeration value="File" />
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="PathFieldType">
+    <xs:complexContent mixed="false">
+      <xs:restriction base="engine:VisualElementType">
+        <xs:attribute default="" name="name" type="xs:string" use="optional" />
+        <xs:attribute default="" name="view-data-key" type="xs:string" use="optional" />
+        <xs:attribute default="Position" name="picking-mode" type="engine:VisualElement_picking-mode_Type" use="optional" />
+        <xs:attribute default="" name="tooltip" type="xs:string" use="optional" />
+        <xs:attribute default="None" name="usage-hints" type="engine:VisualElement_usage-hints_Type" use="optional" />
+        <xs:attribute default="0" name="tabindex" type="xs:int" use="optional" />
+        <xs:attribute default="false" name="focusable" type="xs:boolean" use="optional" />
+        <xs:attribute default="" name="class" type="xs:string" use="optional" />
+        <xs:attribute default="" name="content-container" type="xs:string" use="optional" />
+        <xs:attribute default="" name="style" type="xs:string" use="optional" />
+        <xs:attribute default="Directory" name="path-type" type="app:PathField_path-type_Type" use="optional" />
+        <xs:attribute default="" name="ext" type="xs:string" use="optional" />
+        <xs:anyAttribute processContents="lax" />
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="PathField" substitutionGroup="engine:VisualElement" type="app:PathFieldType" />
   <xs:complexType name="SettingPropertyType">
     <xs:complexContent mixed="false">
       <xs:restriction base="engine:VisualElementType">

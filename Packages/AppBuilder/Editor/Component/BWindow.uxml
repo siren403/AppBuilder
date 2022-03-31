@@ -10,4 +10,14 @@
     <comp:CounterDisposeButton/>
     <comp:SharedCounter/>
     <comp:SharedCounter/>
+    <comp:FtpUpload/>
+    <app:Argument class="value" value="aaaaaaaaa22aaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    <app:Argument class="input folder" value="aaaaaaaaa22aaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    <app:Argument class="input file" value="aaaaaaaaa22aaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    <app:DynamicInputField input-type="Label" value="sssssssssssssssssssssssssssssssssssssssssssss22s"/>
+    <app:DynamicInputField input-type="Directory" value="sssssssssssssssssssssssssssssssssssssssssssss22s"/>
+    <app:DynamicInputField input-type="File" value="sssssssssssssssssssssssssssssssssssssssssssss22s"/>
+    <app:DynamicInputField input-type="Dropdown" choices="First,Second , Third" value="First"/>
+    <app:PathField path-type="Directory" style="width=100%;"/>
+    <app:PathField path-type="File" ext="apk"/>
 </engine:UXML>

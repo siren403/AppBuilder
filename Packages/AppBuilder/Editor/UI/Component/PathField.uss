@@ -1,0 +1,33 @@
+﻿.path-field {
+    flex-direction: row;
+}
+
+.path-field > #path-text-field {
+    margin: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.path-field > #path-text-field > TextInput{
+    padding: 0;
+    -unity-text-align: middle-right;
+    overflow: hidden;
+}
+
+.path-field > #path-button {
+    margin: 0;
+    padding: 0;
+    width: 20px;
+    justify-content: center;
+}
+
+.path-directory #path-button > Image {
+    --unity-image: resource("d_Folder Icon");
+    height: 15px;
+}
+
+.path-file #path-button > Image {
+    --unity-image: resource("winbtn_win_max@2x");
+    height: 15px;
+    background-color: white;
+}

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -91,8 +93,29 @@ namespace AppBuilder.UI
                 EditorApplication.EnterPlaymode();
             };
             root.Q<Button>("btn-apply").clicked += () => { ExecuteAndRender(BuildController.BuildMode.Configure); };
-            root.Q<Button>("btn-build").clicked += () => { ExecuteAndRender(BuildController.BuildMode.Build); };
+            root.Q<Button>("btn-build").clicked += () =>
+            {
+                var (build, report) = ExecuteAndRender(BuildController.BuildMode.Build);
+                var local = report.UnityReport.summary.outputPath;
+                var remote = "/build";
 
+                var args = new StringBuilder();
+                args.Append("./Tools/AppBuilderConsoleExtension/Publish/win-x64/AppBuilderConsoleExtension.exe");
+                args.Append(" ftp upload");
+                args.Append(" --host localhost");
+                args.Append(" --user appbuilder");
+                args.Append(" --passwd 0000");
+                args.Append($" --local {local}");
+                args.Append(" --remote /publish");
+                using var process = new Process()
+                {
+                    StartInfo = new ProcessStartInfo("powershell.exe")
+                    {
+                        Arguments = args.ToString(),
+                    }
+                };
+                process.Start();
+            };
         }
 
         public (BuildInfo, BuildPlayer.Report) ExecuteAndRender(BuildController.BuildMode mode)
