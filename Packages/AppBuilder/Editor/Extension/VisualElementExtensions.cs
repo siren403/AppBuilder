@@ -58,6 +58,12 @@ namespace AppBuilder
             element.LoadUSS(uss);
         }
 
+        public static void LoadPath(this VisualElement element, string path)
+        {
+            element.LoadUXML(path);
+            element.LoadUSS(path);
+        }
+
         public static void LoadUXML(this VisualElement element, string uxml)
         {
             if (string.IsNullOrEmpty(uxml))
@@ -71,6 +77,7 @@ namespace AppBuilder
             {
                 uxml = Path.ChangeExtension(uxml, "uxml");
             }
+
             var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxml);
             if (tree == null)
             {
@@ -89,10 +96,12 @@ namespace AppBuilder
                 Debug.LogError($"empty uss: {uss}");
                 return;
             }
+
             if (!Path.HasExtension(uss))
             {
                 uss = Path.ChangeExtension(uss, "uss");
             }
+
             var style = AssetDatabase.LoadAssetAtPath<StyleSheet>(uss);
             if (style == null) Debug.LogWarning($"not found uss: {uss}");
             else element.styleSheets.Add(style);
