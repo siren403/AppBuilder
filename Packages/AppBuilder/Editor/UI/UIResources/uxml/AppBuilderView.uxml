@@ -26,6 +26,5 @@
         <app:BuildNode depth="2"/>
         <app:JobNode depth="3"/>
     </engine:ScrollView>
-    <engine:Button text="test"/>
     <engine:VisualElement name="no-build" />
 </engine:UXML>

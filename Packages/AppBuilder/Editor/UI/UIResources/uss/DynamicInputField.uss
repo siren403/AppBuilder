@@ -5,6 +5,7 @@
 /* key */
 .key-container {
     justify-content: center;
+    margin-right: 4;
 }
 
 #key {

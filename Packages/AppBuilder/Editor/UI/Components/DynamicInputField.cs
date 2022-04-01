@@ -31,7 +31,11 @@ namespace AppBuilder.UI
 
         public string Key
         {
-            set => _keyLabel.text = value;
+            set
+            {
+                _keyLabel.text = value;
+                _keyLabel.EnableTextTooltip();
+            }
         }
 
         public string Value

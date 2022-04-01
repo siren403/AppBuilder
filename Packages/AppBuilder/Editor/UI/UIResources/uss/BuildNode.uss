@@ -1,1 +1,16 @@
-﻿
+﻿.build-node DynamicInputField > .key-container {
+    width: 150;
+}
+
+.build-node DynamicInputField > .key-container > Label {
+    overflow: hidden;
+}
+
+
+.build-node DynamicInputField > .value-container {
+    
+}
+
+/*.build-node DynamicInputField > .value-container > Label {*/
+/*    overflow: hidden;*/
+/*}*/

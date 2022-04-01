@@ -86,7 +86,6 @@ namespace AppBuilder.UI
                     cache.Set(arg.Key, e.newValue);
                     var view = GetFirstAncestorOfType<AppBuilderView>();
                     view.ExecuteAndRender(BuildController.BuildMode.Preview);
-                    //todo: render preview
                 });
             }
         }

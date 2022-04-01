@@ -131,30 +131,8 @@ namespace AppBuilder.UI
                 .ToList();
 
             _inputNode.Render(sortedArgs, inputs, new BuildInfoCache(build));
-
-            // foreach (var input in build.Inputs)
-            // {
-            //     var field = new DynamicInputField()
-            //     {
-            //         Key = input.Name
-            //     };
-            //
-            //     switch (input.Options)
-            //     {
-            //         case InputOptions.Directory:
-            //             field.Type = DynamicInputField.InputType.Directory;
-            //             field.Value = BuildCache.GetString(build, input.Name)
-            //             break;
-            //         case InputOptions.File:
-            //             break;
-            //         case InputOptions.Dropdown:
-            //             break;
-            //         default:
-            //             break;
-            //     }
-            //
-            //     _inputNode.contentContainer.Add(field);
-            // }
+            _buildNode.Render(report.Properties);
+            
         }
     }
 
