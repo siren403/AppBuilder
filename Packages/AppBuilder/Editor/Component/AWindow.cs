@@ -57,19 +57,13 @@ namespace Editor.Component
 
             _toggle = new Toggle()
             {
-                value = Window != null
+                value = false
             };
             container.Add(_toggle);
             container.style.flexDirection = FlexDirection.Row;
             _label.text = $"{_label.text}_i{++AWindow.initCounter}";
 
             Add(container);
-        }
-
-        protected override void Init()
-        {
-            _toggle.value = Window != null;
-            _label.text = $"{_label.text}_c{++AWindow.initCounter}";
         }
 
         public new class UxmlTraits : VisualElement.UxmlTraits

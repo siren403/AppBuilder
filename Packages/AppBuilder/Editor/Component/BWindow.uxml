@@ -21,9 +21,9 @@
     <app:PathField path-type="Directory" style="width=100%;"/>
     <app:PathField path-type="File" ext="apk"/>
 
-    <comp:Border>
+    <app:Border>
         <engine:VisualElement name="container">
             <engine:Label text="ASSAS"/>
         </engine:VisualElement>
-    </comp:Border>
+    </app:Border>
 </engine:UXML>

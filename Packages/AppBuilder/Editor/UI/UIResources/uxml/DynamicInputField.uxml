@@ -5,7 +5,7 @@
         xmlns:editor="UnityEditor.UIElements"
         xmlns:comp="Editor.Component"
         xmlns:app="AppBuilder.UI"
-        xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+        xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
 >
     <engine:VisualElement class="key-container">
         <engine:Label text="key" name="key"/>

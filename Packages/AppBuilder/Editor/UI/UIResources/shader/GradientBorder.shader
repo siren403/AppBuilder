@@ -1,4 +1,4 @@
-Shader "Hidden/VFX/GradientBorder"
+Shader "Hidden/AppBuilder/GradientBorder"
 {
     Properties
     {

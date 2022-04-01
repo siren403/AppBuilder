@@ -17,26 +17,26 @@ namespace Editor.Component
         private void CreateGUI()
         {
             Render();
-            InitializeComponents();
+            // InitializeComponents();
         }
 
-        private void InitializeComponents()
-        {
-            var children = rootVisualElement.Query<Component>().ToList();
-            children.Reverse();
-
-            var initializer = new Component.Initializer();
-            foreach (var child in children)
-            {
-                initializer.Initialize(child, this);
-            }
-        }
+        // private void InitializeComponents()
+        // {
+        //     var children = rootVisualElement.Query<Component>().ToList();
+        //     children.Reverse();
+        //
+        //     var initializer = new Component.Initializer();
+        //     foreach (var child in children)
+        //     {
+        //         initializer.Initialize(child, this);
+        //     }
+        // }
 
         protected abstract void Render();
 
         protected void Load(string uxml, string uss)
         {
-            rootVisualElement.LoadAsset(uxml, uss);
+            rootVisualElement.ApplyAsset(uxml, uss);
             // var children = rootVisualElement.Query().Children<Component>().ToList();
             // var a = rootVisualElement.Query<Component>().ToList();
             // var children = rootVisualElement.Query<Component>().Descendents<Component>().ToList();

@@ -52,19 +52,19 @@ namespace AppBuilder
             }
         }
 
-        public static void LoadAsset(this VisualElement element, string uxml, string uss)
+        public static void ApplyAsset(this VisualElement element, string uxml, string uss)
         {
-            element.LoadUXML(uxml);
-            element.LoadUSS(uss);
+            element.CloneTreeUXML(uxml);
+            element.AddStyleSheet(uss);
         }
 
-        public static void LoadPath(this VisualElement element, string path)
+        public static void ApplyPath(this VisualElement element, string path)
         {
-            element.LoadUXML(path);
-            element.LoadUSS(path);
+            element.CloneTreeUXML(path);
+            element.AddStyleSheet(path);
         }
 
-        public static void LoadUXML(this VisualElement element, string uxml)
+        public static void CloneTreeUXML(this VisualElement element, string uxml)
         {
             if (string.IsNullOrEmpty(uxml))
             {
@@ -89,7 +89,8 @@ namespace AppBuilder
             tree.CloneTree(element);
         }
 
-        public static void LoadUSS(this VisualElement element, string uss)
+
+        public static void AddStyleSheet(this VisualElement element, string uss)
         {
             if (string.IsNullOrEmpty(uss))
             {
@@ -105,6 +106,45 @@ namespace AppBuilder
             var style = AssetDatabase.LoadAssetAtPath<StyleSheet>(uss);
             if (style == null) Debug.LogWarning($"not found uss: {uss}");
             else element.styleSheets.Add(style);
+        }
+
+        public static void Add<T>(this VisualElement element, T child, out T result) where T : VisualElement
+        {
+            element.Add(child);
+            result = child;
+        }
+
+
+        public static void AddVisualTree(this VisualElement element, string path)
+        {
+            var tree = LoadVisualTreeAsset(path);
+            tree.CloneTree(element);
+        }
+
+
+        private static VisualTreeAsset LoadVisualTreeAsset(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                // throw new ArgumentNullException(nameof(uxml));
+                Debug.LogError($"empty uxml: {path}");
+                return null;
+            }
+
+            if (!Path.HasExtension(path))
+            {
+                path = Path.ChangeExtension(path, "uxml");
+            }
+
+            var tree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
+            if (tree == null)
+            {
+                // throw new ArgumentNullException(uxml);
+                Debug.LogError($"not found uxml: {path}");
+                return null;
+            }
+
+            return tree;
         }
     }
 }

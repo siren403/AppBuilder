@@ -6,7 +6,7 @@ namespace AppBuilder.UI
 {
     public class SettingProperty : VisualElement
     {
-        private static readonly string UXML = PackageInfo.GetPath("Editor/UI/Component/SettingProperty.uxml");
+        private static readonly string UXML = PackageInfo.GetPath("Editor/UI/Components/SettingProperty.uxml");
         
         private Label _labelKey;
         private Label _labelValue;

@@ -8,7 +8,7 @@ namespace AppBuilder.UI
 {
     public class Argument : VisualElement
     {
-        public static readonly string UXML = PackageInfo.GetPath("Editor/UI/Component/Argument.uxml");
+        public static readonly string UXML = PackageInfo.GetPath("Editor/UI/Components/Argument.uxml");
 
         private Label _labelKey;
 

@@ -4,7 +4,7 @@
         xmlns:engine="UnityEngine.UIElements"
         xmlns:editor="UnityEditor.UIElements"
         xmlns:app="AppBuilder.UI"
-        xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+        xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
 >
     <engine:TextField name="path-text-field" text="input"/>
     <engine:Button name="path-button">

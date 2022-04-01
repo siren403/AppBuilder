@@ -6,7 +6,7 @@ namespace AppBuilder.UI.Window
 {
     public class BuildsWindow : UIToolkitWindow
     {
-        [MenuItem("AppBuilder/Builds")]
+        // [MenuItem("AppBuilder/Builds")]
         public static void ShowWindow()
         {
             BuildsWindow wnd = GetWindow<BuildsWindow>();
@@ -16,7 +16,7 @@ namespace AppBuilder.UI.Window
 
         protected override void Render()
         {
-            rootVisualElement.LoadPath(PackageInfo.GetPath($"Editor/UI/Window/{nameof(BuildsWindow)}"));
+            rootVisualElement.ApplyPath(PackageInfo.GetPath($"Editor/UI/Window/{nameof(BuildsWindow)}"));
         }
     }
 }

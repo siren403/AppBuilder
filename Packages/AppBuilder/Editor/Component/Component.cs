@@ -26,18 +26,6 @@ namespace Editor.Component
 
     public abstract class Component : VisualElement
     {
-        public class Initializer
-        {
-            public void Initialize(Component component, UIToolkitWindow window)
-            {
-                component.Window = window;
-                component.Init();
-            }
-        }
-
-        private UIToolkitWindow _window;
-        protected UIToolkitWindow Window { get; set; }
-
         protected virtual string Path { get; } = string.Empty;
         protected virtual string UXML { get; } = string.Empty;
         protected virtual string USS { get; } = string.Empty;
@@ -46,36 +34,29 @@ namespace Editor.Component
         {
             AddToClassList(GetType().Name.PascalToKebabCase());
 
-            var path = Path;
-            string uxml;
-            string uss;
-
-            if (!string.IsNullOrEmpty(path))
-            {
-                uxml = path;
-                uss = path;
-            }
-            else
-            {
-                uxml = UXML;
-                uss = USS;
-            }
-            
-            if (!string.IsNullOrEmpty(uxml)) this.LoadUXML(uxml);
-            if (!string.IsNullOrEmpty(uss)) this.LoadUSS(uss);
+            // var path = Path;
+            // string uxml;
+            // string uss;
+            //
+            // if (!string.IsNullOrEmpty(path))
+            // {
+            //     uxml = path;
+            //     uss = path;
+            // }
+            // else
+            // {
+            //     uxml = UXML;
+            //     uss = USS;
+            // }
+            //
+            // if (!string.IsNullOrEmpty(uxml)) this.LoadUXML(uxml);
+            // if (!string.IsNullOrEmpty(uss)) this.LoadUSS(uss);
             // RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
         }
-
-        protected abstract void Init();
 
         private void OnDetachFromPanel(DetachFromPanelEvent e)
         {
         }
 
-        protected void Add<T>(T child, out T element) where T : VisualElement
-        {
-            base.Add(child);
-            element = child;
-        }
     }
 }

@@ -1,0 +1,35 @@
+﻿:colors {
+    --color-node-1: #AD7DF9;
+    --color-node-2: #2789FF;
+    --color-node-3: #008DEC;
+    --color-node-4: #0088C4;
+    --color-node-5: #007F91;
+    --color-node-6: #00725C;
+}
+
+:root {
+    font-size: 14;
+}
+
+.app-builder-view {
+    height: 100%;
+}
+
+Toolbar {
+    flex-wrap: wrap;
+    height: auto;
+}
+
+.space {
+    border-width: 1;
+    border-color: #a1a1a1;
+
+    margin: 10 0;
+}
+
+#no-build {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.3);
+}

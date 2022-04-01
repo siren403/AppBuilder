@@ -10,13 +10,12 @@ namespace AppBuilder.UI
     {
         public enum InputType
         {
+            None,
             Label,
             Directory,
             File,
             Dropdown
         }
-
-        protected override string Path => PackageInfo.GetPath($"Editor/UI/Component/{nameof(DynamicInputField)}");
 
         private InputType _inputType;
 
@@ -28,6 +27,11 @@ namespace AppBuilder.UI
                 EnableClassByInputType(value, true);
                 _inputType = value;
             }
+        }
+
+        public string Key
+        {
+            set => _keyLabel.text = value;
         }
 
         public string Value
@@ -42,6 +46,7 @@ namespace AppBuilder.UI
                         break;
                     case InputType.Directory:
                     case InputType.File:
+                    case InputType.None:
                         _pathField.Value = value;
                         break;
                     case InputType.Dropdown:
@@ -56,19 +61,70 @@ namespace AppBuilder.UI
             set => _valueDropdown.choices = value;
         }
 
+        private readonly Label _keyLabel;
         private readonly Label _valueLabel;
         private readonly PathField _pathField;
         private readonly DropdownField _valueDropdown;
 
+        public string Extension
+        {
+            set => _pathField.Extension = value;
+        }
+
         public DynamicInputField()
         {
+            this.AddResource($"{nameof(DynamicInputField)}.uxml");
+            this.AddResource($"{nameof(DynamicInputField)}.uss");
+
+            _keyLabel = this.Q<Label>("key");
             _valueLabel = this.Q<Label>("value-label");
             _pathField = this.Q<PathField>("value-path");
             _valueDropdown = this.Q<DropdownField>("value-dropdown");
+
+            RegisterCallback<AttachToPanelEvent>(OnAttach);
         }
 
-        protected override void Init()
+        private event EventCallback<ChangeEvent<string>> ChangedCallback;
+
+        public void RegisterValueChangedCallback(EventCallback<ChangeEvent<string>> callback) =>
+            ChangedCallback += callback;
+
+        public void UnregisterValueChangedCallback(EventCallback<ChangeEvent<string>> callback) =>
+            ChangedCallback -= callback;
+
+        private void OnAttach(AttachToPanelEvent e)
         {
+            _pathField.RegisterValueChangedCallback(OnChangedPathField);
+            _valueDropdown.RegisterValueChangedCallback(OnChangedDropdownField);
+
+            RegisterCallback<DetachFromPanelEvent>(OnDetach);
+        }
+
+        private void OnDetach(DetachFromPanelEvent e)
+        {
+            _pathField.UnregisterValueChangedCallback(OnChangedPathField);
+            _valueDropdown.UnregisterValueChangedCallback(OnChangedDropdownField);
+
+            if (ChangedCallback != null)
+            {
+                foreach (var @delegate in ChangedCallback.GetInvocationList())
+                {
+                    ChangedCallback -= (EventCallback<ChangeEvent<string>>) @delegate;
+                }
+            }
+
+            UnregisterCallback<AttachToPanelEvent>(OnAttach);
+            UnregisterCallback<DetachFromPanelEvent>(OnDetach);
+        }
+
+        private void OnChangedPathField(ChangeEvent<string> e)
+        {
+            ChangedCallback?.Invoke(e);
+        }
+
+        private void OnChangedDropdownField(ChangeEvent<string> e)
+        {
+            ChangedCallback?.Invoke(e);
         }
 
         private void EnableClassByAllInputType(bool enable)
@@ -97,6 +153,10 @@ namespace AppBuilder.UI
                 case InputType.Dropdown:
                     EnableInClassList("enable-value-dropdown", enable);
                     break;
+                case InputType.None:
+                    EnableInClassList("enable-value-path", enable);
+                    _pathField.Type = PathField.PathType.None;
+                    break;
             }
         }
 
@@ -112,6 +172,7 @@ namespace AppBuilder.UI
                 get { yield break; }
             }
 
+            private readonly UxmlStringAttributeDescription _key = new() {name = "key"};
             private readonly UxmlStringAttributeDescription _value = new() {name = "value"};
             private readonly UxmlEnumAttributeDescription<InputType> _inputType = new() {name = "input-type"};
             private readonly UxmlStringAttributeDescription _choices = new() {name = "choices"};
@@ -126,11 +187,11 @@ namespace AppBuilder.UI
                 var choices = _choices.GetValueFromBag(bag, cc)
                     .Split(",")
                     .Where(s => !string.IsNullOrEmpty(s))
-                    .Select(s=>s.Trim())
+                    .Select(s => s.Trim())
                     .ToList();
                 e.Choices = choices;
 
-
+                e.Key = _key.GetValueFromBag(bag, cc);
                 e.Value = _value.GetValueFromBag(bag, cc);
             }
         }

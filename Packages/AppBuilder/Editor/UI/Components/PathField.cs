@@ -12,10 +12,9 @@ namespace AppBuilder.UI
         public enum PathType
         {
             Directory,
-            File
+            File,
+            None,
         }
-
-        protected override string Path => PackageInfo.GetPath($"Editor/UI/Component/{nameof(PathField)}");
 
         private readonly TextField _textField;
         private readonly Button _button;
@@ -29,6 +28,9 @@ namespace AppBuilder.UI
                     break;
                 case PathType.File:
                     EnableInClassList("path-file", enable);
+                    break;
+                case PathType.None:
+                    EnableInClassList("path-none", enable);
                     break;
             }
         }
@@ -64,6 +66,9 @@ namespace AppBuilder.UI
 
         public PathField()
         {
+            this.AddResource($"{nameof(PathField)}.uxml");
+            this.AddResource($"{nameof(PathField)}.uss");
+
             _textField = this.Q<TextField>("path-text-field");
             _textField.isDelayed = true;
             _button = this.Q<Button>("path-button");
@@ -84,9 +89,12 @@ namespace AppBuilder.UI
             };
         }
 
-        protected override void Init()
-        {
-        }
+        public bool RegisterValueChangedCallback(EventCallback<ChangeEvent<string>> callback) =>
+            _textField.RegisterValueChangedCallback(callback);
+
+        public bool UnregisterValueChangedCallback(EventCallback<ChangeEvent<string>> callback) =>
+            _textField.UnregisterValueChangedCallback(callback);
+
 
         private string GetDirectoryPath()
         {
