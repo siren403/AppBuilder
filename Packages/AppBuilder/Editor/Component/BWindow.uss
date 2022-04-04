@@ -1,0 +1,18 @@
+﻿#container {
+    height: 30;
+    border-width: 1;
+    border-radius: 8;
+    background-color: rgba(0.114,0.114,0.114,0.804);
+    
+}
+
+Border {
+    border-radius: 8;
+
+    margin: 10;
+    padding: 3;
+    --start-color:#BF9220;
+    --end-color:#C24F30;
+    /*--start-color:rgba(0.749, 0.573, 0.125, 1.000);*/
+    /*--end-color:rgba(0.761, 0.310, 0.188, 1.000);*/
+}

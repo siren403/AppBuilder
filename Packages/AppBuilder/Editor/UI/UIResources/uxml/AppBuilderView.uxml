@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:engine="UnityEngine.UIElements"
+        xmlns:editor="UnityEditor.UIElements"
+        xmlns:comp="Editor.Component"
+        xmlns:app="AppBuilder.UI"
+        xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
+>
+    <editor:Toolbar>
+        <editor:ToolbarMenu text="Select: " name="builds-menu"/>
+        <editor:ToolbarButton name="arguments-viewer-button" text="Arguments"/>
+
+        <editor:ToolbarSpacer style="flex-grow: 1;"/>
+
+        <editor:ToolbarButton name="clear-button" text="Clear"/>
+        <editor:ToolbarButton name="reload-button" text="Reload"/>
+        <editor:ToolbarButton name="configure-button" text="Configure"/>
+        <editor:ToolbarButton name="play-button" text="Play"/>
+        <editor:ToolbarButton name="build-button" text="Build"/>
+    </editor:Toolbar>
+    <engine:ScrollView>
+        <app:InputNode depth="1">
+            <app:DynamicInputField/>
+        </app:InputNode>
+        <app:BuildNode depth="2"/>
+        <app:JobNode depth="3"/>
+    </engine:ScrollView>
+    <app:ArgumentsViewer class="popup-hide"/>
+    <engine:VisualElement name="no-build" />
+</engine:UXML>

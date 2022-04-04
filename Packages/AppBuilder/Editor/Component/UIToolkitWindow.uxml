@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:engine="UnityEngine.UIElements"
+        xmlns:editor="UnityEditor.UIElements"
+        xmlns:app="AppBuilder.UI"
+        xmlns:comp="Editor.Component"
+        xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    <comp:AComponent depth="1">
+        <comp:BComponent depth="2"/>
+        <comp:CComponent depth="2"/>
+    </comp:AComponent>
+    <comp:BComponent depth="1">
+        <comp:AComponent depth="2">
+            <comp:CComponent depth="3">
+                <comp:CComponent depth="4"/>
+            </comp:CComponent>
+        </comp:AComponent>
+    </comp:BComponent>
+    <comp:CComponent depth="1">
+        <comp:BComponent depth="2">
+            <comp:AComponent depth="3"/>
+            <comp:AComponent depth="3"/>
+            <comp:AComponent depth="3"/>
+        </comp:BComponent>
+    </comp:CComponent>
+</engine:UXML>

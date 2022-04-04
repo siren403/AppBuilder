@@ -1,0 +1,67 @@
+﻿:node-colors {
+    --start-gray: #a1a1a1;
+    --end-gray: #5d5d5d;
+}
+
+/* node */
+.node {
+    margin: 15;
+    background-color: #232323;
+    border-radius: 8;
+    width: 450;
+    align-self: center;
+}
+
+/* border */
+.node > Border {
+    padding: 5;
+    border-radius: 8;
+    border-width: 4;
+    --start-color: var(--start-gray);
+    --end-color: var(--end-gray);
+}
+
+.depth-1 > Border {
+    --start-color: var(--color-node-1);
+    --end-color: var(--color-node-2);
+}
+
+.depth-2 > Border {
+    --start-color: var(--color-node-3);
+    --end-color: var(--color-node-4);
+}
+
+.depth-3 > Border {
+    --start-color: var(--color-node-5);
+    --end-color: var(--color-node-6);
+}
+
+
+.container.title > Label {
+    -unity-text-align: middle-center;
+}
+
+.title {
+    padding-bottom: 5;
+    margin-bottom: 5;
+    border-bottom-width: 2;
+    border-bottom-color: var(--start-gray);
+}
+
+.depth-1 .title {
+    border-bottom-color: var(--color-node-1);
+}
+
+.depth-2 .title {
+    border-bottom-color: var(--color-node-3);
+}
+
+.depth-3 .title {
+    border-bottom-color: var(--color-node-5);
+}
+
+.content {
+
+}
+
+

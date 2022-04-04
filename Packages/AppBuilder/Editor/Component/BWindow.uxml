@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:engine="UnityEngine.UIElements"
+        xmlns:editor="UnityEditor.UIElements"
+        xmlns:comp="Editor.Component"
+        xmlns:app="AppBuilder.UI"
+        xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+>
+    <comp:CounterDisposeButton/>
+    <comp:SharedCounter/>
+    <comp:SharedCounter/>
+    <comp:FtpUpload/>
+    <app:Argument class="value" value="aaaaaaaaa22aaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    <app:Argument class="input folder" value="aaaaaaaaa22aaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    <app:Argument class="input file" value="aaaaaaaaa22aaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+    <app:DynamicInputField input-type="Label" value="sssssssssssssssssssssssssssssssssssssssssssss22s"/>
+    <app:DynamicInputField input-type="Directory" value="sssssssssssssssssssssssssssssssssssssssssssss22s"/>
+    <app:DynamicInputField input-type="File" value="sssssssssssssssssssssssssssssssssssssssssssss22s"/>
+    <app:DynamicInputField input-type="Dropdown" choices="First,Second , Third" value="First"/>
+    <app:PathField path-type="Directory" style="width=100%;"/>
+    <app:PathField path-type="File" ext="apk"/>
+
+    <app:Border>
+        <engine:VisualElement name="container">
+            <engine:Label text="ASSAS"/>
+        </engine:VisualElement>
+    </app:Border>
+</engine:UXML>

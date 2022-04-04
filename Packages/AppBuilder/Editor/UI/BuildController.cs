@@ -20,7 +20,7 @@ namespace AppBuilder.UI
 
         public void Initialize()
         {
-            _builds = BuildPlayer.GetBuilds().ToDictionary(build => build.Name, build => build);
+            _builds = BuildPlayer.GetBuilds().ToDictionary(build => build.FullName, build => build);
         }
 
         public (BuildInfo build, BuildPlayer.Report report) ExecuteBuild(string buildName, BuildMode mode)

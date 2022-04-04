@@ -96,7 +96,7 @@ namespace AppBuilder
     /// </summary>
     public static partial class BuildPlayer
     {
-        public static Dictionary<string, MethodInfo> CollectMethods()
+        public static Dictionary<string, MethodInfo> CollectBuilds()
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(_ => _.GetReferencedAssemblies().Any(_ => _.Name == "AppBuilder.Editor"))
