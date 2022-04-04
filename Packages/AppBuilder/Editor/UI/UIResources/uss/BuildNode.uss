@@ -1,5 +1,5 @@
 ﻿.build-node DynamicInputField > .key-container {
-    width: 150;
+    /*width: 150;*/
 }
 
 .build-node DynamicInputField > .key-container > Label {

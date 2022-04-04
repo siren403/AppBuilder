@@ -81,7 +81,7 @@ namespace AppBuilder.UI
             var buildsMenu = this.Q<ToolbarMenu>("builds-menu");
 
             var buildNames = _controller.BuildNames;
-            foreach (var buildName in buildNames)
+            foreach (var buildName in buildNames) 
             {
                 buildsMenu.menu.AppendAction(buildName, _ => { SelectBuild(buildsMenu, _.name); });
             }
@@ -142,6 +142,7 @@ namespace AppBuilder.UI
             {
                 EnableNoBuild();
                 Debug.LogError(e);
+                PlayerPrefs.DeleteAll();
             }
         }
 

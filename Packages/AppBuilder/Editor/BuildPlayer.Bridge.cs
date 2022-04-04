@@ -56,7 +56,7 @@ namespace AppBuilder
                 stringBuilder.Append($"-buildTarget \"{_options.target.ToString()}\"");
                 if (Args.TryGetValue("projectPath", out var arg))
                 {
-                    stringBuilder.Append($"-{arg.Key} \"{arg.Value}\"");
+                    stringBuilder.Append($" -{arg.Key} \"{arg.Value}\"");
                 }
 
                 return Args.Where(pair => pair.Value.Category == ArgumentCategory.Input)

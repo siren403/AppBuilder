@@ -1,13 +1,10 @@
 ﻿using AppBuilder;
 
-namespace AppBuilderSamples
+public static partial class Builds
 {
-    public static partial class Builds
+    [Build(order: -1)]
+    public static void QuickStart()
     {
-        [Build(order: -1)]
-        public static void QuickStart()
-        {
-            BuildPlayer.Build((ctx, builder) => { builder.ConfigureCurrentSettings(); });
-        }
+        BuildPlayer.Build((ctx, builder) => { builder.ConfigureCurrentSettings(); });
     }
 }

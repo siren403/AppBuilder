@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Config
   m_EditorClassIdentifier: 
   optionsValue:
-    Host: http://server.dev.com
-    AppId: 223123124124124124
+    Host: 
+    AppId: 
   json: 
