@@ -3,7 +3,9 @@ using System.IO;
 using System.Linq;
 using Editor.Component;
 using JetBrains.Annotations;
+using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace AppBuilder.UI
@@ -84,6 +86,36 @@ namespace AppBuilder.UI
                 buildsMenu.menu.AppendAction(buildName, _ => { SelectBuild(buildsMenu, _.name); });
             }
 
+
+            var toolbarArgumentsViewer = this.Q<ToolbarButton>("arguments-viewer-button");
+            toolbarArgumentsViewer.clicked += () =>
+            {
+                var (build, report) = ExecuteAndRender(BuildController.BuildMode.Preview);
+                var viewer = this.Q<ArgumentsViewer>();
+                viewer.Args = report.Args;
+                viewer.CommandLineArgs = report.ToCommandLineArgs(build);
+                viewer.Show();
+            };
+
+            var toolbarClear = this.Q<ToolbarButton>("clear-button");
+            toolbarClear.clicked += PlayerPrefs.DeleteAll;
+
+            var toolbarReload = this.Q<ToolbarButton>("reload-button");
+            toolbarReload.clicked += () => ExecuteAndRender(BuildController.BuildMode.Preview);
+
+            var toolbarConfigure = this.Q<ToolbarButton>("configure-button");
+            toolbarConfigure.clicked += () => ExecuteAndRender(BuildController.BuildMode.Configure);
+
+            var toolbarPlay = this.Q<ToolbarButton>("play-button");
+            toolbarPlay.clicked += () =>
+            {
+                ExecuteAndRender(BuildController.BuildMode.Configure);
+                EditorApplication.EnterPlaymode();
+            };
+
+            var toolbarBuild = this.Q<ToolbarButton>("build-button");
+            toolbarBuild.clicked += () => { var (build, report) = ExecuteAndRender(BuildController.BuildMode.Build); };
+
             SelectBuild(buildsMenu, BuildCache.GetString(buildsMenu.name, buildNames.First()));
         }
 
@@ -106,9 +138,10 @@ namespace AppBuilder.UI
 
                 RenderNode(build, report);
             }
-            catch
+            catch (Exception e)
             {
                 EnableNoBuild();
+                Debug.LogError(e);
             }
         }
 
@@ -132,7 +165,6 @@ namespace AppBuilder.UI
 
             _inputNode.Render(sortedArgs, inputs, new BuildInfoCache(build));
             _buildNode.Render(report.Properties);
-            
         }
     }
 

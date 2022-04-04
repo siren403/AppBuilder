@@ -6,11 +6,8 @@ using UnityEngine.UIElements;
 
 namespace AppBuilder.UI
 {
-    public class ArgumentsViewer : AppBuilderVisualElement
+    public class ArgumentsViewer : VisualElement
     {
-        protected override string UXML => $"Editor/UI/{nameof(ArgumentsViewer)}/{nameof(ArgumentsViewer)}.uxml";
-        protected override string USS => $"Editor/UI/{nameof(ArgumentsViewer)}/{nameof(ArgumentsViewer)}.uss";
-
         private readonly ScrollView _content;
 
         public Arguments Args
@@ -39,12 +36,14 @@ namespace AppBuilder.UI
         }
 
         public string CommandLineArgs { set; private get; }
+
         private readonly Label _labelLog;
-        private readonly EnabledTransitionController _logTransitionController;
+
         private readonly VisualElement _overlay;
 
         public ArgumentsViewer()
         {
+            this.AddResource(nameof(ArgumentsViewer));
             AddToClassList("popup");
 
             _overlay = this.Q(className: "popup-overlay");
@@ -56,45 +55,84 @@ namespace AppBuilder.UI
                 button.clicked += Hide;
             }
 
-            this.Q<Button>("btn-copy").clicked += CopyToClipboard;
-            _content = this.Q<ScrollView>("content");
-
-            SetEnabled(false);
 
             var viewer = this.Q(className: "arguments-viewer");
-            viewer.SetEnabled(false);
             viewer.RegisterCallback<TransitionEndEvent>(e =>
             {
-                if (!viewer.enabledSelf)
+                if (e.target is VisualElement ve && ClassListContains("popup-hide"))
                 {
-                    SetEnabled(false);
+                    EnableInClassList("popup-disable", true);
                 }
             });
 
+            bool isLogTransision = false;
+
+            this.Q<Button>("btn-copy").clicked += () =>
+            {
+                CopyToClipboard();
+                if (isLogTransision) return;
+                isLogTransision = true;
+                EnableInClassList("show-log", true);
+            };
+            _content = this.Q<ScrollView>("content");
+
             _labelLog = this.Q<Label>("label-log");
-            _logTransitionController = new EnabledTransitionController(_labelLog);
+            _labelLog.RegisterCallback<TransitionEndEvent>(e =>
+            {
+                if (!(e.target is VisualElement ve)) return;
+                if (ClassListContains("show-log"))
+                {
+                    EnableInClassList("show-log", false);
+                    EnableInClassList("hide-log", true);
+                }
+                else if (ClassListContains("hide-log"))
+                {
+                    EnableInClassList("hide-log", false);
+                    isLogTransision = false;
+                }
+            });
         }
+
 
         private void CopyToClipboard()
         {
             GUIUtility.systemCopyBuffer = CommandLineArgs;
             _labelLog.text = "success";
-            _logTransitionController.In();
         }
 
         public void Show()
         {
-            SetEnabled(true);
-            this.Q(className: "arguments-viewer").SetEnabled(true);
+            EnableInClassList("popup-disable", false);
+            EnableInClassList("popup-hide", false);
         }
 
         public void Hide()
         {
-            this.Q(className: "arguments-viewer").SetEnabled(false);
+            EnableInClassList("popup-hide", true);
         }
 
         public new class UxmlFactory : UxmlFactory<ArgumentsViewer, UxmlTraits>
         {
+        }
+
+        public new class UxmlTraits : VisualElement.UxmlTraits
+        {
+            public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
+            {
+                get { yield break; }
+            }
+
+            private UxmlStringAttributeDescription _class = new() {name = "class"};
+
+            public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
+            {
+                base.Init(ve, bag, cc);
+
+                if (ve is not ArgumentsViewer e) return;
+
+
+                e.EnableInClassList("popup-disable", _class.GetValueFromBag(bag, cc).Contains("popup-hide"));
+            }
         }
     }
 }

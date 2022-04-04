@@ -9,15 +9,15 @@
 >
     <editor:Toolbar>
         <editor:ToolbarMenu text="Select: " name="builds-menu"/>
-        <editor:ToolbarButton text="Arguments"/>
+        <editor:ToolbarButton name="arguments-viewer-button" text="Arguments"/>
 
         <editor:ToolbarSpacer style="flex-grow: 1;"/>
 
-        <editor:ToolbarButton text="Clear"/>
-        <editor:ToolbarButton text="Reload"/>
-        <editor:ToolbarButton text="Configure"/>
-        <editor:ToolbarButton text="Play"/>
-        <editor:ToolbarButton text="Build"/>
+        <editor:ToolbarButton name="clear-button" text="Clear"/>
+        <editor:ToolbarButton name="reload-button" text="Reload"/>
+        <editor:ToolbarButton name="configure-button" text="Configure"/>
+        <editor:ToolbarButton name="play-button" text="Play"/>
+        <editor:ToolbarButton name="build-button" text="Build"/>
     </editor:Toolbar>
     <engine:ScrollView>
         <app:InputNode depth="1">
@@ -26,5 +26,6 @@
         <app:BuildNode depth="2"/>
         <app:JobNode depth="3"/>
     </engine:ScrollView>
+    <app:ArgumentsViewer class="popup-hide"/>
     <engine:VisualElement name="no-build" />
 </engine:UXML>

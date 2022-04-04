@@ -3,11 +3,8 @@ using UnityEngine.UIElements;
 
 namespace AppBuilder.UI
 {
-    public class Cell : AppBuilderVisualElement
+    public class Cell : VisualElement
     {
-        protected override string UXML => "Editor/UI/ArgumentsViewer/Cell.uxml";
-        protected override string USS => "Editor/UI/ArgumentsViewer/Cell.uss";
-
         private readonly Label _label;
 
         public string Text
@@ -21,6 +18,7 @@ namespace AppBuilder.UI
 
         public Cell()
         {
+            this.AddResource(nameof(Cell));
             AddToClassList("cell");
             _label = this.Q<Label>();
         }
