@@ -8,13 +8,8 @@ on:
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
-      name:
-        # Friendly description to be shown in the UI instead of 'name'
-        description: 'Person to greet'
-        # Default value if no value is explicitly provided
-        default: 'World'
-        # Input has to be provided for the workflow to run
-        required: true
+      editorVersion:
+        default: '2021.2.12f1'
       logFile:
         default: '/Users/aaron/workspace/AppBuilder/Editor.log'
       executeMethod:
@@ -48,7 +43,7 @@ jobs:
       run: echo "Hello ${{ github.event.inputs.name }}"
     - name: Build
       run: >
-        $UNITY_EDITORS/2021.2.12f1/Unity.app/Contents/MacOS
+        $UNITY_EDITORS/${{github.event.inputs.editorVersion}}/Unity.app/Contents/MacOS
         -batchmode 
         -quit 
         -logFile "${{github.event.inputs.logFile}}" 
