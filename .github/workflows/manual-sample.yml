@@ -58,4 +58,4 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v3.0.0
       with:
-        path: ${{github.event.inputs.projectPath}}/${{github.event.inputs.buildTarget}}/AppBuilder.apk
+        path: ${{github.event.inputs.projectPath}}/Build/${{github.event.inputs.buildTarget}}/AppBuilder.apk
