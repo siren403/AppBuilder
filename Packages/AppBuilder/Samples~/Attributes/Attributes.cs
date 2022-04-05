@@ -3,18 +3,21 @@ using UnityEditor;
 using UnityEngine;
 using PackageInfo = AppBuilder.UI.PackageInfo;
 
-public static partial class Builds
+namespace AppBuilderSample
 {
-    [Build("AppBuilder.Samples.Attributes", -2)]
-    [AppSettings("Assets/Samples/AppBuilder/0.0.1/Attributes/AppSettings")]
-    [Variant("Development", "Production", "GooglePlay", "GooglePlay.Dev")]
-    [Directory("outputPath")]
-    [File("keystore", "keystore")]
-    [Input("keystore.passwd")]
-    [Input("keystore.alias", "alias")]
-    [Input("keystore.alias.passwd")]
-    public static void Attributes()
+    public static class Attributes
     {
-        BuildPlayer.Build((ctx, builder) => { builder.ConfigureCurrentSettings(); });
+        [Build("AppBuilder.Samples.Attributes", -2)]
+        [AppSettings("Assets/Samples/AppBuilder/0.0.1/Attributes/AppSettings")]
+        [Variant("Development", "Production", "GooglePlay", "GooglePlay.Dev")]
+        [Directory("outputPath")]
+        [File("keystore", "keystore")]
+        [Input("keystore.passwd")]
+        [Input("keystore.alias", "alias")]
+        [Input("keystore.alias.passwd")]
+        public static void Build()
+        {
+            BuildPlayer.Build((ctx, builder) => { builder.ConfigureCurrentSettings(); });
+        }
     }
 }

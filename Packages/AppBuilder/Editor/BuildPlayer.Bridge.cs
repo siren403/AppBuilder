@@ -52,12 +52,14 @@ namespace AppBuilder
                 var stringBuilder = new StringBuilder();
                 stringBuilder.Append("-batchmode ");
                 stringBuilder.Append("-quit ");
+                stringBuilder.Append($"-logFile \"{Path.Combine(Directory.GetCurrentDirectory(), "Editor.log")}\" ");
                 stringBuilder.Append($"-executeMethod \"{build.FullName}\" ");
                 stringBuilder.Append($"-buildTarget \"{_options.target.ToString()}\"");
                 if (Args.TryGetValue("projectPath", out var arg))
                 {
                     stringBuilder.Append($" -{arg.Key} \"{arg.Value}\"");
                 }
+
 
                 return Args.Where(pair => pair.Value.Category == ArgumentCategory.Input)
                     .Aggregate(stringBuilder.ToString(), (acc, arg) => $"{acc} -{arg.Key} \"{arg.Value.Value}\"");

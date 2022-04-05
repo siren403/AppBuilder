@@ -3,32 +3,35 @@ using AppBuilder.UI;
 using AppBuilderSample;
 using UnityEngine;
 
-public static partial class Builds
+namespace AppBuilderSample
 {
-    [Build("Export configs to runtime")]
-    [AppSettings("{sample}/Export configs to runtime")]
-    [Variant("Production", "Development")]
-    public static void ExportConfigs()
+    public static class ExportConfigs
     {
-        BuildPlayer.Build((args) => { args.Add("sample", PackageInfo.SamplesPath); }, (ctx, builder) =>
+        [Build("Export configs to runtime")]
+        [AppSettings("{sample}/Export configs to runtime")]
+        [Variant("Production", "Development")]
+        public static void Build()
         {
-            builder.ConfigureCurrentSettings();
-
-            var config = ctx.GetConfiguration<Config>();
-            config.WriteScriptable("AppBuilderSample/ExportConfigs/Config");
- 
-            builder.UseVariantProductName(ctx);
-
-            builder.ConfigureAndroid(android =>
+            BuildPlayer.Build((args) => { args.Add("sample", PackageInfo.SamplesPath); }, (ctx, builder) =>
             {
-                android.PackageName(ctx.GetSection<string>("PackageName"));
-                android.UseDebugKeystore();
+                builder.ConfigureCurrentSettings();
+
+                var config = ctx.GetConfiguration<Config>();
+                config.WriteScriptable("AppBuilderSample/ExportConfigs/Config");
+
+                builder.UseVariantProductName(ctx);
+
+                builder.ConfigureAndroid(android =>
+                {
+                    android.PackageName(ctx.GetSection<string>("PackageName"));
+                    android.UseDebugKeystore();
+                });
+                using (builder.Display(out var add))
+                {
+                    add("Host", config.Value.Host);
+                    add("AppId", config.Value.AppId);
+                }
             });
-            using (builder.Display(out var add))
-            {
-                add("Host", config.Value.Host);
-                add("AppId", config.Value.AppId);
-            }
-        });
+        }
     }
 }
