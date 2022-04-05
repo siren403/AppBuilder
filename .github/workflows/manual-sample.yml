@@ -15,8 +15,6 @@ on:
         default: 'World'
         # Input has to be provided for the workflow to run
         required: true
-      editorPath:
-        default: '/Applications/Unity/Hub/Editor/2021.2.12f1/Unity.app/Contents/MacOS/Unity'
       logFile:
         default: '/Users/aaron/workspace/AppBuilder/Editor.log'
       executeMethod:
@@ -50,7 +48,7 @@ jobs:
       run: echo "Hello ${{ github.event.inputs.name }}"
     - name: Build
       run: >
-        ${{github.event.inputs.editorPath}}
+        $UNITY_EDITORS/2021.2.12f1/Unity.app/Contents/MacOS
         -batchmode 
         -quit 
         -logFile "${{github.event.inputs.logFile}}" 
