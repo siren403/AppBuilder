@@ -39,11 +39,11 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
-    - name: Send greeting
-      run: echo "Hello ${{ github.event.inputs.name }}"
+    - name: EditorPath
+      run: echo "run $UNITY_EDITORS/${{github.event.inputs.editorVersion}}/Unity.app/Contents/MacOS/Unity"
     - name: Build
       run: >
-        $UNITY_EDITORS/${{github.event.inputs.editorVersion}}/Unity.app/Contents/MacOS
+        $UNITY_EDITORS/${{github.event.inputs.editorVersion}}/Unity.app/Contents/MacOS/Unity
         -batchmode 
         -quit 
         -logFile "${{github.event.inputs.logFile}}" 
