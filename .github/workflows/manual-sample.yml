@@ -15,7 +15,27 @@ on:
         default: 'World'
         # Input has to be provided for the workflow to run
         required: true
-
+      editorPath:
+        default: '/Applications/Unity/Hub/Editor/2021.2.12f1/Unity.app/Contents/MacOS/Unity'
+      logFile:
+        default: '/Users/aaron/workspace/AppBuilder/Editor.log'
+      executeMethod:
+        default: 'AppBuilderSample.BasicAndroid.Build'
+      buildTarget:
+        default: 'Android'
+      projectPath:
+        default: '/Users/aaron/workspace/AppBuilder'
+      appsettings:
+        default: 'Assets/Samples/AppBuilder/0.0.1/Basic Android'
+      keystore:
+        default: 'Assets/Samples/AppBuilder/0.0.1/Basic Android/user.keystore'
+      keystorePasswd:
+        default: '111111'
+      keystoreAlias:
+        default: 'appbuilder'
+      keystoreAliasPasswd:
+        default: '111111'
+      
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "greet"
@@ -29,4 +49,20 @@ jobs:
     - name: Send greeting
       run: echo "Hello ${{ github.event.inputs.name }}"
     - name: Build
-      run: /Applications/Unity/Hub/Editor/2021.2.12f1/Unity.app/Contents/MacOS/Unity -batchmode -quit -logFile "/Users/aaron/workspace/AppBuilder/Editor.log" -executeMethod "AppBuilderSample.BasicAndroid.Build" -buildTarget "Android" -projectPath "/Users/aaron/workspace/AppBuilder" -appsettings "Assets/Samples/AppBuilder/0.0.1/Basic Android" -keystore "Assets/Samples/AppBuilder/0.0.1/Basic Android/user.keystore" -keystorePasswd "111111" -keystoreAlias "appbuilder" -keystoreAliasPasswd "111111"
+      run: >
+        ${{github.event.inputs.editorPath}}
+        -batchmode 
+        -quit 
+        -logFile "${{github.event.inputs.logFile}}" 
+        -executeMethod "${{github.event.inputs.executeMethod}}" 
+        -buildTarget "${{github.event.inputs.buildTarget}}" 
+        -projectPath "${{github.event.inputs.projectPath}}" 
+        -appsettings "${{github.event.inputs.appsettings}}" 
+        -keystore "${{github.event.inputs.keystore}}" 
+        -keystorePasswd "${{github.event.inputs.keystorePasswd}}" 
+        -keystoreAlias "${{github.event.inputs.keystoreAlias}}" 
+        -keystoreAliasPasswd "${{github.event.inputs.keystoreAliasPasswd}}"
+    - name: Upload
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        path: ${{github.event.inputs.projectPath}}/${{github.event.inputs.buildTarget}}/AppBuilder.apk
