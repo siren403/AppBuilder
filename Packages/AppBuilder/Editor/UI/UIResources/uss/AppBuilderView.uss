@@ -11,9 +11,7 @@
     --fira-code:url("../fonts/FiraCode-Regular SDF.asset");
 }
 
-:root { 
-    font-size: 14px;
-}
+
 
 
 .app-builder-view {

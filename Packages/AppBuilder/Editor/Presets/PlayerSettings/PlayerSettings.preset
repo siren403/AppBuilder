@@ -62,7 +62,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: productName
-    value: AppBuilder-Preset
+    value: AppBuilder
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: defaultCursor
@@ -298,7 +298,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: androidUseSwappy
-    value: 0
+    value: 1
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: androidBlitType
@@ -638,7 +638,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: applicationIdentifier.Array.size
-    value: 1
+    value: 2
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: applicationIdentifier.Array.data[0].first
@@ -646,6 +646,14 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: applicationIdentifier.Array.data[0].second
+    value: com.DefaultCompany.AppBuilder
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: applicationIdentifier.Array.data[1].first
+    value: Standalone
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: applicationIdentifier.Array.data[1].second
     value: com.DefaultCompany.AppBuilder
     objectReference: {fileID: 0}
   - target: {fileID: 0}
@@ -1014,7 +1022,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: AndroidTargetArchitectures
-    value: 3
+    value: 1
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: AndroidTargetDevices
@@ -1114,375 +1122,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_BuildTargetPlatformIcons.Array.size
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_BuildTarget
-    value: Android
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.size
-    value: 18
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[0].m_Textures.Array.size
     value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[0].m_Width
-    value: 432
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[0].m_Height
-    value: 432
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[0].m_Kind
-    value: 2
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[0].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[1].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[1].m_Width
-    value: 324
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[1].m_Height
-    value: 324
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[1].m_Kind
-    value: 2
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[1].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[2].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[2].m_Width
-    value: 216
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[2].m_Height
-    value: 216
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[2].m_Kind
-    value: 2
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[2].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[3].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[3].m_Width
-    value: 162
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[3].m_Height
-    value: 162
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[3].m_Kind
-    value: 2
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[3].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[4].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[4].m_Width
-    value: 108
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[4].m_Height
-    value: 108
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[4].m_Kind
-    value: 2
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[4].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[5].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[5].m_Width
-    value: 81
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[5].m_Height
-    value: 81
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[5].m_Kind
-    value: 2
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[5].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[6].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[6].m_Width
-    value: 192
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[6].m_Height
-    value: 192
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[6].m_Kind
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[6].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[7].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[7].m_Width
-    value: 144
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[7].m_Height
-    value: 144
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[7].m_Kind
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[7].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[8].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[8].m_Width
-    value: 96
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[8].m_Height
-    value: 96
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[8].m_Kind
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[8].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[9].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[9].m_Width
-    value: 72
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[9].m_Height
-    value: 72
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[9].m_Kind
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[9].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[10].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[10].m_Width
-    value: 48
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[10].m_Height
-    value: 48
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[10].m_Kind
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[10].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[11].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[11].m_Width
-    value: 36
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[11].m_Height
-    value: 36
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[11].m_Kind
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[11].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[12].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[12].m_Width
-    value: 192
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[12].m_Height
-    value: 192
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[12].m_Kind
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[12].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[13].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[13].m_Width
-    value: 144
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[13].m_Height
-    value: 144
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[13].m_Kind
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[13].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[14].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[14].m_Width
-    value: 96
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[14].m_Height
-    value: 96
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[14].m_Kind
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[14].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[15].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[15].m_Width
-    value: 72
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[15].m_Height
-    value: 72
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[15].m_Kind
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[15].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[16].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[16].m_Width
-    value: 48
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[16].m_Height
-    value: 48
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[16].m_Kind
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[16].m_SubKind
-    value: 
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[17].m_Textures.Array.size
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[17].m_Width
-    value: 36
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[17].m_Height
-    value: 36
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[17].m_Kind
-    value: 0
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: m_BuildTargetPlatformIcons.Array.data[0].m_Icons.Array.data[17].m_SubKind
-    value: 
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: m_BuildTargetBatching.Array.size
@@ -2562,15 +2202,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: scriptingBackend.Array.size
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: scriptingBackend.Array.data[0].first
-    value: Android
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: scriptingBackend.Array.data[0].second
-    value: 1
+    value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: il2cppCompilerConfiguration.Array.size

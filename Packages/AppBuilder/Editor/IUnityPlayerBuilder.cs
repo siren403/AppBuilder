@@ -2,7 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Presets;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using PackageInfo = AppBuilder.UI.PackageInfo;
 
 namespace AppBuilder
 {
@@ -17,6 +20,8 @@ namespace AppBuilder
         void ConfigureAndroid(Action<AndroidConfigureBuilder> configuration);
         void Display(params (string key, string value)[] pairs);
         ConfigureSection Display(out Action<string, string> add);
+
+        void ApplyPreset(string presetPath, string targetPath);
     }
 
 
@@ -35,7 +40,7 @@ namespace AppBuilder
         /// * Scenes - Use Enable Editor Scenes
         /// * Target - active Build Target
         /// </summary>
-        public static void ConfigureCurrentSettings(this IUnityPlayerBuilder builder)
+        public static void UseCurrentEditorSettings(this IUnityPlayerBuilder builder)
         {
             builder.UseEnableEditorScenes();
             builder.Target = EditorUserBuildSettings.activeBuildTarget;
@@ -69,6 +74,19 @@ namespace AppBuilder
             {
                 builder.ProductName = productName;
             }
+        }
+
+        public static void ResetPlayerSettings(this IUnityPlayerBuilder builder)
+        {
+            var presetPath =
+                PackageInfo.GetPath($"Editor/Presets/PlayerSettings/{Application.unityVersion}/PlayerSettings.preset");
+            var preset = AssetDatabase.LoadAssetAtPath<Preset>(presetPath);
+            if (preset == null)
+            {
+                presetPath = PackageInfo.GetPath($"Editor/Presets/PlayerSettings/PlayerSettings.preset");
+            }
+
+            builder.ApplyPreset(presetPath, "ProjectSettings/ProjectSettings.asset");
         }
     }
 }

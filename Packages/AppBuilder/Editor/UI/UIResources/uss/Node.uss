@@ -4,6 +4,12 @@
 }
 
 Label {
+    -unity-font-style: bold;
+    -unity-font-definition: var(--fira-code);
+    font-size: 13px;
+}
+
+TextInput {
     -unity-font-definition: var(--fira-code);
 }
 
