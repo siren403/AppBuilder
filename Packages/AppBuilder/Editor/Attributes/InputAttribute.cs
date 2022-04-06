@@ -11,7 +11,7 @@ namespace AppBuilder
         File
     }
 
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
     public class InputAttribute : Attribute
     {
         public string Value { get; protected set; }

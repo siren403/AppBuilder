@@ -144,6 +144,11 @@ namespace AppBuilder
         /// </summary>
         public IEnumerable<InputAttribute> Inputs => Method.GetCustomAttributes<InputAttribute>();
 
+        public IEnumerable<JobAttribute> Jobs => Method.GetCustomAttributes<JobAttribute>();
+
+        public IEnumerable<IPostBuildJob> PostBuildJobs => Method.GetCustomAttributes<JobAttribute>()
+            .Where(_ => _.JobType.GetInterface(nameof(IPostBuildJob)) != null)
+            .Select(_ => Activator.CreateInstance(_.JobType) as IPostBuildJob);
         // public string[] Variants => Method.GetCustomAttribute<VariantsAttribute>()?.Keys ?? Array.Empty<string>();
 
         public MethodInfo Method { get; }

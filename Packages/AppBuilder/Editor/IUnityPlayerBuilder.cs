@@ -8,6 +8,7 @@ namespace AppBuilder
 {
     public interface IUnityPlayerBuilder
     {
+        string ProjectName { get; }
         string[] Scenes { set; }
         string OutputPath { set; }
         string ProductName { set; }

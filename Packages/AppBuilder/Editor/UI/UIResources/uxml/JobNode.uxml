@@ -7,8 +7,4 @@
         xmlns:app="AppBuilder.UI"
         xsi:noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd"
 >
-    <app:DynamicInputField input-type="Label" key="field-1" value="field-1-value"/>
-    <app:DynamicInputField input-type="Label" key="field-1" value="field-1-value"/>
-    <app:DynamicInputField input-type="Label" key="field-1" value="field-1-value"/>
-    <app:DynamicInputField input-type="Label" key="field-1" value="field-1-value"/>
 </engine:UXML>

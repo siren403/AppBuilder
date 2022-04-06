@@ -16,6 +16,7 @@ namespace AppBuilder.UI
             contentContainer.Clear();
             foreach (var property in properties)
             {
+                if(property.Options == BuildPropertyOptions.SectionEnd) continue;
                 var field = new DynamicInputField()
                 {
                     Type = DynamicInputField.InputType.Label,

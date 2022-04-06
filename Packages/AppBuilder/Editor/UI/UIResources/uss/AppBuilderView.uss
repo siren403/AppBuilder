@@ -7,9 +7,14 @@
     --color-node-6: #00725C;
 }
 
-:root {
-    font-size: 14;
+:fonts {
+    --fira-code:url("../fonts/FiraCode-Regular SDF.asset");
 }
+
+:root { 
+    font-size: 14px;
+}
+
 
 .app-builder-view {
     height: 100%;
@@ -21,10 +26,10 @@ Toolbar {
 }
 
 .space {
-    border-width: 1;
+    border-width: 1px;
     border-color: #a1a1a1;
 
-    margin: 10 0;
+    margin: 10px 0px;
 }
 
 #no-build {

@@ -13,6 +13,8 @@ namespace AppBuilder
         private BuildPlayerOptions _buildOptions;
         public BuildConfigureRecorder Recorder { get; } = new();
 
+        public string ProjectName => Path.GetFileName(Directory.GetCurrentDirectory());
+
         public string[] Scenes
         {
             set => _buildOptions.scenes = value;

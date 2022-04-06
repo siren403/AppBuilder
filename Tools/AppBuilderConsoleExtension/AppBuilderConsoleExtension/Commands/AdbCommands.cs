@@ -25,13 +25,14 @@ public class AdbCommands : ConsoleAppBase
 
     private const string UnityActivity = "com.unity3d.player.UnityPlayerActivity";
 
+    //todo: string packageName -> to start
     [Command("install")]
-    public async Task Install(string device, string apk, bool start = false, string? package = null)
+    public async Task Install(string device, string apk, string? package = null)
     {
         await ProcessX.StartAsync($"adb -s {device} install -r {apk}").WaitAsync();
         Console.WriteLine("installed");
 
-        if (!start || string.IsNullOrEmpty(package)) return;
+        if (string.IsNullOrEmpty(package)) return;
 
         await ProcessX.StartAsync($"adb -s {device}  shell am start -n {package}/{UnityActivity}").WaitAsync();
         Console.WriteLine("started");
