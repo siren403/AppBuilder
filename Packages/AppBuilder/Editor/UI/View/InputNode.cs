@@ -9,7 +9,7 @@ namespace AppBuilder.UI
     {
         public InputNode()
         {
-            Title = nameof(InputNode);
+            Title = "Input";
             contentContainer.AddResource(nameof(InputNode));
         }
 

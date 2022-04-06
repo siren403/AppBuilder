@@ -1,0 +1,116 @@
+﻿:colors {
+    --color-label-bright: #999999;
+    --color-label-dark: #312B2B;
+
+    --color-background-bright: #B7A897;
+    --color-background-dark: #212121;
+    --color-background-dark-red: #2F1819;
+    --color-background-dark-blue: #15212D;
+
+    --color-arrow: #616161;
+    --color-line-gray: #B0B0B0;
+
+    --color-red: #F64749;
+    --color-blue: #0E80FC;
+    --color-sky-blue: #17BACB;
+    --color-green: #3E5F28;
+    --color-light-green: #7BA74E;
+    --color-yellow: #FBB137;
+}
+
+:borders {
+    --border-card-radius: 5px;
+}
+
+:fonts {
+    --fira-code: url("../../fonts/FiraCode-Regular SDF.asset");
+}
+
+:sizes {
+    --size-card-item-height: 48px;
+}
+
+.card-container {
+    min-height: 48px;
+    border-radius: var(--border-card-radius);
+
+    /*transform-origin: left top;*/
+    /*translate: -94% 0;*/
+
+    /*transition-property: translate;*/
+    /*transition-duration: 0.5s;*/
+    /*transition-timing-function: ease-out-circ;*/
+}
+
+/*.card-container:hover {*/
+/*    translate: 0% 0;*/
+/*}*/
+
+
+.card-item {
+    height: var(--size-card-item-height);
+    flex-direction: row;
+    /*width: 100%;*/
+}
+
+.card-item > Label {
+    -unity-font-definition: var(--fira-code);
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.card-item > Image {
+    /*border-width: 4px;*/
+    /*border-right-color: var(--color-arrow);*/
+    flex-basis: 45px;
+}
+
+.card-item.card-item-begin {
+    border-radius: var(--border-card-radius) var(--border-card-radius) 0 0;
+}
+
+.card-item.card-item-end {
+    border-radius: 0 0 var(--border-card-radius) var(--border-card-radius);
+}
+
+
+.card-header {
+    background-color: var(--color-background-bright);
+}
+
+.card-header > Image {
+
+}
+
+.card-header > Label {
+    color: var(--color-label-dark);
+    font-size: 19px;
+}
+
+.card-content {
+    background-color: var(--color-background-dark);
+    /*border-radius: 3px;*/
+    /*width: 100%;*/
+    /*flex-grow: 3;*/
+}
+
+.card-content Label {
+    color: var(--color-label-bright);
+    font-size: 17px;
+}
+
+
+/*.tagging-container {*/
+/*    flex-direction: row;*/
+/*}*/
+
+/*.tagging-container > .tag {*/
+/*    border-radius: 0 var(--border-card-radius) var(--border-card-radius) 0;*/
+/*    background-color: var(--color-background-dark-blue);*/
+/*    width: 30px;*/
+/*    justify-content: center;*/
+/*}*/
+
+/*.tag > Label {*/
+/*    -unity-text-align: middle-center;*/
+/*}*/
