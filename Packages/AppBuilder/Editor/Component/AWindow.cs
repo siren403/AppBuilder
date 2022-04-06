@@ -13,7 +13,7 @@ namespace Editor.Component
 
     public class AWindow : UIToolkitWindow
     {
-        [MenuItem("AppBuilder/AWindow")]
+        // [MenuItem("AppBuilder/AWindow")]
         public static void ShowWindow()
         {
             UIToolkitWindow wnd = GetWindow<AWindow>();

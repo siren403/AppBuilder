@@ -33,7 +33,7 @@ namespace AppBuilder.UI
             "Nothing"
         };
 
-        [MenuItem("AppBuilder/Dashboard")]
+        // [MenuItem("AppBuilder/Dashboard")]
         public static void ShowExample()
         {
             Dashboard wnd = GetWindow<Dashboard>();
