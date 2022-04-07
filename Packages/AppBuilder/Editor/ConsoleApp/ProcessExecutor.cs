@@ -86,7 +86,7 @@ namespace AppBuilder.ConsoleApp
             var shell = "powershell.exe";
             _program = _program.Replace(" ", "` ");
 #elif UNITY_EDITOR_OSX
-            var shell = "zsh"
+            var shell = "zsh";
 #endif
 
             _startInfo = new(shell)
