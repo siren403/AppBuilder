@@ -95,14 +95,18 @@ namespace AppBuilder
 
             if (!Path.HasExtension(_outputDirectory))
             {
-                _buildOptions.locationPathName = Path.ChangeExtension(
-                    _outputDirectory,
-                    _buildOptions.target switch
-                    {
-                        BuildTarget.StandaloneWindows64 => "exe",
-                        BuildTarget.Android => "apk",
-                        _ => string.Empty
-                    });
+                switch (_buildOptions.target)
+                {
+                    case BuildTarget.StandaloneWindows64:
+                        _buildOptions.locationPathName = Path.ChangeExtension(_outputDirectory, "exe");
+                        break;
+                    case BuildTarget.Android:
+                        _buildOptions.locationPathName = Path.ChangeExtension(_outputDirectory, "apk");
+                        break;
+                    default:
+                        _buildOptions.locationPathName = _outputDirectory;
+                        break;
+                }
             }
             else
             {
@@ -157,18 +161,24 @@ namespace AppBuilder
         {
             if (!Application.isBatchMode)
             {
+                var isSuccess = false;
                 switch (Options.target)
                 {
                     case BuildTarget.Android:
-                        var isSuccess =
+                        isSuccess =
                             EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android,
                                 BuildTarget.Android);
-                        if (!isSuccess)
-                        {
-                            throw new Exception("[AppBuilder] SwitchPlatform Failed!");
-                        }
-
                         break;
+                    case BuildTarget.iOS:
+                        isSuccess =
+                            EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.iOS,
+                                BuildTarget.iOS);
+                        break;
+                }
+
+                if (!isSuccess)
+                {
+                    throw new Exception("[AppBuilder] SwitchPlatform Failed!");
                 }
             }
 
@@ -196,6 +206,20 @@ namespace AppBuilder
                 Target = BuildTarget.Android;
                 TargetGroup = BuildTargetGroup.Android;
                 var builder = new AndroidConfigureBuilder(Recorder);
+                configuration(builder);
+            }
+        }
+    }
+
+    public partial class UnityPlayerBuilder
+    {
+        public void ConfigureiOS(Action<iOSConfigureBuilder> configuration)
+        {
+            using (Recorder.Section("iOS"))
+            {
+                Target = BuildTarget.iOS;
+                TargetGroup = BuildTargetGroup.iOS;
+                var builder = new iOSConfigureBuilder(Recorder);
                 configuration(builder);
             }
         }
