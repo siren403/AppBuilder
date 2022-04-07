@@ -4,7 +4,9 @@ using System.Linq;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Presets;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace AppBuilder
 {
@@ -12,6 +14,8 @@ namespace AppBuilder
     {
         private BuildPlayerOptions _buildOptions;
         public BuildConfigureRecorder Recorder { get; } = new();
+
+        public string ProjectName => Path.GetFileName(Directory.GetCurrentDirectory());
 
         public string[] Scenes
         {
@@ -64,6 +68,16 @@ namespace AppBuilder
         {
             add = (key, value) => { Recorder.Write(new BuildProperty(key, value)); };
             return Recorder.Section("Display");
+        }
+
+        public void ApplyPreset(string presetPath, string targetPath)
+        {
+            Recorder.Enqueue(() =>
+            {
+                var preset = AssetDatabase.LoadAssetAtPath<Preset>(presetPath);
+                var target = AssetDatabase.LoadAssetAtPath<Object>(targetPath);
+                preset.ApplyTo(target);
+            }, new BuildProperty(Path.GetFileName(presetPath), Path.GetFileName(targetPath)));
         }
 
         public override string ToString()

@@ -6,7 +6,7 @@ namespace AppBuilder.UI
     {
         public BuildNode()
         {
-            Title = nameof(BuildNode);
+            Title = "Build";
             this.AddClassByType<BuildNode>();
             contentContainer.AddResource(nameof(BuildNode));
         }
@@ -16,6 +16,7 @@ namespace AppBuilder.UI
             contentContainer.Clear();
             foreach (var property in properties)
             {
+                if(property.Options == BuildPropertyOptions.SectionEnd) continue;
                 var field = new DynamicInputField()
                 {
                     Type = DynamicInputField.InputType.Label,

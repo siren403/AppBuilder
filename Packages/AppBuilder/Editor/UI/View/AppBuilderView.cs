@@ -42,7 +42,7 @@ namespace AppBuilder.UI
 
         private readonly InputNode _inputNode;
         private readonly BuildNode _buildNode;
-        private readonly JobNode _jobNode;
+        private readonly ScrollView _scrollView;
 
         private readonly BuildController _controller = new();
 
@@ -62,6 +62,8 @@ namespace AppBuilder.UI
             }
         }
 
+        private IPostBuildJob[] _postJobs;
+
         public AppBuilderView()
         {
             this.AddClassByType<AppBuilderView>();
@@ -69,7 +71,7 @@ namespace AppBuilder.UI
 
             _inputNode = this.Q<InputNode>();
             _buildNode = this.Q<BuildNode>();
-            _jobNode = this.Q<JobNode>();
+            _scrollView = this.Q<ScrollView>();
 
             _controller.Initialize();
 
@@ -81,11 +83,10 @@ namespace AppBuilder.UI
             var buildsMenu = this.Q<ToolbarMenu>("builds-menu");
 
             var buildNames = _controller.BuildNames;
-            foreach (var buildName in buildNames) 
+            foreach (var buildName in buildNames)
             {
                 buildsMenu.menu.AppendAction(buildName, _ => { SelectBuild(buildsMenu, _.name); });
             }
-
 
             var toolbarArgumentsViewer = this.Q<ToolbarButton>("arguments-viewer-button");
             toolbarArgumentsViewer.clicked += () =>
@@ -129,7 +130,7 @@ namespace AppBuilder.UI
         {
             try
             {
-                var (build, report) = _controller.ExecuteBuild(buildName, BuildController.BuildMode.Preview);
+                var (build, report) = Build(buildName, BuildController.BuildMode.Preview);
 
                 _selectedBuild = buildName;
 
@@ -140,15 +141,22 @@ namespace AppBuilder.UI
             }
             catch (Exception e)
             {
-                EnableNoBuild();
-                Debug.LogError(e);
-                PlayerPrefs.DeleteAll();
+                if (_controller.Any())
+                {
+                    SelectBuild(buildsMenu, _controller.BuildNames.First());
+                }
+                else
+                {
+                    EnableNoBuild();
+                    Debug.LogError(e);
+                    PlayerPrefs.DeleteAll();
+                }
             }
         }
 
         public (BuildInfo, BuildPlayer.Report) ExecuteAndRender(BuildController.BuildMode mode)
         {
-            var (build, report) = _controller.ExecuteBuild(SelectedBuild, mode);
+            var (build, report) = Build(SelectedBuild, mode);
             RenderNode(build, report);
             return (build, report);
         }
@@ -166,6 +174,42 @@ namespace AppBuilder.UI
 
             _inputNode.Render(sortedArgs, inputs, new BuildInfoCache(build));
             _buildNode.Render(report.Properties);
+
+            _postJobs = build.PostBuildJobs.ToArray();
+
+            var container = this.Q("post-jobs");
+            container.Clear();
+            foreach (var job in _postJobs)
+            {
+                var node = new JobNode()
+                {
+                    Job = job,
+                    Depth = job.IsEnabled ? 3 : 0
+                };
+                if (job is IBuildJobRenderer renderer)
+                {
+                    renderer.Render(node.contentContainer);
+                }
+  
+                container.Add(node);
+            }
+        }
+
+        private (BuildInfo, BuildPlayer.Report) Build(string buildName, BuildController.BuildMode mode)
+        {
+            //pre
+            var (build, report) = _controller.ExecuteBuild(buildName, mode);
+
+            if (mode == BuildController.BuildMode.Build)
+            {
+                //post
+                foreach (var job in _postJobs)
+                {
+                    job.Run(report);
+                }
+            }
+
+            return (build, report);
         }
     }
 

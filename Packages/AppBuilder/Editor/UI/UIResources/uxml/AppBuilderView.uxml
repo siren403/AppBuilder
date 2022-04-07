@@ -24,8 +24,28 @@
             <app:DynamicInputField/>
         </app:InputNode>
         <app:BuildNode depth="2"/>
-        <app:JobNode depth="3"/>
+        <engine:VisualElement name="post-jobs"/>
     </engine:ScrollView>
     <app:ArgumentsViewer class="popup-hide"/>
-    <engine:VisualElement name="no-build" />
+    <engine:VisualElement name="no-build"/>
+    <engine:VisualElement style="position:absolute; display:none;">
+        <engine:Style src="../uss/design/card.uss"/>
+        <engine:VisualElement class="tagging-container">
+            <engine:VisualElement class="card-container" style="width:250px;">
+                <engine:VisualElement class="card-item card-item-begin card-header">
+                    <engine:Image/>
+                    <engine:Label text="LINE NODE"/>
+                </engine:VisualElement>
+                <engine:VisualElement class="card-content">
+                    <engine:VisualElement class="card-item card-item-end">
+                        <engine:Image/>
+                        <engine:Label text="parentNode"/>
+                    </engine:VisualElement>
+                </engine:VisualElement>
+            </engine:VisualElement>
+            <engine:VisualElement class="tag">
+                <engine:Label text="tag"/>
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
 </engine:UXML>

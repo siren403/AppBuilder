@@ -4,6 +4,11 @@ namespace AppBuilder.UI
 {
     public class JobNode : Node
     {
+        public IBuildJob Job
+        {
+            set => Title = value.Name;
+        }
+
         public JobNode()
         {
             Title = nameof(JobNode);

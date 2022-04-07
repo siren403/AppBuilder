@@ -3,6 +3,16 @@
     --end-gray: #5d5d5d;
 }
 
+Label {
+    -unity-font-style: bold;
+    -unity-font-definition: var(--fira-code);
+    font-size: 13px;
+}
+
+TextInput {
+    -unity-font-definition: var(--fira-code);
+}
+
 /* node */
 .node {
     margin: 15;

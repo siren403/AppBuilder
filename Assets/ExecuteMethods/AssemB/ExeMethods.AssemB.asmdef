@@ -1,0 +1,18 @@
+{
+    "name": "ExeMethods.AssemB",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ddc2cbf5ad234594595c84926c23760f"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

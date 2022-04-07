@@ -13,7 +13,7 @@ namespace Editor.Component
 {
     public class BWindow : UIToolkitWindow
     {
-        [MenuItem("AppBuilder/BWindow")]
+        // [MenuItem("AppBuilder/BWindow")]
         public static void ShowWindow()
         {
             EditorWindow window = GetWindow<BWindow>();
@@ -88,28 +88,7 @@ namespace Editor.Component
         }
     }
 
-    public class DisplayProgressBarScope : IDisposable
-    {
-        private readonly string _title;
-        private readonly string _info;
-
-        public float Progress
-        {
-            set => EditorUtility.DisplayProgressBar(_title, _info, value);
-        }
-
-        public DisplayProgressBarScope(string title, string info, float progress)
-        {
-            _title = title;
-            _info = info;
-            Progress = progress;
-        }
-
-        public void Dispose()
-        {
-            EditorUtility.ClearProgressBar();
-        }
-    }
+    
 
     public class FtpUpload : Component
     {
@@ -138,7 +117,7 @@ namespace Editor.Component
         {
             var command = "ftp upload";
             using var scope = new DisplayProgressBarScope("execute", command, 0);
-            
+
             var args = new Dictionary<string, string>
             {
                 ["host"] = _host.value,
@@ -150,7 +129,7 @@ namespace Editor.Component
 
             using var process = new ProcessExecutor(_tool.value);
             process.Execute(command, args);
-            
+
             foreach (var line in process.ReadLines())
             {
                 Debug.Log(line);
@@ -163,5 +142,4 @@ namespace Editor.Component
     }
 
     #endregion
-
 }
