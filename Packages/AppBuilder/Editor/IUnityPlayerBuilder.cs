@@ -18,6 +18,7 @@ namespace AppBuilder
         BuildTarget Target { set; get; }
         BuildTargetGroup TargetGroup { set; }
         void ConfigureAndroid(Action<AndroidConfigureBuilder> configuration);
+        void ConfigureiOS(Action<iOSConfigureBuilder> configuration);
         void Display(params (string key, string value)[] pairs);
         ConfigureSection Display(out Action<string, string> add);
 
