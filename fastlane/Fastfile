@@ -1,0 +1,49 @@
+platform :android do
+    desc "Build application"
+    lane :build do
+        CMD = '"C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Unity.exe"'
+        LOGFILE = 'D:\workspace\unity\AppBuilder\Editor.log'
+        PROJECT_DIR = 'D:\workspace\unity\AppBuilder'
+        METHOD = 'AppBuilderSample.BasicAndroid.Build'
+        A = File.expand_path('', '')
+
+        begin
+            sh "#{CMD} -quit -batchmode -buildTarget \"Android\" -logFile \"#{LOGFILE}\" -executeMethod \"#{METHOD}\" -projectPath \"#{PROJECT_DIR}\" -appsettings \"Assets/Samples/AppBuilder/0.0.1/Basic Android\" -keystore \"Assets/Samples/AppBuilder/0.0.1/Basic Android/user.keystore\" -keystorePasswd \"111111\" -keystoreAlias \"appbuilder\" -keystoreAliasPasswd \"111111\""
+        rescue
+            sh "code #{LOGFILE}"
+            raise 'Unity biuld failed'
+        end
+    end
+
+    lane :plugin do
+        UNITY_VERSION = '2021.2.12f1'
+        UNITY_PATH = 'C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Unity.exe'
+        METHOD = 'AppBuilderSample.BasicAndroid.Build'
+        LOGFILE = 'D:\workspace\unity\AppBuilder\Editor.log'
+
+        PROJECT_DIR = File.expand_path('../', Dir.pwd)
+        ARGS = "#{LOGFILE} -appsettings \"Assets/Samples/AppBuilder/0.0.1/Basic Android\" -keystore \"Assets/Samples/AppBuilder/0.0.1/Basic Android/user.keystore\" -keystorePasswd \"111111\" -keystoreAlias \"appbuilder\" -keystoreAliasPasswd \"111111\""
+        unity(
+            # unity_path: UNITY_PATH,
+            unity_version: UNITY_VERSION,
+            project_path: PROJECT_DIR,
+            build_target: "Android",
+            execute_method: METHOD,
+            extra_args: ARGS
+        )
+    end
+end
+
+platform :test do
+    lane :build do
+        PATH = File.expand_path('../Build', Dir.pwd)
+        PATH2 = File.expand_path('', '')
+        PATH3 = File.expand_path('../')
+        PATH4 = Dir.pwd
+
+        sh "echo \"#{PATH}\""
+        sh "echo \"#{PATH2}\""
+        sh "echo \"#{PATH3}\""
+        sh "echo \"#{PATH4}\""
+    end
+end
