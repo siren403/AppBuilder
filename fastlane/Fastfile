@@ -16,12 +16,12 @@ platform :android do
     end
 
     lane :plugin do
+        # UNITY_PATH = 'C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Unity.exe'
         UNITY_VERSION = '2021.2.12f1'
-        UNITY_PATH = 'C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Unity.exe'
-        METHOD = 'AppBuilderSample.BasicAndroid.Build'
-        LOGFILE = 'D:\workspace\unity\AppBuilder\Editor.log'
-
         PROJECT_DIR = File.expand_path('../', Dir.pwd)
+        METHOD = 'AppBuilderSample.BasicAndroid.Build'
+        LOGFILE = "#{PROJECT_DIR}/Editor.log"
+
         ARGS = "#{LOGFILE} -appsettings \"Assets/Samples/AppBuilder/0.0.1/Basic Android\" -keystore \"Assets/Samples/AppBuilder/0.0.1/Basic Android/user.keystore\" -keystorePasswd \"111111\" -keystoreAlias \"appbuilder\" -keystoreAliasPasswd \"111111\""
         unity(
             # unity_path: UNITY_PATH,
