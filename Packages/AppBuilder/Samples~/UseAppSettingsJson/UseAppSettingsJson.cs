@@ -22,7 +22,7 @@ namespace AppBuilderSample
         {
             BuildPlayer.Build((ctx, builder) =>
             {
-                builder.ConfigureCurrentSettings();
+                builder.UseCurrentEditorSettings();
 
                 var host = ctx.GetSection<string>("host");
                 var title = ctx.GetSection<TitleConfig>("title");

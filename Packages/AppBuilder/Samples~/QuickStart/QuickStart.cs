@@ -7,7 +7,7 @@ namespace AppBuilderSample
         [Build(order: -1)]
         public static void Build()
         {
-            BuildPlayer.Build((ctx, builder) => { builder.ConfigureCurrentSettings(); });
+            BuildPlayer.Build((ctx, builder) => { builder.UseCurrentEditorSettings(); });
         }
     }
 }

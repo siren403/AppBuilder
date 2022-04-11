@@ -17,7 +17,7 @@ namespace AppBuilderSample
         [Input("keystore.alias.passwd")]
         public static void Build()
         {
-            BuildPlayer.Build((ctx, builder) => { builder.ConfigureCurrentSettings(); });
+            BuildPlayer.Build((ctx, builder) => { builder.UseCurrentEditorSettings(); });
         }
     }
 }

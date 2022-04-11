@@ -14,7 +14,7 @@ namespace AppBuilderSample
         {
             BuildPlayer.Build((args) => { args.Add("sample", PackageInfo.SamplesPath); }, (ctx, builder) =>
             {
-                builder.ConfigureCurrentSettings();
+                builder.UseCurrentEditorSettings();
 
                 var config = ctx.GetConfiguration<Config>();
                 config.WriteScriptable("AppBuilderSample/ExportConfigs/Config");
