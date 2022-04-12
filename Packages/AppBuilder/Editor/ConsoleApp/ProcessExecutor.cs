@@ -82,12 +82,19 @@ namespace AppBuilder.ConsoleApp
             _program = program;
 
 
+            var shell = string.Empty;
 #if UNITY_EDITOR_WIN
-            var shell = "powershell.exe";
+            shell = "powershell.exe";
             _program = _program.Replace(" ", "` ");
 #elif UNITY_EDITOR_OSX
-            var shell = "zsh";
+            shell = "zsh";
+#elif UNITY_EDITOR_LINUX
+            shell = "bash";
 #endif
+            if (string.IsNullOrEmpty(shell))
+            {
+                throw new ArgumentNullException(nameof(shell));
+            }
 
             _startInfo = new(shell)
             {

@@ -1,3 +1,8 @@
+require 'os'
+require 'fastlane_core/ui/ui'
+
+UI = FastlaneCore::UI unless Fastlane.const_defined?("UI")
+
 platform :android do
     desc "Build application"
     lane :build do
@@ -15,17 +20,21 @@ platform :android do
         end
     end
 
-    lane :plugin do
+    lane :plugin do |options|
         # UNITY_PATH = 'C:\Program Files\Unity\Hub\Editor\2021.2.12f1\Editor\Unity.exe'
-        UNITY_VERSION = '2021.2.12f1'
+        # UNITY_VERSION = '2021.2.12f1'
+
+        UNITY_PATH = get_unity_path(options[:unity_version])
+
         PROJECT_DIR = File.expand_path('../', Dir.pwd)
         METHOD = 'AppBuilderSample.BasicAndroid.Build'
         LOGFILE = "#{PROJECT_DIR}/Editor.log"
 
         ARGS = "#{LOGFILE} -appsettings \"Assets/Samples/AppBuilder/0.0.1/Basic Android\" -keystore \"Assets/Samples/AppBuilder/0.0.1/Basic Android/user.keystore\" -keystorePasswd \"111111\" -keystoreAlias \"appbuilder\" -keystoreAliasPasswd \"111111\""
+
         unity(
-            # unity_path: UNITY_PATH,
-            unity_version: UNITY_VERSION,
+            unity_path: UNITY_PATH,
+            # unity_version: UNITY_VERSION,
             project_path: PROJECT_DIR,
             build_target: "Android",
             execute_method: METHOD,
@@ -34,8 +43,39 @@ platform :android do
     end
 end
 
+def get_unity_path (version)
+    unless version
+        UI.user_error!("require unity_version")
+    end
+
+    path = ''
+    if OS::Underlying.docker? and OS::Underlying.linux?
+        # See: https://gitlab.com/gableroux/unity3d
+        # sh "echo '/opt/Unity/Editor/Unity'"
+        path << '/opt/unity/editors'
+    else
+
+    end
+
+    path << "/#{version}/Editor/Unity"
+
+    unless File.exist?(path)
+        UI.user_error!("not found editor path: #{path}")
+    end
+
+    return path
+end
+
+# export JAVA_HOME=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/OpenJDK
+# export ANDROID_SDK_ROOT=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK
+# export ANDROID_NDK_ROOT=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK
+
+
+# export ANDROID_HOME=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK
+# export ANDROID_NDK_HOME=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK
+
 platform :test do
-    lane :build do
+    lane :build do |options|
         PATH = File.expand_path('../Build', Dir.pwd)
         PATH2 = File.expand_path('', '')
         PATH3 = File.expand_path('../')
@@ -45,5 +85,48 @@ platform :test do
         sh "echo \"#{PATH2}\""
         sh "echo \"#{PATH3}\""
         sh "echo \"#{PATH4}\""
+
+        PATH4 = "test"
+        sh "echo \"#{PATH4}\""
+
+        if options[:arg1]
+            PATH4 = options[:arg1]
+        end
+        sh "echo \"#{PATH4}\""
+
+        PATH4 = options[:arg2]
+        sh "echo \"#{PATH4}\""
+
+        PATH4 = "unless" unless PATH4
+        sh "echo \"#{PATH4}\""
+
+        path = ''
+        VERSION = '2021.2.12f1'
+
+        sh "echo '#{OS::Underlying.docker?}'"
+        sh "echo '#{OS::Underlying.linux?}'"
+        sh "echo '#{OS::Underlying.windows?}'"
+        if OS::Underlying.docker?
+            # See: https://gitlab.com/gableroux/unity3d
+            # sh "echo '/opt/Unity/Editor/Unity'"
+            path << '/opt/unity/editors/'
+        end
+
+        path = get_unity_path(options[:unity_version])
+        sh "echo '#{path}'"
+
+        # path << VERSION
+        # path << '/Editor/Unity'
+        #
+        # sh "echo #{path}"
+        #
+        # unless options[:unity_path]
+        #     sh "echo 'failed'"
+        #     # UI.user_error!("You don't have a project in the current directory")
+        #     UI.user_error!("You don't have a project in the current directory")
+        # end
+        #
+        # sh "echo 'end'"
+
     end
 end

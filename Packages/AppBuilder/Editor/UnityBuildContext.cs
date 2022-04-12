@@ -29,6 +29,21 @@ namespace AppBuilder
             _appSettings = LoadAppSettings(GetAppSettingsDirectory(args), variant);
         }
 
+//         private void LoadExternalEnvironment()
+//         {
+// #if UNITY_EDITOR_LINUX
+//             var javaHome = System.Environment.GetEnvironmentVariable("JAVA_HOME");
+//             if (!string.IsNullOrEmpty(javaHome))
+//                 UnityEditor.Android.AndroidExternalToolsSettings.jdkRootPath = javaHome;
+//             var androidSdkRoot = System.Environment.GetEnvironmentVariable("ANDROID_SDK_ROOT");
+//             if (!string.IsNullOrEmpty(javaHome))
+//                 UnityEditor.Android.AndroidExternalToolsSettings.sdkRootPath = androidSdkRoot;
+//             var androidNdkRoot = System.Environment.GetEnvironmentVariable("ANDROID_NDK_ROOT");
+//             if (!string.IsNullOrEmpty(javaHome))
+//                 UnityEditor.Android.AndroidExternalToolsSettings.ndkRootPath = androidNdkRoot;
+// #endif
+//         }
+
         private JObject LoadAppSettings(string directory, string variant = null)
         {
             JObject settings = null;
