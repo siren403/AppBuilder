@@ -41,6 +41,31 @@ platform :android do
             extra_args: ARGS
         )
     end
+
+    lane :upload_internal do
+
+        UNITY_PATH = get_unity_path("2021.2.12f1")
+
+        PROJECT_DIR = File.expand_path('../', Dir.pwd)
+        METHOD = 'Samples.Deploy.UseCase.Build.Android'
+        LOGFILE = "#{PROJECT_DIR}/Editor.log"
+        #
+        ARGS = "#{LOGFILE} -appsettings \"Assets/Samples/Deploy/UseCase\""
+
+        unity(
+            unity_path: UNITY_PATH,
+            # unity_version: UNITY_VERSION,
+            project_path: PROJECT_DIR,
+            build_target: "Android",
+            execute_method: METHOD,
+            extra_args: ARGS
+        )
+
+        upload_to_play_store(
+            track: "internal",
+            aab: File.expand_path("../Build/Android/AppBuilder.aab", Dir.pwd)
+        )
+    end
 end
 
 def get_unity_path (version)
