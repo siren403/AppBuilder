@@ -217,8 +217,11 @@ namespace AppBuilder
         {
             using (Recorder.Section("iOS"))
             {
+                // _buildOptions.options |= BuildOptions.AcceptExternalModificationsToPlayer;
+
                 Target = BuildTarget.iOS;
                 TargetGroup = BuildTargetGroup.iOS;
+
                 var builder = new iOSConfigureBuilder(Recorder);
                 configuration(builder);
             }

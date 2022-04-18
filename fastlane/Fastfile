@@ -43,6 +43,58 @@ platform :android do
     end
 end
 
+platform :ios do
+
+    lane :build do |options|
+
+        unity = get_unity_path(options[:unity_version])
+        project = "/Users/aaron/workspace/unity/AppBuilder"
+        method = "AppBuilderSample.BasiciOS.Build"
+        args = ""
+        unity(
+            unity_path: unity,
+            project_path: project,
+            build_target: "Android",
+            execute_method: method,
+            extra_args: args
+        )
+    end
+
+    lane :test do
+        project = File.expand_path("../Build/iOS/AppBuilder/Unity-iPhone.xcodeproj", Dir.pwd)
+        scan(
+            project: project,
+            scheme: "Unity-iPhone",
+            device: "iPhone 12",
+        # build_for_testing: true
+        )
+    end
+
+    lane :build_ipa do
+        project = File.expand_path("../Build/iOS/AppBuilder/Unity-iPhone.xcodeproj", Dir.pwd)
+
+        identifier = "com.DefaultCompany.AppBuilder"
+        automatic_code_signing(
+            path: project,
+            use_automatic_signing: true,
+            team_id: "D755A5HZ37",
+            bundle_identifier: identifier,
+            profile_uuid: "YR9GNYKWY2"
+            # code_sign_identity: "Apple Development",
+            # profile_name: "iOS Team Provisioning Profile: #{identifier}"
+        )
+
+        build_ios_app(
+            project: project,
+            scheme: "Unity-iPhone",
+            output_directory: File.expand_path("../Build/iOS", Dir.pwd),
+            # output_name: "App"
+            # codesigning_identity:"Apple Development: SEONGHO PARK",
+            skip_codesigning: true
+        )
+    end
+end
+
 def get_unity_path (version)
     unless version
         UI.user_error!("require unity_version")
@@ -68,12 +120,11 @@ end
 # export ANDROID_SDK_ROOT=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK
 # export ANDROID_NDK_ROOT=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK
 
-
 # export ANDROID_HOME=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/SDK
 # export ANDROID_NDK_HOME=/opt/unity/editors/2021.2.12f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK
 
 platform :test do
-    lane :build do |options|
+    lane :path do |options|
         PATH = File.expand_path('../Build', Dir.pwd)
         PATH2 = File.expand_path('', '')
         PATH3 = File.expand_path('../')
@@ -125,6 +176,16 @@ platform :test do
         # end
         #
         # sh "echo 'end'"
+
+    end
+
+    lane :os do
+        def log(str)
+            sh "echo #{str}"
+        end
+
+        log "os.mac #{OS.mac?}"
+        log "os.un.bsd #{OS::Underlying.bsd?}"
 
     end
 end
