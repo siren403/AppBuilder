@@ -111,7 +111,7 @@ namespace AppBuilder
                 Debug.Log($"[AppBuilder] Build Failed {e.Message}");
                 if (Application.isBatchMode)
                 {
-                    EditorApplication.Exit(0);
+                    EditorApplication.Exit(1);
                 }
             }
 

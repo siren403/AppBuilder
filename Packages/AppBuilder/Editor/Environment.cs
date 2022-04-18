@@ -81,8 +81,9 @@ namespace AppBuilder
             {
                 commandArgs.AppendLine(s);
             }
+
             Debug.Log(commandArgs.ToString());
-            
+
             for (int i = 0; i < original.Length; i++)
             {
                 if (string.IsNullOrEmpty(original[i]))
@@ -103,17 +104,26 @@ namespace AppBuilder
                                 value = value.Replace("\\", "/");
                             }
 
-                            args.Add(key, new ArgumentValue(key, value, ArgumentCategory.Command));
+                            Add(new ArgumentValue(key, value, ArgumentCategory.Command));
                             i++;
                             continue;
                         }
                     }
 
-                    args.Add(key, ArgumentValue.Empty(key, ArgumentCategory.Command));
+                    Add(ArgumentValue.Empty(key, ArgumentCategory.Command));
                 }
             }
-
             return args;
+
+            void Add(ArgumentValue arg)
+            {
+                if (args.ContainsKey(arg.Key))
+                {
+                    Debug.Log($"Contains Argument: {arg.Key}");
+                }
+
+                args[arg.Key] = arg;
+            }
         }
     }
 }

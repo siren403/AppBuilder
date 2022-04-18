@@ -14,7 +14,9 @@ namespace AppBuilder
         string ProjectName { get; }
         string[] Scenes { set; }
         string OutputPath { set; }
+        string CompanyName { set; }
         string ProductName { set; }
+        string Version { set; }
         BuildTarget Target { set; get; }
         BuildTargetGroup TargetGroup { set; }
         void ConfigureAndroid(Action<AndroidConfigureBuilder> configuration);

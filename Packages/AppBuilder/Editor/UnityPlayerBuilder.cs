@@ -30,6 +30,16 @@ namespace AppBuilder
             get => _outputDirectory;
         }
 
+        public string CompanyName
+        {
+            set
+            {
+                var name = !string.IsNullOrEmpty(value) ? value : "DefaultCompany";
+                Recorder.Enqueue(() => PlayerSettings.companyName = name,
+                    new BuildProperty("CompanyName", name));
+            }
+        }
+
         private string _productName;
 
         public string ProductName
@@ -38,7 +48,16 @@ namespace AppBuilder
             {
                 _productName = value;
                 Recorder.Enqueue(() => PlayerSettings.productName = value,
-                    new BuildProperty("ProductName", value));
+                    new BuildProperty(nameof(ProductName), value));
+            }
+        }
+
+        public string Version
+        {
+            set
+            {
+                Recorder.Enqueue(() => PlayerSettings.bundleVersion = value,
+                    new BuildProperty(nameof(Version), value));
             }
         }
 
@@ -101,7 +120,13 @@ namespace AppBuilder
                         _buildOptions.locationPathName = Path.ChangeExtension(_outputDirectory, "exe");
                         break;
                     case BuildTarget.Android:
-                        _buildOptions.locationPathName = Path.ChangeExtension(_outputDirectory, "apk");
+                        var androidExt = "apk";
+                        if (EditorUserBuildSettings.buildAppBundle)
+                        {
+                            androidExt = "aab";
+                        }
+
+                        _buildOptions.locationPathName = Path.ChangeExtension(_outputDirectory, androidExt);
                         break;
                     default:
                         _buildOptions.locationPathName = _outputDirectory;
