@@ -77,12 +77,10 @@ def get_unity_path (version)
     if OS::Underlying.docker? and OS::Underlying.linux?
         # See: https://gitlab.com/gableroux/unity3d
         # sh "echo '/opt/Unity/Editor/Unity'"
-        path << '/opt/unity/editors'
-    else
-
+        path << "/opt/unity/editors/#{version}/Editor/Unity"
+    elsif OS.mac?
+        path << "/Applications/Unity/Hub/Editor/#{version}/Unity.app/Contents/MacOS/Unity"
     end
-
-    path << "/#{version}/Editor/Unity"
 
     unless File.exist?(path)
         UI.user_error!("not found editor path: #{path}")
