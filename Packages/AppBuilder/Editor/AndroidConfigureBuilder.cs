@@ -79,6 +79,19 @@ namespace AppBuilder
             );
         }
 
+        public int VersionCode
+        {
+            set
+            {
+                _recorder.Enqueue(
+                    () => { PlayerSettings.Android.bundleVersionCode = value; },
+                    new BuildProperty(
+                        "Android:VersionCode", value.ToString()
+                    )
+                );
+            }
+        }
+
         public void SupportEmulator()
         {
             _recorder.Enqueue(
@@ -140,6 +153,11 @@ namespace AppBuilder
             {
                 UseDebugKeystore();
             }
+        }
+
+        public void EnableAppBundle(bool isEnable)
+        {
+            EditorUserBuildSettings.buildAppBundle = isEnable;
         }
     }
 }

@@ -44,7 +44,8 @@ platform :android do
 
     lane :upload_internal do
 
-        UNITY_PATH = get_unity_path("2021.2.12f1")
+        UNITY_VERSION = "2021.2.12f1";
+        UNITY_PATH = get_unity_path(UNITY_VERSION)
 
         PROJECT_DIR = File.expand_path('../', Dir.pwd)
         METHOD = 'Samples.Deploy.UseCase.Build.Android'
@@ -63,7 +64,8 @@ platform :android do
 
         upload_to_play_store(
             track: "internal",
-            aab: File.expand_path("../Build/Android/AppBuilder.aab", Dir.pwd)
+            aab: File.expand_path("../Build/Android/AppBuilder.aab", Dir.pwd),
+            release_status: "draft"
         )
     end
 end
@@ -80,6 +82,8 @@ def get_unity_path (version)
         path << "/opt/unity/editors/#{version}/Editor/Unity"
     elsif OS.mac?
         path << "/Applications/Unity/Hub/Editor/#{version}/Unity.app/Contents/MacOS/Unity"
+    elsif OS.windows?
+        path << "C:\\Program Files\\Unity\\Hub\\Editor\\#{version}\\Editor\\Unity.exe"
     end
 
     unless File.exist?(path)

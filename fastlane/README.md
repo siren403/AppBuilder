@@ -31,6 +31,14 @@ Build application
 
 
 
+### android upload_internal
+
+```sh
+[bundle exec] fastlane android upload_internal
+```
+
+
+
 ----
 
 
