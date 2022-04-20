@@ -72,8 +72,136 @@ end
 
 platform :ios do
 
-    lane :build do |options|
+    def set_provisioning_profile (project_path, type)
+        profile_path = "sigh_#{CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)}_#{type}_profile-path"
+        # update_project_team(
+        #     path: project_path,
+        #     targets: "Unity-iPhone",
+        #     teamid: CredentialsManager::AppfileConfig.try_fetch_value(:team_id)
+        # )
+        # update_project_provisioning(
+        #     xcodeproj: project_path,
+        #     target_filter: "Unity-iPhone",
+        #     profile: ENV[profile_path]
+        # )
+    end
 
+    XCODE_PROJECT = File.expand_path("../Build/iOS/AppBuilder/Unity-iPhone.xcodeproj", Dir.pwd)
+    lane :provisioning do
+        match(type: "development", readonly: true)
+        profiles = lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+        update_code_signing_settings(
+            path: XCODE_PROJECT,
+            targets: "Unity-iPhone",
+            use_automatic_signing: false,
+            team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
+            profile_name: profiles[CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)]
+        )
+    end
+
+    lane :unity_development do
+        method = "Samples.DeployUseCase.Build.Deploy"
+        args = "-appsettings \"Assets/DeployUseCase\" -variant \"iOS\""
+        unity(
+            unity_version: ENV["UNITY_VERSION"],
+            project_path: File.expand_path("../", Dir.pwd),
+            build_target: "iOS",
+            execute_method: method,
+            extra_args: args
+        )
+
+        match(type: "development", readonly: true)
+        profiles = lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+        update_code_signing_settings(
+            path: XCODE_PROJECT,
+            targets: "Unity-iPhone",
+            use_automatic_signing: false,
+            team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
+            profile_name: profiles[CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)],
+            code_sign_identity: "Apple Development"
+        )
+        gym(
+            scheme: "Unity-iPhone",
+            project: XCODE_PROJECT,
+            configuration: "Release",
+            clean: true,
+            output_directory: "Build/Development",
+            export_method: "development",
+            include_bitcode: false,
+            export_options: {
+                compileBitcode: false
+            }
+        )
+        install_on_device(
+            device_id: "00008101-0005485C3E31003A",
+            ipa: lane_context["IPA_OUTPUT_PATH"], #lane_context["IPA_OUTPUT_PATH"]
+        )
+    end
+
+    lane :development do
+        match(type: "development", readonly: true)
+        profiles = lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+        update_code_signing_settings(
+            path: XCODE_PROJECT,
+            targets: "Unity-iPhone",
+            use_automatic_signing: false,
+            team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
+            profile_name: profiles[CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)],
+            code_sign_identity: "Apple Development"
+        )
+        gym(
+            scheme: "Unity-iPhone",
+            project: XCODE_PROJECT,
+            configuration: "Release",
+            clean: true,
+            output_directory: "Build/Development",
+            export_method: "development",
+            include_bitcode: false,
+            export_options: {
+                compileBitcode: false
+            }
+        )
+        install_on_device(
+            device_id: "00008101-0005485C3E31003A",
+            ipa: lane_context["IPA_OUTPUT_PATH"], #lane_context["IPA_OUTPUT_PATH"]
+        )
+    end
+
+    lane :adhoc do
+        match(
+            type: "adhoc",
+            readonly: false,
+            force_for_new_devices: true
+        )
+        profiles = lane_context[SharedValues::MATCH_PROVISIONING_PROFILE_MAPPING]
+        update_code_signing_settings(
+            path: XCODE_PROJECT,
+            targets: "Unity-iPhone",
+            use_automatic_signing: false,
+            team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id),
+            profile_name: profiles[CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)],
+            code_sign_identity: "Apple Distribution",
+            # build_configurations: ["Debug", "Release", "ReleaseForProfiling", "ReleaseForRunning"]
+        )
+        gym(
+            scheme: "Unity-iPhone",
+            project: XCODE_PROJECT,
+            configuration: "Release",
+            clean: true,
+            output_directory: "Build/AdHoc",
+            export_method: "ad-hoc",
+            include_bitcode: false,
+            export_options: {
+                compileBitcode: false
+            }
+        )
+        install_on_device(
+            device_id: "00008101-0005485C3E31003A",
+            ipa: lane_context["IPA_OUTPUT_PATH"]#lane_context["IPA_OUTPUT_PATH"]
+        )
+    end
+
+    lane :build do |options|
         unity = get_unity_path(options[:unity_version])
         project = "/Users/aaron/workspace/unity/AppBuilder"
         method = "AppBuilderSample.BasiciOS.Build"
@@ -81,7 +209,7 @@ platform :ios do
         unity(
             unity_path: unity,
             project_path: project,
-            build_target: "Android",
+            build_target: "iOS",
             execute_method: method,
             extra_args: args
         )
@@ -107,8 +235,8 @@ platform :ios do
             team_id: "D755A5HZ37",
             bundle_identifier: identifier,
             profile_uuid: "YR9GNYKWY2"
-            # code_sign_identity: "Apple Development",
-            # profile_name: "iOS Team Provisioning Profile: #{identifier}"
+        # code_sign_identity: "Apple Development",
+        # profile_name: "iOS Team Provisioning Profile: #{identifier}"
         )
 
         build_ios_app(

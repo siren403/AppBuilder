@@ -44,6 +44,38 @@ Build application
 
 ## iOS
 
+### ios provisioning
+
+```sh
+[bundle exec] fastlane ios provisioning
+```
+
+
+
+### ios unity_development
+
+```sh
+[bundle exec] fastlane ios unity_development
+```
+
+
+
+### ios development
+
+```sh
+[bundle exec] fastlane ios development
+```
+
+
+
+### ios adhoc
+
+```sh
+[bundle exec] fastlane ios adhoc
+```
+
+
+
 ### ios build
 
 ```sh
