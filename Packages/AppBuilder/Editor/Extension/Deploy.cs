@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AppBuilder;
 using UnityEditor;
+using UnityEngine;
 
 namespace AppBuilder.Deploy
 {
@@ -31,7 +32,10 @@ namespace AppBuilder.Deploy
 
     public class iOSConfig
     {
-        public string PackageName;
+        public string Identifier;
+        public int VersionCode;
+        public iOSSdkVersion TargetSDK;
+        public string TargetiOSVersion;
     }
 
     public static class UnityPlayerBuilderExtensions
@@ -84,9 +88,20 @@ namespace AppBuilder.Deploy
             {
                 builder.ConfigureiOS(ios =>
                 {
-                    
+                    ios.Identifier = iosConfig.Identifier;
+                    ios.BundleVersion(version, iosConfig.VersionCode);
+                    ios.TargetSdk(iosConfig.TargetSDK);
+                    ios.TargetVersion(iosConfig.TargetiOSVersion);
                 });
             }
+        }
+    }
+
+    public class DeployAttribute : VariantAttribute
+    {
+        public DeployAttribute(BuildTarget target) : base("Android", "iOS")
+        {
+            Value = target.ToString();
         }
     }
 }

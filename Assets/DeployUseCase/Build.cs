@@ -7,12 +7,10 @@ namespace Samples.DeployUseCase
     {
         [Build("Deploy-UseCase")]
         [AppSettings("Assets/DeployUseCase")]
-        public static void Android()
+        [Deploy(BuildTarget.Android)]
+        public static void Deploy()
         {
-            BuildPlayer.Build((ctx, builder) =>
-            {
-                builder.UseDeploy(ctx);
-            });
+            BuildPlayer.Build((ctx, builder) => { builder.UseDeploy(ctx); });
         }
     }
 }

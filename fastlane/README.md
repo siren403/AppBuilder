@@ -42,12 +42,81 @@ Build application
 ----
 
 
-## test
+## iOS
 
-### test build
+### ios provisioning
 
 ```sh
-[bundle exec] fastlane test build
+[bundle exec] fastlane ios provisioning
+```
+
+
+
+### ios unity_development
+
+```sh
+[bundle exec] fastlane ios unity_development
+```
+
+
+
+### ios development
+
+```sh
+[bundle exec] fastlane ios development
+```
+
+
+
+### ios adhoc
+
+```sh
+[bundle exec] fastlane ios adhoc
+```
+
+
+
+### ios build
+
+```sh
+[bundle exec] fastlane ios build
+```
+
+
+
+### ios test
+
+```sh
+[bundle exec] fastlane ios test
+```
+
+
+
+### ios build_ipa
+
+```sh
+[bundle exec] fastlane ios build_ipa
+```
+
+
+
+----
+
+
+## test
+
+### test path
+
+```sh
+[bundle exec] fastlane test path
+```
+
+
+
+### test os
+
+```sh
+[bundle exec] fastlane test os
 ```
 
 
