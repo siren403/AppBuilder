@@ -1,6 +1,5 @@
 using AppBuilder;
-using Samples.Deploy.Editor;
-using UnityEditor;
+using AppBuilder.Deploy;
 
 namespace Samples.DeployUseCase
 {

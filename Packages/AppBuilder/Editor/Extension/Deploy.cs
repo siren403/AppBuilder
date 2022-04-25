@@ -2,7 +2,7 @@
 using AppBuilder;
 using UnityEditor;
 
-namespace Samples.Deploy.Editor
+namespace AppBuilder.Deploy
 {
     public class AndroidConfig
     {
@@ -82,6 +82,10 @@ namespace Samples.Deploy.Editor
             }
             else if (context.TryGetSection("iOS", out iOSConfig iosConfig))
             {
+                builder.ConfigureiOS(ios =>
+                {
+                    
+                });
             }
         }
     }
