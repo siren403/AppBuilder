@@ -102,6 +102,12 @@ namespace AppBuilder
             );
         }
 
+        public void IncrementVersionCode()
+        {
+            _recorder.Enqueue(() => { PlayerSettings.Android.bundleVersionCode++; },
+                new BuildProperty(nameof(IncrementVersionCode), string.Empty), ConfigureTiming.ExecuteBuild);
+        }
+
         public void UseDebugKeystore()
         {
             _recorder.Enqueue(
@@ -124,6 +130,7 @@ namespace AppBuilder
                     PlayerSettings.Android.keyaliasPass = aliasPasswd;
                 },
                 "Keystore",
+                ConfigureTiming.ConfigureOnly,
                 new BuildProperty(
                     "PlayerSettings:Android:useCustomKeystore", "true"
                 ),

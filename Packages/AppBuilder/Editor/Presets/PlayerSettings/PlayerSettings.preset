@@ -2584,4 +2584,5 @@ Preset:
     propertyPath: virtualTexturingSupportEnabled
     value: 0
     objectReference: {fileID: 0}
-  m_ExcludedProperties: []
+  m_ExcludedProperties:
+  - AndroidBundleVersionCode
