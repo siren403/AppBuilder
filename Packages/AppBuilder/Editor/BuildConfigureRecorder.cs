@@ -32,7 +32,7 @@ namespace AppBuilder
         public string Name { get; }
         public string Value { get; }
     }
-    
+
     public readonly struct ConfigureSection : IDisposable
     {
         private readonly BuildConfigureRecorder _recorder;
@@ -48,7 +48,7 @@ namespace AppBuilder
             _recorder.Write(new BuildProperty(string.Empty, BuildPropertyOptions.SectionEnd));
         }
     }
-    
+
     public static class BuildConfigureRecorderExtensions
     {
         public static ConfigureSection Section(this BuildConfigureRecorder recorder, string name)
@@ -57,34 +57,55 @@ namespace AppBuilder
         }
     }
 
+    public enum ConfigureTiming
+    {
+        ConfigureOnly,
+        ExecuteBuild
+    }
+
     public class BuildConfigureRecorder
     {
         private readonly StringBuilder _builder = new();
 
-        private readonly List<Action> _configureActions = new();
+        // private readonly List<Action> _configureActions = new();
 
+        private readonly Dictionary<ConfigureTiming, List<Action>> _configureActions = new();
         private readonly List<BuildProperty> _configureMessages = new();
 
         public BuildProperty[] GetProperties() => _configureMessages.ToArray();
 
-        public void Enqueue(Action execute, BuildProperty property)
+        private void AddAction(ConfigureTiming timing, Action execute)
         {
-            _configureActions.Add(execute);
+            if (!_configureActions.TryGetValue(timing, out var list))
+            {
+                list = new List<Action>();
+                _configureActions.Add(timing, list);
+            }
+
+            list.Add(execute);
+        }
+
+        public void Enqueue(Action execute, BuildProperty property,
+            ConfigureTiming timing = ConfigureTiming.ConfigureOnly)
+        {
+            AddAction(timing, execute);
             Write(property);
         }
 
-        public void Enqueue(Action execute, params BuildProperty[] properties)
+        public void Enqueue(Action execute, BuildProperty[] properties,
+            ConfigureTiming timing = ConfigureTiming.ConfigureOnly)
         {
-            _configureActions.Add(execute);
+            AddAction(timing, execute);
             foreach (var property in properties)
             {
                 Write(property);
             }
         }
 
-        public void Enqueue(Action execute, string section, params BuildProperty[] properties)
+        public void Enqueue(Action execute, string section, ConfigureTiming timing = ConfigureTiming.ConfigureOnly,
+            params BuildProperty[] properties)
         {
-            _configureActions.Add(execute);
+            AddAction(timing, execute);
             Write(new BuildProperty(section, BuildPropertyOptions.SectionBegin));
             foreach (var property in properties)
             {
@@ -104,9 +125,14 @@ namespace AppBuilder
             _configureMessages.Add(new BuildProperty(name, value));
         }
 
-        public Action[] Export()
+        public Action[] Export(ConfigureTiming timing = ConfigureTiming.ConfigureOnly)
         {
-            return _configureActions.ToArray();
+            if (_configureActions.TryGetValue(timing, out var list))
+            {
+                return list.ToArray();
+            }
+
+            return Array.Empty<Action>();
         }
 
         public override string ToString()

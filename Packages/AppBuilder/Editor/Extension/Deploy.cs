@@ -8,7 +8,6 @@ namespace AppBuilder.Deploy
     public class AndroidConfig
     {
         public string PackageName;
-        public int VersionCode = 1;
 
         public bool IL2CPP = true;
 
@@ -20,6 +19,8 @@ namespace AppBuilder.Deploy
         public AndroidKeystore Keystore;
 
         public bool SupportEmulator = true;
+        public bool AutoIncrementVersionCode = false;
+        public bool AppBundle = false;
     }
 
     public class AndroidKeystore
@@ -60,7 +61,6 @@ namespace AppBuilder.Deploy
                 {
                     android.PackageName(androidConfig.PackageName);
 
-                    android.VersionCode = androidConfig.VersionCode;
 
                     if (androidConfig.IL2CPP) android.IL2CPP();
                     else android.Mono();
@@ -81,7 +81,12 @@ namespace AppBuilder.Deploy
                         android.SupportEmulator();
                     }
 
-                    android.EnableAppBundle(true);
+                    if (androidConfig.AutoIncrementVersionCode)
+                    {
+                        android.IncrementVersionCode();
+                    }
+
+                    android.EnableAppBundle(androidConfig.AppBundle);
                 });
             }
             else if (context.TryGetSection("iOS", out iOSConfig iosConfig))

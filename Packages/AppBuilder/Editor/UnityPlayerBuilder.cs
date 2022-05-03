@@ -159,17 +159,17 @@ namespace AppBuilder
 
             Recorder.Write("OutputPath", _buildOptions.locationPathName);
 
-            return new BuildExecutor(_buildOptions, Recorder.Export());
+            return new BuildExecutor(_buildOptions, Recorder);
         }
     }
 
     public class BuildExecutor
     {
-        private readonly Action[] _configurations;
+        private readonly BuildConfigureRecorder _configurations;
         public BuildPlayerOptions Options { get; }
 
 
-        public BuildExecutor(BuildPlayerOptions options, Action[] configurations)
+        public BuildExecutor(BuildPlayerOptions options, BuildConfigureRecorder configurations)
         {
             _configurations = configurations;
             Options = options;
@@ -205,7 +205,8 @@ namespace AppBuilder
                 }
             }
 
-            foreach (var configuration in _configurations)
+            var configurations = _configurations.Export();
+            foreach (var configuration in configurations)
             {
                 configuration.Invoke();
             }
@@ -214,6 +215,11 @@ namespace AppBuilder
         public BuildReport Execute()
         {
             Configure();
+            var configurations = _configurations.Export(ConfigureTiming.ExecuteBuild);
+            foreach (var configuration in configurations)
+            {
+                configuration.Invoke();
+            }
 
             Debug.Log($"[AppBuilder] {JsonConvert.SerializeObject(Options)}");
             return BuildPipeline.BuildPlayer(Options);
