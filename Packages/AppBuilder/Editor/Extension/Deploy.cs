@@ -3,7 +3,7 @@ using AppBuilder;
 using UnityEditor;
 using UnityEngine;
 
-namespace Samples.Deploy.Editor
+namespace AppBuilder.Deploy
 {
     public class AndroidConfig
     {

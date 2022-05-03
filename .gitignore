@@ -166,6 +166,9 @@ sysinfo.txt
 # End of https://www.toptal.com/developers/gitignore/api/unity,rider
 
 
+Editor.log
+Samples~.meta
+.idea
 # Created by https://www.toptal.com/developers/gitignore/api/fastlane
 # Edit at https://www.toptal.com/developers/gitignore?templates=fastlane
 
