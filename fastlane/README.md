@@ -15,13 +15,21 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
+### android export_apk
+
+```sh
+[bundle exec] fastlane android export_apk
+```
+
+
+
 ### android build
 
 ```sh
 [bundle exec] fastlane android build
 ```
 
-Build application
+
 
 ### android plugin
 
@@ -44,14 +52,6 @@ Build application
 
 ## iOS
 
-### ios provisioning
-
-```sh
-[bundle exec] fastlane ios provisioning
-```
-
-
-
 ### ios unity_development
 
 ```sh
@@ -60,10 +60,18 @@ Build application
 
 
 
-### ios development
+### ios unity_development_install_devices
 
 ```sh
-[bundle exec] fastlane ios development
+[bundle exec] fastlane ios unity_development_install_devices
+```
+
+
+
+### ios unity_development_appcenter
+
+```sh
+[bundle exec] fastlane ios unity_development_appcenter
 ```
 
 
@@ -72,6 +80,38 @@ Build application
 
 ```sh
 [bundle exec] fastlane ios adhoc
+```
+
+
+
+### ios adhoc_app_center
+
+```sh
+[bundle exec] fastlane ios adhoc_app_center
+```
+
+
+
+### ios delete
+
+```sh
+[bundle exec] fastlane ios delete
+```
+
+
+
+### ios unity_appstore_testflight
+
+```sh
+[bundle exec] fastlane ios unity_appstore_testflight
+```
+
+
+
+### ios upload_pilot
+
+```sh
+[bundle exec] fastlane ios upload_pilot
 ```
 
 
@@ -96,27 +136,6 @@ Build application
 
 ```sh
 [bundle exec] fastlane ios build_ipa
-```
-
-
-
-----
-
-
-## test
-
-### test path
-
-```sh
-[bundle exec] fastlane test path
-```
-
-
-
-### test os
-
-```sh
-[bundle exec] fastlane test os
 ```
 
 

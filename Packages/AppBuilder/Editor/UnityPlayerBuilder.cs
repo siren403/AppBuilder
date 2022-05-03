@@ -108,8 +108,7 @@ namespace AppBuilder
         {
             if (string.IsNullOrEmpty(_outputDirectory))
             {
-                _outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Build", Target.ToString(),
-                    _productName ?? Application.productName).Replace("\\", "/");
+                _outputDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Build", Target.ToString());
             }
 
             if (!Path.HasExtension(_outputDirectory))
@@ -117,26 +116,25 @@ namespace AppBuilder
                 switch (_buildOptions.target)
                 {
                     case BuildTarget.StandaloneWindows64:
-                        _buildOptions.locationPathName = Path.ChangeExtension(_outputDirectory, "exe");
+                        _outputDirectory = Path.Combine(_outputDirectory, _productName ?? Application.productName);
+                        _outputDirectory = Path.ChangeExtension(_outputDirectory, "exe");
                         break;
                     case BuildTarget.Android:
+                        _outputDirectory = Path.Combine(_outputDirectory, _productName ?? Application.productName);
+
                         var androidExt = "apk";
                         if (EditorUserBuildSettings.buildAppBundle)
                         {
                             androidExt = "aab";
                         }
 
-                        _buildOptions.locationPathName = Path.ChangeExtension(_outputDirectory, androidExt);
-                        break;
-                    default:
-                        _buildOptions.locationPathName = _outputDirectory;
+                        _outputDirectory = Path.ChangeExtension(_outputDirectory, androidExt);
                         break;
                 }
             }
-            else
-            {
-                _buildOptions.locationPathName = _outputDirectory;
-            }
+
+            _buildOptions.locationPathName = _outputDirectory?.Replace("\\", "/");
+
 
             if (_buildOptions.scenes == null || !_buildOptions.scenes.Any())
             {
