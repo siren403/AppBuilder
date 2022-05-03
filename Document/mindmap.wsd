@@ -1,0 +1,73 @@
+@startmindmap workflow
+
+!include https://raw.githubusercontent.com/ptrkcsk/one-dark-plantuml-theme/v1.0.0/theme.puml
+
+* Unity
+** Android
+*** Android App Bundle
+**** bundletool 
+***** https://lunchballer.com/archives/765
+*** Apk
+** AppBuilder
+-- iOS
+--- certificates
+---- development
+----- device id
+---- adhoc
+---- app store
+--- xcode
+-- fastlane
+--- actions
+---- match
+----- fastlane match development | adhoc | appstore
+---- update_code_signing_settings
+---- gym
+--- ruby
+---- rbenv
+---- bundler
+----- dotenv
+----- gem "dotenv"
+
+* Build
+** Immediate
+*** UnityEditor
+**** AppBuilder 
+***** versionig
+***** fastlane
+****** Android
+******* upload
+******** google play - internal track
+******** google drive
+****** iOS
+******* development
+******** archive
+******** export
+******** install device
+******* adhoc
+******** archive
+******** export
+********* install device
+********* upload and link
+********** github pages
+********** app center
+******* app store
+******** archive
+******** app store connect api key
+******** upload testflight
+** CD
+*** Unity
+**** Android
+***** aab
+****** internal track
+***** apk
+****** app center
+***** gradle
+**** iOS
+***** xcode
+****** development
+******* install device
+****** adhoc
+******* app center
+****** appstore
+******* testflight
+@endmindmap
