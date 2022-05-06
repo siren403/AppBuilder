@@ -15,10 +15,18 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android export_apk
+### android aab_to_appcenter
 
 ```sh
-[bundle exec] fastlane android export_apk
+[bundle exec] fastlane android aab_to_appcenter
+```
+
+
+
+### android appcenter
+
+```sh
+[bundle exec] fastlane android appcenter
 ```
 
 
